@@ -84,8 +84,8 @@ void setup() {
   pAdvertising = pServer->getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x0);  // non précisé
-  pAdvertising->setAppearance(0x0008);// Apparence "Generic Phone"
+  pAdvertising->setMinPreferred(0x0);  // not specified
+  pAdvertising->setAppearance(0x0008);// Generic Phone" appearance
   pAdvertising->start();
 
   Serial.println("Le BLE est discoverable. Attente de la connexion...");
@@ -95,10 +95,9 @@ void loop() {
   if (deviceConnected) {
     i++;
 
-    // delay(1000); // Attendre une seconde avant de lire à nouveau
+    // delay(1000); 
     // String i_str = String(i);
-    // String str = "Nouvelles données"  + i_str;
-    // // Vous pouvez également envoyer des données au téléphone ici
+    // String str = "New data"  + i_str;
     // pCharacteristic->setValue(str.c_str());
     // pCharacteristic->notify();
     // std::string value = pCharacteristic->getValue();
