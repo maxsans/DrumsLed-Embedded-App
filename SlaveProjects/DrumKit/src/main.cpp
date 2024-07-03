@@ -38,8 +38,12 @@ void setup()
     // Initialize the NeoPixel library.
     strip.begin();
     // Fill the entire strip with white while wifi isn't connected.
-    strip.fill(strip.Color(50, 50, 50), 0, NUM_PIXELS);
-    strip.show();
+    while(1)
+    {
+        strip.fill(strip.Color(255, 255, 255), 0, NUM_PIXELS);
+        strip.show();
+        yield();
+    }
 
     // Connect to WiFi
     Serial.print("Connecting to ");
