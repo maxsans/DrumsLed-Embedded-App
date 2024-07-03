@@ -21,7 +21,7 @@ Adafruit_NeoPixel strip(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
 
 typedef enum
 {
-    PACKET_TYPE_INIT,
+    PACKET_TYPE_INIT = 1,
     PACKET_TYPE_RGB,
     PACKET_TYPE_ADC
 } packet_type_t;
@@ -37,13 +37,8 @@ void setup()
 
     // Initialize the NeoPixel library.
     strip.begin();
-    // Fill the entire strip with white while wifi isn't connected.
-    while(1)
-    {
-        strip.fill(strip.Color(255, 255, 255), 0, NUM_PIXELS);
-        strip.show();
-        yield();
-    }
+    strip.fill(strip.Color(255, 255, 255));
+    strip.show();
 
     // Connect to WiFi
     Serial.print("Connecting to ");
@@ -53,6 +48,11 @@ void setup()
     {
         Serial.print(".");
         delay(500);
+        if (millis() > 10000)
+        {
+            Serial.println("Could not connect to WiFi, restarting...");
+            ESP.restart();
+        }
     }
     udp.begin(LOCAL_PORT);
     Serial.println("\nWiFi connected, IP address: ");
@@ -69,7 +69,6 @@ void loop()
     int packetSize = udp.parsePacket();
     if (packetSize)
     {
-
         // Serial.print(" Received packet from : ");
         // Serial.println(udp.remoteIP());
         // Serial.print(" Size : ");
@@ -83,10 +82,6 @@ void loop()
                     Serial.print("Init packet received, master IP:");
                     Serial.println(udp.remoteIP());
                     masterIP = udp.remoteIP();
-                    // Respond to the master
-                    udp.beginPacket(masterIP, LOCAL_PORT);
-                    udp.write((char)(PACKET_TYPE_INIT));
-                    udp.endPacket();
                     break;
 
                 case PACKET_TYPE_RGB:
@@ -121,5 +116,15 @@ void loop()
         udp.write(adcPacket, 2);
         udp.endPacket();
         lastPacketTime = millis();
+    }
+
+    static unsigned long lastPingTime = 0;
+    if (millis() - lastPingTime > 1000)
+    {
+        lastPingTime = millis();
+        // ping the master every seconds
+        udp.beginPacket(masterIP, LOCAL_PORT);
+        udp.write((char)(PACKET_TYPE_INIT));
+        udp.endPacket();
     }
 }
