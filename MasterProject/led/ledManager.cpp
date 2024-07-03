@@ -1,0 +1,56 @@
+#include "ledManager.h"
+
+ledManager::ledManager()
+{
+    // Constructor
+}
+
+ledManager::~ledManager()
+{
+    // Destructor
+    for (uint8_t i = 0; i < m_leds.size(); i++)
+    {
+        delete m_leds[i];
+    }
+}
+
+void ledManager::addLed(module *m)
+{
+    // Check if the led already exists
+    for (uint8_t i = 0; i < m_leds.size(); i++)
+    {
+        if (m_leds[i]->getModule() == m)
+        {
+            return; // Already exists, dont add again
+        }
+    }
+    // Add a new led to the manager
+    m_leds.push_back(new rgbLed(m));
+}
+
+rgbLed *ledManager::getLed(uint8_t index)
+{
+    // Get a led by index
+    return m_leds[index];
+}
+
+rgbLed *ledManager::getLed(module *m)
+{
+    // Get a led by module
+    for (uint8_t i = 0; i < m_leds.size(); i++)
+    {
+        if (m_leds[i]->getModule() == m)
+        {
+            return m_leds[i];
+        }
+    }
+    return NULL;
+}
+
+uint32_t ledManager::getLedCount()
+{
+    // Get the number of leds
+    return m_leds.size();
+}
+
+ledManager g_ledManager;

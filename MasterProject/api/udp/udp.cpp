@@ -1,5 +1,7 @@
 #include "udp.h"
 
+#include "udpParser.h"
+
 #include <stdio.h>
 #include <winsock2.h>
 
@@ -75,18 +77,52 @@ void udp::recv()
         exit(EXIT_FAILURE);
     }
 
-    //try to receive some data, this is a blocking call
+    //try to receive some data, this is a blocking call with 1ms of timeout
     if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) != SOCKET_ERROR)
     {
-        //print details of the client/peer and the data received
-        printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-        printf("Data: %s\n" , buf);
+        char *l_packetIp;
+        l_packetIp = (char *)malloc(strlen(inet_ntoa(si_other.sin_addr)) + 1);
+        strcpy(l_packetIp, inet_ntoa(si_other.sin_addr));
+        // ignore packets from machine itself
+        // avoid the broadcast packet from itself
+        // So get the IP address of the machine and compare it with the IP address of the packet
+        bool l_ignore = false;
+        char ac[80];
+        if (gethostname(ac, sizeof(ac)) == SOCKET_ERROR)
+        {
+            printf("Error %d when getting local host name.\n", WSAGetLastError());
+            l_ignore = true;
+        }
+        else
+        {
+            struct hostent *phe = gethostbyname(ac);
+            for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+            {
+                char *l_localIp = inet_ntoa(*(struct in_addr *)phe->h_addr_list[i]);
 
-        //  Now, parse the data and do something with it
-        // TODO
+                if (strcmp(l_localIp, l_packetIp) == 0)
+                {
+                    // ignore the packet
+                    l_ignore = true;
+                    // printf("Packet ignored\n");
+                    break;
+                }
+            }
+        }
 
+        if (l_ignore == false)
+        {
+            // printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
+            // printf("Data: %s\n" , buf);
+
+            //  Now, parse the data and do something with it
+            g_udpParser.parseUdp(buf, inet_ntoa(si_other.sin_addr));
+        }
+        if (l_packetIp != NULL)
+        {
+            free(l_packetIp);
+        }
     }
-
 }
 
 void udp::sendbroadcast(char *msg)
@@ -103,12 +139,6 @@ void udp::sendbroadcast(char *msg)
     si_other.sin_family = AF_INET;
     si_other.sin_port = htons(PORT);
     si_other.sin_addr.S_un.S_addr = INADDR_BROADCAST;
-
-    // si_other.sin_family = AF_INET;
-    // si_other.sin_port = htons(PORT);
-    // // si_other.sin_addr.s_addr = INADDR_BROADCAST; // this isq equiv to 255.255.255.255
-    // // better use subnet broadcast (for our subnet is 172.30.255.255)
-    // si_other.sin_addr.s_addr = inet_addr("172.30.255.255");
 
     //send the message
     if (sendto(s, msg, strlen(msg) , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)

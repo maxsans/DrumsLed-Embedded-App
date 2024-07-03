@@ -3,11 +3,29 @@ project(MasterProject VERSION 0.1.0 LANGUAGES C CXX)
 
 set(SRCS_FILES
     main.cpp
-    api/udp/udp.cpp)
 
-include_directories(api)
-include_directories(api/udp)
+    api/udp/udp.cpp
 
+    led/rgbColor.cpp
+    led/rgbLed.cpp
+    led/ledManager.cpp
+
+    micro/micro.cpp
+    micro/microManager.cpp
+
+    modules/module.cpp
+    modules/moduleManager.cpp
+
+    udpParser/udpParser.cpp
+    )
+
+include_directories(
+    api/udp
+    led
+    micro
+    modules
+    udpParser
+)
 add_executable(MasterProject ${SRCS_FILES})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} Ws2_32)

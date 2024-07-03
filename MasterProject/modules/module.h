@@ -6,9 +6,12 @@ class module
     private:
 
     protected:
+        char* m_ip;
 
     public:
-    module();
+        module();
+        void setip(char* ip);
+        char* getip();
 };
 
 
