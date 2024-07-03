@@ -10,7 +10,7 @@ module::module()
     m_ip = NULL;
 }
 
-void module::setip(char* ip)
+void module::setIp(char* ip)
 {
     // Set the ip
     if (m_ip != NULL)
@@ -21,7 +21,7 @@ void module::setip(char* ip)
     strcpy(m_ip, ip);
 }
 
-char* module::getip()
+char* module::getIp()
 {
     // Get the ip
     return m_ip;

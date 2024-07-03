@@ -18,6 +18,7 @@ class ledManager
         rgbLed *getLed(uint8_t index);
         rgbLed *getLed(module *m);
         uint32_t getLedCount();
+        void update();
 };
 
 extern ledManager g_ledManager;

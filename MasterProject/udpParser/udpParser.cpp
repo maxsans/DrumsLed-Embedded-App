@@ -10,13 +10,6 @@
 
 typedef enum
 {
-    PACKET_TYPE_INIT = 1,
-    PACKET_TYPE_RGB,
-    PACKET_TYPE_ADC
-} packet_type_t;
-
-typedef enum
-{
     TYPE_DRUM_MODULE
 } moduleType;
 
@@ -65,9 +58,15 @@ void udpParser::parseUdp(char* packet, char* ip)
                 break;
 
             case PACKET_TYPE_ADC:
+            {
                 // New value on the adc of this module, uptate it micro value
-                // TODO
+                module *l_module = g_moduleManager.getModule(ip);
+                if (l_module != NULL)
+                {
+                    g_microManager.getMicro(l_module)->setMicroValue(packet[1]);
+                }
                 break;
+            }
 
             default:
                 // Unknown packet type, ignore

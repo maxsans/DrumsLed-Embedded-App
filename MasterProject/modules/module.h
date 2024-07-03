@@ -10,8 +10,8 @@ class module
 
     public:
         module();
-        void setip(char* ip);
-        char* getip();
+        void setIp(char* ip);
+        char* getIp();
 };
 
 

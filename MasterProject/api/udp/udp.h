@@ -2,6 +2,8 @@
 #define __UDP_H__
 
 #include <winsock2.h>
+#include <stdio.h>
+#include <stdint.h>
 
 #define BUFLEN 512	//Max length of buffer
 
@@ -17,8 +19,8 @@ class udp
     udp();
     void init();
     void close();
-    void send(char *ip_addr, char *msg);
-    void sendbroadcast(char *msg);
+    void send(char *ip_addr, char *msg, uint32_t msgSize);
+    void sendbroadcast(char *msg, uint32_t msgSize);
     void recv();
 };
 

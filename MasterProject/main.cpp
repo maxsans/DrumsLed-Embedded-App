@@ -1,6 +1,7 @@
 
 #include "udp.h"
 #include "moduleManager.h"
+#include "ledManager.h"
 
 #include <sys/time.h>
 #include <stdio.h>
@@ -12,6 +13,7 @@ int main()
     while(1)
     {
         g_udp.recv();
+
         // Send a broadcast UDP packet to ring new modules every seconds
         static struct timeval l_lastTrigger;
         struct timeval l_currentTime;
@@ -21,6 +23,9 @@ int main()
             l_lastTrigger = l_currentTime;
             g_moduleManager.ringModules();
         }
+
+        // Update the leds
+        g_ledManager.update();
     }
     g_udp.close();
     return 0;

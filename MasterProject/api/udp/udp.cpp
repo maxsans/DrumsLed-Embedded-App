@@ -3,6 +3,7 @@
 #include "udpParser.h"
 
 #include <stdio.h>
+#include <stdint.h>
 #include <winsock2.h>
 
 #define PORT 9999
@@ -49,7 +50,7 @@ void  udp::init()
     puts("Bind done");
 }
 
-void udp::send(char *ip_addr, char *msg)
+void udp::send(char *ip_addr, char *msg, uint32_t msgSize)
 {
     //setup address structure
     memset((char *) &si_other, 0, sizeof(si_other));
@@ -58,7 +59,7 @@ void udp::send(char *ip_addr, char *msg)
     si_other.sin_addr.S_un.S_addr = inet_addr(ip_addr);
 
     //send the message
-    if (sendto(s, msg, strlen(msg) , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+    if (sendto(s, msg, msgSize , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
     {
         printf("sendto() failed with error code : %d" , WSAGetLastError());
         exit(EXIT_FAILURE);
@@ -125,7 +126,7 @@ void udp::recv()
     }
 }
 
-void udp::sendbroadcast(char *msg)
+void udp::sendbroadcast(char *msg, uint32_t msgSize)
 {
     char broadcast = '1';
     if(setsockopt(s, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0)
@@ -141,7 +142,7 @@ void udp::sendbroadcast(char *msg)
     si_other.sin_addr.S_un.S_addr = INADDR_BROADCAST;
 
     //send the message
-    if (sendto(s, msg, strlen(msg) , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
+    if (sendto(s, msg, msgSize , 0 , (struct sockaddr *) &si_other, slen) == SOCKET_ERROR)
     {
         printf("sendto() failed with error code : %d" , WSAGetLastError());
         exit(EXIT_FAILURE);
