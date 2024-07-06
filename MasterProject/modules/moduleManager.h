@@ -15,6 +15,7 @@ class moduleManager
     public:
         moduleManager();
         ~moduleManager();
+        void process();
         bool addModule(char* ip);
         module *getModule(int32_t index);
         module *getModule(char* ip);

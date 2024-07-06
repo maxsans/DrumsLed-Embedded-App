@@ -3,6 +3,10 @@
 #include "udp.h"
 #include "udpParser.h"
 
+#include <sys/time.h>
+
+#define UPDATE_INTERVAL 20 // ms
+
 ledManager::ledManager()
 {
     // Constructor
@@ -14,6 +18,17 @@ ledManager::~ledManager()
     for (uint8_t i = 0; i < m_leds.size(); i++)
     {
         delete m_leds[i];
+    }
+}
+
+void ledManager::process()
+{
+    // Update the leds every UPDATE_INTERVAL ms
+    static uint64_t l_lastRingTime = GetTickCount64();
+    if (GetTickCount64() - l_lastRingTime > UPDATE_INTERVAL)
+    {
+        update();
+        l_lastRingTime = GetTickCount64();
     }
 }
 

@@ -14,6 +14,7 @@ class ledManager
     public:
         ledManager();
         ~ledManager();
+        void process();
         void addLed(module *m);
         rgbLed *getLed(uint8_t index);
         rgbLed *getLed(module *m);

@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/time.h>
+
+#define RING_INTERVAL 500 // ms
+
 
 moduleManager::moduleManager()
 {
@@ -12,6 +16,17 @@ moduleManager::moduleManager()
 moduleManager::~moduleManager()
 {
 
+}
+
+void moduleManager::process()
+{
+    // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
+    static uint64_t l_lastRingTime = GetTickCount64();
+    if (GetTickCount64() - l_lastRingTime > RING_INTERVAL)
+    {
+        ringModules();
+        l_lastRingTime = GetTickCount64();
+    }
 }
 
 bool moduleManager::addModule(char* ip)
