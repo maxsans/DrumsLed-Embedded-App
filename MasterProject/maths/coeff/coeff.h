@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define QUANTUM_COEFF 100
+#define QUANTUM_COEFF 1000
 
 /**
  * @brief Coeffs are integers that represent the sound impact of an instrument on an other instrument.
@@ -16,7 +16,8 @@ class coeff
 {
     public:
         coeff();
-        int16_t m_value;
+        coeff(float value);
+        int64_t m_value;
         void setFloat(float coeff);
         float toFloat();
 };

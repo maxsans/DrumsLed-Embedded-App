@@ -17,6 +17,14 @@ class impactsManager
          *
          */
         std::vector<std::vector<impact *>> m_impacts;
+        /**
+         * @brief Return the matrix rank of an link between two micros
+         *
+         * @param impactorMicro Micro that impacts
+         * @param impactedMicro Micro that is impacted
+         * @return uint32_t Rank of the link
+         */
+        uint32_t impactRank(uint32_t impactorMicro, uint32_t impactedMicro);
 
     public:
         impactsManager();

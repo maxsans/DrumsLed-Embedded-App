@@ -219,7 +219,7 @@ void learning::calculateCorrection()
             // The maximum is 0
             // It seems to be an error but let's admit that the correction is 1
             l_correction.m_value = QUANTUM_COEFF;
-            printf("Error : The maximum of the micro %d is 0, correction applied is 1.00\n", l_microIndex);
+            printf("Error : The maximum of the micro %d is 0, seems to be impossible. Correction applied is 1.00\n", l_microIndex);
         }
         // Set the correction
         l_micro->setCorrection(l_correction);

@@ -11,7 +11,9 @@ set(SRCS_FILES
     led/rgbLed.cpp
     led/ledManager.cpp
 
-    micro/coeff.cpp
+    maths/coeff/coeff.cpp
+    maths/matrix/matrix.cpp
+
     micro/impact.cpp
     micro/impactsManager.cpp
     micro/learning.cpp
@@ -27,6 +29,8 @@ set(SRCS_FILES
 include_directories(
     api/udp
     led
+    maths/coeff
+    maths/matrix
     micro
     modules
     udpParser
