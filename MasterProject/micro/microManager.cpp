@@ -1,5 +1,7 @@
 #include "microManager.h"
 
+#include <assert.h>
+
 microManager::microManager()
 {
     // Constructor
@@ -31,6 +33,7 @@ void microManager::addMicro(module *m)
 micro *microManager::getMicro(int32_t index)
 {
     // Get a micro by index
+    assert(index >= 0 && index < m_micros.size());
     return m_micros[index];
 }
 
@@ -44,6 +47,7 @@ micro *microManager::getMicro(module *m)
             return m_micros[i];
         }
     }
+    assert(false); // Micro not found
     return NULL;
 }
 

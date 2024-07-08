@@ -2,6 +2,7 @@
 
 #include "udp.h"
 #include "udpParser.h"
+#include "assert.h"
 
 #include <sys/time.h>
 
@@ -25,7 +26,7 @@ void ledManager::process()
 {
     // Update the leds every UPDATE_INTERVAL ms
     static uint64_t l_lastRingTime = GetTickCount64();
-    if (GetTickCount64() - l_lastRingTime > UPDATE_INTERVAL)
+    if ((GetTickCount64() - l_lastRingTime) > UPDATE_INTERVAL)
     {
         update();
         l_lastRingTime = GetTickCount64();
@@ -49,6 +50,7 @@ void ledManager::addLed(module *m)
 rgbLed *ledManager::getLed(uint8_t index)
 {
     // Get a led by index
+    assert(index < m_leds.size());
     return m_leds[index];
 }
 
@@ -62,6 +64,7 @@ rgbLed *ledManager::getLed(module *m)
             return m_leds[i];
         }
     }
+    assert(false); // Led not found
     return NULL;
 }
 
@@ -86,8 +89,28 @@ void ledManager::update()
             (char)greenValue,
             (char)blueValue
         };
-        g_udp.send(m_leds[i]->getModule()->getIp(), msg, 4);
+        g_udp.send(m_leds[i]->getModule()->getIp(), msg, sizeof(msg));
     }
+}
+
+module *ledManager::getModule(uint8_t index)
+{
+    // Get a module by index
+    assert(index < m_leds.size());
+    return m_leds[index]->getModule();
+}
+
+module *ledManager::getModule(module *m)
+{
+    // Get a module by led
+    for (uint8_t i = 0; i < m_leds.size(); i++)
+    {
+        if (m_leds[i]->getModule() == m)
+        {
+            return m_leds[i]->getModule();
+        }
+    }
+    return NULL;
 }
 
 ledManager g_ledManager;

@@ -34,29 +34,27 @@ bool moduleManager::addModule(char* ip)
     // Check if the module already exists
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
-        if (strcmp(m_modules[i].getIp(), ip) == 0)
+        if (strcmp(m_modules[i]->getIp(), ip) == 0)
         {
             return false; // Already exists, dont add again
         }
     }
-    module l_module;
-    l_module.setIp(ip);
-    m_modules.push_back(l_module);
+    m_modules.push_back(new module(ip));
     return true;
 }
 
 module *moduleManager::getModule(int32_t index)
 {
-    return &m_modules[index];
+    return m_modules[index];
 }
 
 module *moduleManager::getModule(char* ip)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
-        if (strcmp(m_modules[i].getIp(), ip) == 0)
+        if (strcmp(m_modules[i]->getIp(), ip) == 0)
         {
-            return &m_modules[i];
+            return m_modules[i];
         }
     }
 

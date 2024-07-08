@@ -10,7 +10,7 @@
 class moduleManager
 {
     private:
-        std::vector<module> m_modules;
+        std::vector<module *> m_modules;
 
     public:
         moduleManager();

@@ -4,10 +4,11 @@
 #include <string.h>
 #include <stdio.h>
 
-module::module()
+module::module(char* ip)
 {
     // Constructor
-    m_ip = NULL;
+    m_ip = (char*)malloc(strlen(ip) + 1);
+    strcpy(m_ip, ip);
 }
 
 void module::setIp(char* ip)
