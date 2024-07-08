@@ -28,6 +28,8 @@ void microManager::addMicro(module *m)
     }
     // Add a new micro to the manager
     m_micros.push_back(new micro(m));
+    // Add a new micro to the impacts manager
+    m_impactsManager.addMicro();
 }
 
 micro *microManager::getMicro(int32_t index)
@@ -55,6 +57,12 @@ uint32_t microManager::getMicroCount()
 {
     // Get the number of micros
     return m_micros.size();
+}
+
+impactsManager *microManager::getImpactsManager()
+{
+    // Get the impacts manager
+    return &m_impactsManager;
 }
 
 microManager g_microManager;

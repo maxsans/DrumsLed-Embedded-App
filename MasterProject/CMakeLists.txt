@@ -10,6 +10,10 @@ set(SRCS_FILES
     led/rgbLed.cpp
     led/ledManager.cpp
 
+    micro/coeff.cpp
+    micro/impact.cpp
+    micro/impactsManager.cpp
+    micro/learning.cpp
     micro/micro.cpp
     micro/microManager.cpp
 
