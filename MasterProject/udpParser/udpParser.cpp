@@ -1,5 +1,6 @@
 #include "udpParser.h"
 
+#include "udp.h"
 #include "moduleManager.h"
 #include "ledManager.h"
 #include "microManager.h"
@@ -22,6 +23,21 @@ udpParser::udpParser()
 udpParser::~udpParser()
 {
     // Destructor
+}
+
+void udpParser::parseUdp()
+{
+    // Get the udp packet and parse it
+    udpPacket *l_udpPacket = g_udp.getPacket();
+    if (l_udpPacket != NULL)
+    {
+        char *l_packet = l_udpPacket->getPacket();
+        char *l_ip = l_udpPacket->getIp();
+        if (l_packet != NULL && l_ip != NULL)
+        {
+            parseUdp(l_packet, l_ip);
+        }
+    }
 }
 
 void udpParser::parseUdp(char* packet, char* ip)

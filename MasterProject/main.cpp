@@ -1,5 +1,6 @@
 
 #include "udp.h"
+#include "udpParser.h"
 #include "moduleManager.h"
 #include "ledManager.h"
 #include "microManager.h"
@@ -13,7 +14,7 @@ int main()
 
     while(1)
     {
-        g_udp.recv();
+        g_udpParser.parseUdp();
         g_moduleManager.process();
         g_ledManager.process();
     }

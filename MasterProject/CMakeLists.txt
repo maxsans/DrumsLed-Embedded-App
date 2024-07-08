@@ -5,6 +5,7 @@ set(SRCS_FILES
     main.cpp
 
     api/udp/udp.cpp
+    api/udp/udpPacket.cpp
 
     led/rgbColor.cpp
     led/rgbLed.cpp

@@ -17,6 +17,7 @@ class udpParser
     public:
         udpParser();
         ~udpParser();
+        void parseUdp();
         void parseUdp(char* packet, char* ip);
 };
 

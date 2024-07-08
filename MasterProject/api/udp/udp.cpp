@@ -69,7 +69,7 @@ void udp::send(char *ip_addr, char *msg, uint32_t msgSize)
 void udp::recv()
 {
     //clear the buffer by filling null, it might have previously received data
-    memset(buf,'\0', BUFLEN);
+    memset(m_udpPacket.getPacket(),'\0', BUFLEN);
 
     DWORD read_timeout = 1;  // it is milliseconds!
     if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char const*)&read_timeout, sizeof read_timeout) != 0)
@@ -79,7 +79,7 @@ void udp::recv()
     }
 
     //try to receive some data, this is a blocking call with 1ms of timeout
-    if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) != SOCKET_ERROR)
+    if ((recv_len = recvfrom(s, m_udpPacket.getPacket(), BUFLEN, 0, (struct sockaddr *) &si_other, &slen)) != SOCKET_ERROR)
     {
         char *l_packetIp;
         l_packetIp = (char *)malloc(strlen(inet_ntoa(si_other.sin_addr)) + 1);
@@ -111,13 +111,16 @@ void udp::recv()
             }
         }
 
-        if (l_ignore == false)
+        if (l_ignore)
+        {
+            // Clear the buffer if the packet must be ignored
+            memset(m_udpPacket.getPacket(),'\0', BUFLEN);
+        }
+        else
         {
             // printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
-            // printf("Data: %s\n" , buf);
-
-            //  Now, parse the data and do something with it
-            g_udpParser.parseUdp(buf, inet_ntoa(si_other.sin_addr));
+            // printf("Data: %s\n" , m_udpPacket.getPacket());
+            m_udpPacket.setIp(l_packetIp);
         }
         if (l_packetIp != NULL)
         {
@@ -147,6 +150,12 @@ void udp::sendbroadcast(char *msg, uint32_t msgSize)
         printf("sendto() failed with error code : %d" , WSAGetLastError());
         exit(EXIT_FAILURE);
     }
+}
+
+udpPacket *udp::getPacket()
+{
+    recv();
+    return &m_udpPacket;
 }
 
 void udp::close()
