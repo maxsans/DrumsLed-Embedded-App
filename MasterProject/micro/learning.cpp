@@ -9,7 +9,9 @@
 #define NB_MESURES_MAX 200
 #define TIME_BETWEEN_MEASURES 20 // ms
 
-#define RECORD_LIMIT 1
+#define RECORD_LIMIT 10
+
+#define CORRECTION_NORMALIZATION 100
 
 learning::learning()
 {
@@ -138,6 +140,8 @@ void learning::record()
             // Add a record to the vector of records for each micro
             m_microRecords[l_microIndex].push_back(l_value);
 
+            printf("%d  ",l_value);
+
             // Check if we have reached the maximum number of records
             if (m_microRecords[l_microIndex].size() >= NB_MESURES_MAX)
             {
@@ -146,6 +150,7 @@ void learning::record()
                 break;
             }
         }
+        printf("\n");
     }
 }
 
@@ -158,7 +163,8 @@ void learning::stopLearning()
     }
 
     // Interpret the records
-    calculate();
+    calculateCorrection();
+    calculateRealImpacts();
 
     // If there are still micros to learn
     if (m_MicroInRecord < m_manager->getMicroCount() - 1)
@@ -171,39 +177,56 @@ void learning::stopLearning()
         // All the micros have been learned
         // Stop the learning process
         m_inLearning = false;
-        printf("End of learning\n");
+        printf("\nEnd of learning\n");
 
         // Calculate the artificial impacts
         m_manager->getImpactsManager()->calculateArtImpacts();
 
-        // Display the impacts calculated as 2 matrix (real and artificial)
-        printf("\nReal impacts :\n");
-        for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
-        {
-            for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
-            {
-                // Get the real impact
-                coeff l_realImpact = m_manager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
-                printf("%.2f    ", l_realImpact.toFloat());
-            }
-            printf("\n");
-        }
-        printf("\nArtificial impacts :\n");
-        for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
-        {
-            for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
-            {
-                // Get the artificial impact
-                coeff l_artImpact = m_manager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
-                printf("%.2f    ", l_artImpact.toFloat());
-            }
-            printf("\n");
-        }
-        printf("\n");
+        // Print the results
+        printResults();
     }
 }
 
-void learning::calculate()
+void learning::calculateCorrection()
+{
+    // Shearch the maximum of each micro for normalize the values
+    // So that the maximum of each micro is CORRECTION_NORMALIZATION
+    // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
+    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    {
+        // Get the micro
+        micro *l_micro = m_manager->getMicro(l_microIndex);
+
+        // Get the maximum of the micro
+        uint8_t l_max = 0;
+        for (uint8_t l_recordIndex = 0; l_recordIndex < m_microRecords[l_microIndex].size(); l_recordIndex++)
+        {
+            if (m_microRecords[l_microIndex][l_recordIndex] > l_max)
+            {
+                l_max = m_microRecords[l_microIndex][l_recordIndex];
+            }
+        }
+
+        // Calculate the correction
+        coeff l_correction;
+        if (l_max != 0)
+        {
+            // Calculate the correction
+            l_correction.m_value = QUANTUM_COEFF * CORRECTION_NORMALIZATION / l_max;
+        }
+        else
+        {
+            // The maximum is 0
+            // It seems to be an error but let's admit that the correction is 1
+            l_correction.m_value = QUANTUM_COEFF;
+            printf("Error : The maximum of the micro %d is 0, correction applied is 1.00\n", l_microIndex);
+        }
+        // Set the correction
+        l_micro->setCorrection(l_correction);
+    }
+}
+
+void learning::calculateRealImpacts()
 {
     // Calculate the real impacts of all micros on all micros
     // Method :
@@ -248,4 +271,40 @@ void learning::calculate()
             m_manager->getImpactsManager()->setRealImpact(l_impactorMicro, l_impactedMicro, l_impact);
         }
     }
+}
+
+void learning::printResults()
+{
+    // Display the corrections calculated
+    printf("\nCorrections :\n");
+    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    {
+        // Get the correction
+        coeff l_correction = m_manager->getMicro(l_microIndex)->getCorrection();
+        printf("%.2f    ", l_correction.toFloat());
+    }
+    // Display the impacts calculated as 2 matrix (real and artificial)
+    printf("\n\nReal impacts :\n");
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
+    {
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
+        {
+            // Get the real impact
+            coeff l_realImpact = m_manager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
+            printf("%.2f    ", l_realImpact.toFloat());
+        }
+        printf("\n");
+    }
+    printf("\nArtificial impacts :\n");
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
+    {
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
+        {
+            // Get the artificial impact
+            coeff l_artImpact = m_manager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
+            printf("%.2f    ", l_artImpact.toFloat());
+        }
+        printf("\n");
+    }
+    printf("\n");
 }

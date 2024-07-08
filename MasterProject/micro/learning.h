@@ -25,10 +25,15 @@ class learning
          */
         void record();
         /**
-         * @brief Interprete the records
+         * @brief Calculate the correction for last record
          *
          */
-        void calculate();
+        void calculateCorrection();
+        /**
+         * @brief Calculate the real impact of each micro for last record
+         *
+         */
+        void calculateRealImpacts();
 
     public:
         learning();
@@ -68,6 +73,11 @@ class learning
          */
         void stopLearning();
 
+        /**
+         * @brief Print the results of the learning
+         *
+         */
+        void printResults();
 };
 
 #endif
