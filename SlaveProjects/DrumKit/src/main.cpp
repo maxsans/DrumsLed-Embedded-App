@@ -3,6 +3,9 @@
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUDP.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <ElegantOTA.h>
 #include <stdint.h>
 
 #define SSID "JM"
@@ -23,6 +26,9 @@ bool masterFound = false;
 IPAddress masterIP;
 WiFiUDP udp;
 Adafruit_NeoPixel strip(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
+AsyncWebServer server(80);
+
+unsigned long ota_progress_millis = 0;
 
 #define NB_MEASURE_MAX 10
 uint8_t g_mesureBuff[NB_MEASURE_MAX];
@@ -35,6 +41,30 @@ typedef enum
     PACKET_TYPE_RGB,
     PACKET_TYPE_ADC
 } packet_type_t;
+
+void onOTAStart() {
+  // Log when OTA has started
+  Serial.println("OTA update started!");
+  // <Add your own code here>
+}
+
+void onOTAProgress(size_t current, size_t final) {
+  // Log every 1 second
+  if (millis() - ota_progress_millis > 1000) {
+    ota_progress_millis = millis();
+    Serial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
+  }
+}
+
+void onOTAEnd(bool success) {
+  // Log when OTA has finished
+  if (success) {
+    Serial.println("OTA update finished successfully!");
+  } else {
+    Serial.println("There was an error during OTA update!");
+  }
+  // <Add your own code here>
+}
 
 void setup()
 {
@@ -72,10 +102,24 @@ void setup()
     strip.fill(strip.Color(0, 0, 0));
     strip.show();
 
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(200, "text/plain", "Hi! This is a TunesKit.");
+    });
+
+    ElegantOTA.begin(&server);    // Start ElegantOTA
+    // ElegantOTA callbacks
+    ElegantOTA.onStart(onOTAStart);
+    ElegantOTA.onProgress(onOTAProgress);
+    ElegantOTA.onEnd(onOTAEnd);
+
+    server.begin();
+    Serial.println("HTTP server started");
 }
 
 void loop()
 {
+    ElegantOTA.loop();
     static unsigned long lastReadTime = 0;
     if ( (millis() - lastReadTime > TIME_BETWEEN_READ_UDP))
     {
