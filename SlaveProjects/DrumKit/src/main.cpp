@@ -13,7 +13,7 @@
 #define LOCAL_PORT 9999
 
 #define PIN_NEO_PIXEL 4
-#define NUM_PIXELS 7
+#define NUM_PIXELS 200
 
 #define ADC_PIN A0
 #define TIME_BETWEEN_PACKETS 20 // in ms
