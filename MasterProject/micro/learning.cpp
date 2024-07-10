@@ -16,19 +16,9 @@
 learning::learning()
 {
     // Constructor
-    m_manager = NULL;
+    m_microManager = NULL;
     m_inLearning = false;
     m_MicroInRecord = -1;
-}
-
-learning::learning(microManager *manager)
-{
-    m_manager = manager;
-    // Add as much of micros as microsManager has in the vector of records
-    for (uint8_t i = 0; i < m_manager->getMicroCount(); i++)
-    {
-        m_microRecords.push_back(std::vector<uint8_t>());
-    }
 }
 
 learning::~learning()
@@ -36,25 +26,39 @@ learning::~learning()
     // Destructor
 }
 
-void learning::setManager(microManager *manager)
+void learning::setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager)
 {
-    // Set the manager
-    m_manager = manager;
-    // Add as much of micros as microsManager has in the vector of records
-    for (uint8_t i = 0; i < m_manager->getMicroCount(); i++)
-    {
-        m_microRecords.push_back(std::vector<uint8_t>());
-    }
+    // Set the session to learn
+    m_moduleManager = moduleManager;
+    m_microManager = microManager;
+    m_ledManager = ledManager;
 }
 
 void learning::startLearning()
 {
     // Disable the addition of new modules
-    g_moduleManager.enableNewModules(false);
-    if (m_manager->getMicroCount() > 0)
+    m_moduleManager->enableNewModules(false);
+    if (m_microManager->getMicroCount() > 0)
     {
         printf("Start learning\n");
         // Start the learning process on the first micro
+        // Add as much of micros as microsManager has in the vector of records
+        uint32_t l_lastVectorSize = m_microRecords.size();
+        uint32_t l_newVectorSize = m_microManager->getMicroCount();
+        if (l_lastVectorSize < l_newVectorSize)
+        {
+            for (uint8_t i = l_lastVectorSize; i < l_newVectorSize; i++)
+            {
+                m_microRecords.push_back(std::vector<uint8_t>());
+            }
+        }
+        else if (l_lastVectorSize > l_newVectorSize)
+        {
+            for (uint8_t i = l_newVectorSize; i < l_lastVectorSize; i++)
+            {
+                m_microRecords.pop_back();
+            }
+        }
         startLearning(0);
     }
     else
@@ -66,11 +70,11 @@ void learning::startLearning()
 void learning::startLearning(int32_t microIndex)
 {
     // Start the learning process on a specific micro
-    assert(microIndex >= 0 && microIndex < m_manager->getMicroCount());
+    assert(microIndex >= 0 && microIndex < m_microRecords.size());
     m_MicroInRecord = microIndex;
 
     // If necessary, delete the previous records and free the memory
-    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microRecords.size(); l_microIndex++)
     {
         m_microRecords[l_microIndex].clear();
     }
@@ -81,10 +85,10 @@ void learning::startLearning(int32_t microIndex)
     // TODO: Implement this function
 
     // Get the main micro of this learning
-    micro *l_mainMicro = m_manager->getMicro(microIndex);
+    micro *l_mainMicro = m_microManager->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
-    rgbLed *l_led = g_ledManager.getLed(l_mainMicro->getModule());
+    rgbLed *l_led = m_ledManager->getLed(l_mainMicro->getModule());
     if (l_led != NULL)
     {
         // The module has leds, highlight it
@@ -117,10 +121,10 @@ void learning::record()
 {
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
-    for(uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    for(uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
-        micro *l_micro = m_manager->getMicro(l_microIndex);
+        micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Get the micro's value
         uint8_t l_value = l_micro->getMicroValue();
@@ -135,10 +139,10 @@ void learning::record()
     {
         // At least one micro has recorded something
         // Record all the micros
-        for(uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+        for(uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
         {
             // Get the micro
-            micro *l_micro = m_manager->getMicro(l_microIndex);
+            micro *l_micro = m_microManager->getMicro(l_microIndex);
 
             // Get the micro's value
             uint8_t l_value = l_micro->getMicroValue();
@@ -163,9 +167,9 @@ void learning::record()
 void learning::stopLearning()
 {
     // Turn off all the leds
-    for (uint16_t l_ledIndex = 0; l_ledIndex < g_ledManager.getLedCount(); l_ledIndex++)
+    for (uint16_t l_ledIndex = 0; l_ledIndex < m_ledManager->getLedCount(); l_ledIndex++)
     {
-        g_ledManager.getLed(l_ledIndex)->setColor(0, 0, 0);
+        m_ledManager->getLed(l_ledIndex)->setColor(0, 0, 0);
     }
 
     // Interpret the records
@@ -173,7 +177,7 @@ void learning::stopLearning()
     calculateRealImpacts();
 
     // If there are still micros to learn
-    if (m_MicroInRecord < m_manager->getMicroCount() - 1)
+    if (m_MicroInRecord < m_microManager->getMicroCount() - 1)
     {
         // Start the learning process on the next micro
         startLearning(m_MicroInRecord + 1);
@@ -186,13 +190,13 @@ void learning::stopLearning()
         printf("\nEnd of learning\n");
 
         // Calculate the artificial impacts
-        m_manager->getImpactsManager()->calculateArtImpacts();
+        m_microManager->getImpactsManager()->calculateArtImpacts();
 
         // Print the results
         printResults();
 
         // Enable back the addition of new modules
-        g_moduleManager.enableNewModules(true);
+        m_moduleManager->enableNewModules(true);
     }
 }
 
@@ -201,10 +205,10 @@ void learning::calculateCorrection()
     // Shearch the maximum of each micro for normalize the values
     // So that the maximum of each micro is CORRECTION_NORMALIZATION
     // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
-    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
-        micro *l_micro = m_manager->getMicro(l_microIndex);
+        micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Get the maximum of the micro
         uint8_t l_max = 0;
@@ -245,8 +249,8 @@ void learning::calculateRealImpacts()
     // This will give us the real impacts of all micros on all the other micros
 
     // For each micro, calculate the sum of the records
-    std::vector<uint64_t> l_sums(m_manager->getMicroCount(), 0);
-    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    std::vector<uint64_t> l_sums(m_microManager->getMicroCount(), 0);
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Calculate the sum of the records
         uint64_t l_sum = 0;
@@ -258,9 +262,9 @@ void learning::calculateRealImpacts()
     }
 
     // Fill the matrix of impacts
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Calculate the ratio of the sum of the records of the impacted micro
             // with the sum of the records of impactor micro
@@ -277,7 +281,7 @@ void learning::calculateRealImpacts()
                 l_impact.m_value = 0;
             }
             // Set the real impact
-            m_manager->getImpactsManager()->setRealImpact(l_impactorMicro, l_impactedMicro, l_impact);
+            m_microManager->getImpactsManager()->setRealImpact(l_impactorMicro, l_impactedMicro, l_impact);
         }
     }
 }
@@ -286,31 +290,31 @@ void learning::printResults()
 {
     // Display the corrections calculated
     printf("\nCorrections :\n");
-    for (uint8_t l_microIndex = 0; l_microIndex < m_manager->getMicroCount(); l_microIndex++)
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the correction
-        coeff l_correction = m_manager->getMicro(l_microIndex)->getCorrection();
+        coeff l_correction = m_microManager->getMicro(l_microIndex)->getCorrection();
         printf("%.2f    ", l_correction.toFloat());
     }
     // Display the impacts calculated as 2 matrix (real and artificial)
     printf("\n\nReal impacts :\n");
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the real impact
-            coeff l_realImpact = m_manager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
+            coeff l_realImpact = m_microManager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
             printf("%.2f    ", l_realImpact.toFloat());
         }
         printf("\n");
     }
     printf("\nArtificial impacts :\n");
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_manager->getMicroCount(); l_impactorMicro++)
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_manager->getMicroCount(); l_impactedMicro++)
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the artificial impact
-            coeff l_artImpact = m_manager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
+            coeff l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
             printf("%.2f    ", l_artImpact.toFloat());
         }
         printf("\n");

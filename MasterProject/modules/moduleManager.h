@@ -26,6 +26,4 @@ class moduleManager
         void ringModules();
 };
 
-extern moduleManager g_moduleManager;
-
 #endif

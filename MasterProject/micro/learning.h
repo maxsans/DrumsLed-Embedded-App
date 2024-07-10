@@ -2,6 +2,8 @@
 #define __LEARNING_H__
 
 #include "microManager.h"
+#include "ledManager.h"
+#include "moduleManager.h"
 
 #include <stdint.h>
 #include <vector>
@@ -9,7 +11,9 @@
 class learning
 {
     private:
-        microManager *m_manager;
+        microManager *m_microManager;
+        ledManager *m_ledManager;
+        moduleManager *m_moduleManager;
         bool m_inLearning;
         int32_t m_MicroInRecord;
         /**
@@ -37,7 +41,6 @@ class learning
 
     public:
         learning();
-        learning(microManager *manager);
         ~learning();
 
         /**
@@ -48,11 +51,11 @@ class learning
         bool isLearning();
 
         /**
-         * @brief Set the manager
+         * @brief Set the session to learn
          *
-         * @param manager The manager to set
+         * @param sessionToLearn The session to learn
          */
-        void setManager(microManager *manager);
+        void setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager);
 
         /**
          * @brief Start the learning process on all the micros

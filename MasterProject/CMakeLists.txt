@@ -4,6 +4,7 @@ project(MasterProject VERSION 0.1.0 LANGUAGES C CXX)
 set(SRCS_FILES
     main.cpp
 
+    api/terminal/terminal.cpp
     api/udp/udp.cpp
     api/udp/udpPacket.cpp
 
@@ -23,16 +24,20 @@ set(SRCS_FILES
     modules/module.cpp
     modules/moduleManager.cpp
 
+    session/session.cpp
+
     udpParser/udpParser.cpp
     )
 
 include_directories(
+    api/terminal
     api/udp
     led
     maths/coeff
     maths/matrix
     micro
     modules
+    session
     udpParser
 )
 add_executable(MasterProject ${SRCS_FILES})

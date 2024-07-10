@@ -48,6 +48,30 @@ void  udp::init()
         exit(EXIT_FAILURE);
     }
     puts("Bind done");
+
+    // get the IP address of the machine and compare it with the IP address of the packet
+    bool l_ignore = false;
+    char ac[80];
+    if (gethostname(ac, sizeof(ac)) == SOCKET_ERROR)
+    {
+        printf("Error %d when getting local host name.\n", WSAGetLastError());
+        l_ignore = true;
+    }
+    else
+    {
+        struct hostent *phe = gethostbyname(ac);
+        for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+        {
+            if (i > 0)
+            {
+                // multiple IP addresses are not supported
+                break;
+            }
+            char *l_localIp = inet_ntoa(*(struct in_addr *)phe->h_addr_list[i]);
+
+            strcpy(m_localIp, l_localIp);
+        }
+    }
 }
 
 void udp::send(char *ip_addr, char *msg, uint32_t msgSize)
@@ -86,29 +110,11 @@ void udp::recv()
         strcpy(l_packetIp, inet_ntoa(si_other.sin_addr));
         // ignore packets from machine itself
         // avoid the broadcast packet from itself
-        // So get the IP address of the machine and compare it with the IP address of the packet
+        // So compare the IP address of the packet with the IP address of the machine
         bool l_ignore = false;
-        char ac[80];
-        if (gethostname(ac, sizeof(ac)) == SOCKET_ERROR)
+        if (strcmp(m_localIp, l_packetIp) == 0)
         {
-            printf("Error %d when getting local host name.\n", WSAGetLastError());
             l_ignore = true;
-        }
-        else
-        {
-            struct hostent *phe = gethostbyname(ac);
-            for (int i = 0; phe->h_addr_list[i] != 0; ++i)
-            {
-                char *l_localIp = inet_ntoa(*(struct in_addr *)phe->h_addr_list[i]);
-
-                if (strcmp(l_localIp, l_packetIp) == 0)
-                {
-                    // ignore the packet
-                    l_ignore = true;
-                    // printf("Packet ignored\n");
-                    break;
-                }
-            }
         }
 
         if (l_ignore)

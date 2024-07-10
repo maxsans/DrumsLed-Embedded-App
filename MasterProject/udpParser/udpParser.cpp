@@ -1,9 +1,7 @@
 #include "udpParser.h"
 
 #include "udp.h"
-#include "moduleManager.h"
-#include "ledManager.h"
-#include "microManager.h"
+#include "session.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -14,15 +12,27 @@ typedef enum
     TYPE_DRUM_MODULE
 } moduleType;
 
-
 udpParser::udpParser()
 {
     // Constructor
+    m_currentSession = NULL;
+}
+
+udpParser::udpParser(session *currentSession)
+{
+    // Constructor
+    m_currentSession = currentSession;
 }
 
 udpParser::~udpParser()
 {
     // Destructor
+}
+
+void udpParser::setCurrentSession(session *currentSession)
+{
+    // Set the current session
+    m_currentSession = currentSession;
 }
 
 void udpParser::parseUdp()
@@ -49,9 +59,9 @@ void udpParser::parseUdp(char* packet, char* ip)
         case PACKET_TYPE_INIT:
         {
             // A new module is found, add it to the list of modules
-            if (g_moduleManager.addModule(ip))
+            if (m_currentSession->getModuleManager()->addModule(ip))
             {
-                module *newModule = g_moduleManager.getModule(ip);
+                module *newModule = m_currentSession->getModuleManager()->getModule(ip);
                 if (newModule == NULL)
                 {
                     printf("Error while adding new module !\n");
@@ -60,8 +70,8 @@ void udpParser::parseUdp(char* packet, char* ip)
                 switch(packet[1]) // type of module
                 {
                     case TYPE_DRUM_MODULE:
-                        g_microManager.addMicro(newModule);
-                        g_ledManager.addLed(newModule);
+                        m_currentSession->getMicroManager()->addMicro(newModule);
+                        m_currentSession->getLedManager()->addLed(newModule);
                         printf("New drum module ! ip : %s\n", ip);
                         break;
 
@@ -81,10 +91,10 @@ void udpParser::parseUdp(char* packet, char* ip)
         case PACKET_TYPE_ADC:
         {
             // New value on the adc of this module, uptate it micro value
-            module *l_module = g_moduleManager.getModule(ip);
+            module *l_module = m_currentSession->getModuleManager()->getModule(ip);
             if (l_module != NULL)
             {
-                micro *l_micro = g_microManager.getMicro(l_module);
+                micro *l_micro = m_currentSession->getMicroManager()->getMicro(l_module);
                 if (l_micro != NULL)
                 {
                     l_micro->setMicroValue(packet[1]);

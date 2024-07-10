@@ -64,5 +64,3 @@ impactsManager *microManager::getImpactsManager()
     // Get the impacts manager
     return &m_impactsManager;
 }
-
-microManager g_microManager;

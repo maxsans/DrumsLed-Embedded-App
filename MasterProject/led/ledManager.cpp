@@ -112,5 +112,3 @@ module *ledManager::getModule(module *m)
     }
     return NULL;
 }
-
-ledManager g_ledManager;

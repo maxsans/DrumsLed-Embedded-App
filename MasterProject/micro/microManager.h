@@ -23,6 +23,4 @@ class microManager
         impactsManager *getImpactsManager();
 };
 
-extern microManager g_microManager;
-
 #endif

@@ -16,11 +16,8 @@ void impactsManager::addMicro()
     // x x x    ->    x x x x
     // x x x          x x x x
     //                x x x x
-    m_impacts.push_back(std::vector<impact *>(m_impacts.size(), new impact()));
-    for (uint32_t i = 0; i < m_impacts.size(); i++)
-    {
-        m_impacts[i].push_back(new impact());
-    }
+    uint32_t l_newSize = m_impacts.size() + 1;
+    m_impacts.push_back(std::vector<impact *>(l_newSize, new impact()));
 }
 
 coeff impactsManager::getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro)

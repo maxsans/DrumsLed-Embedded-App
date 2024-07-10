@@ -24,6 +24,4 @@ class ledManager
         module *getModule(module *m);
 };
 
-extern ledManager g_ledManager;
-
 #endif

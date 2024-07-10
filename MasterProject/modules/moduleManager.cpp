@@ -90,5 +90,3 @@ void moduleManager::ringModules()
     };
     g_udp.sendbroadcast(l_packet, sizeof(l_packet));
 }
-
-moduleManager g_moduleManager;
