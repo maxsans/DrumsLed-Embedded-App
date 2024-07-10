@@ -26,6 +26,12 @@ learning::~learning()
     // Destructor
 }
 
+bool learning::isLearning()
+{
+    // Check if a learning process is running
+    return m_inLearning;
+}
+
 void learning::setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager)
 {
     // Set the session to learn

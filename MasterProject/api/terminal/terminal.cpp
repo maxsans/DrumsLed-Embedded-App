@@ -51,7 +51,7 @@ void terminal::parseBuffer()
 
     else
     {
-        printf("Unknown command : \"%s\"\n", m_buffer+1);
+        printf("Unknown command : \"%s\"\n", m_buffer);
     }
 }
 
