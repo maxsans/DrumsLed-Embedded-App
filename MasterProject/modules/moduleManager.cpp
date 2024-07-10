@@ -10,12 +10,22 @@
 
 moduleManager::moduleManager()
 {
-
+    m_enableNewModules = true;
 }
 
 moduleManager::~moduleManager()
 {
 
+}
+
+void moduleManager::enableNewModules(bool enable)
+{
+    m_enableNewModules = enable;
+}
+
+bool moduleManager::NewModulesEnabled()
+{
+    return m_enableNewModules;
 }
 
 void moduleManager::process()
@@ -31,6 +41,10 @@ void moduleManager::process()
 
 bool moduleManager::addModule(char* ip)
 {
+    if (!m_enableNewModules)
+    {
+        return false;
+    }
     // Check if the module already exists
     for (int32_t i = 0; i < m_modules.size(); i++)
     {

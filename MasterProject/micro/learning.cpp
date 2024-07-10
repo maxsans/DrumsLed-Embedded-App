@@ -1,5 +1,5 @@
 #include "learning.h"
-
+#include "moduleManager.h"
 #include "ledManager.h"
 
 #include <winsock2.h>
@@ -49,11 +49,17 @@ void learning::setManager(microManager *manager)
 
 void learning::startLearning()
 {
-    printf("Start learning\n");
-    // Start the learning process on the first micro
+    // Disable the addition of new modules
+    g_moduleManager.enableNewModules(false);
     if (m_manager->getMicroCount() > 0)
     {
+        printf("Start learning\n");
+        // Start the learning process on the first micro
         startLearning(0);
+    }
+    else
+    {
+        printf("No micros to learn\n");
     }
 }
 
@@ -184,6 +190,9 @@ void learning::stopLearning()
 
         // Print the results
         printResults();
+
+        // Enable back the addition of new modules
+        g_moduleManager.enableNewModules(true);
     }
 }
 

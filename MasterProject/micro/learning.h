@@ -41,6 +41,13 @@ class learning
         ~learning();
 
         /**
+         * @brief Check if a learning process is running
+         *
+         * @return true if a learning process is running
+         */
+        bool isLearning();
+
+        /**
          * @brief Set the manager
          *
          * @param manager The manager to set

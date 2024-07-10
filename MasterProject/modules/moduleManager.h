@@ -11,10 +11,13 @@ class moduleManager
 {
     private:
         std::vector<module *> m_modules;
+        bool m_enableNewModules;
 
     public:
         moduleManager();
         ~moduleManager();
+        void enableNewModules(bool enable);
+        bool NewModulesEnabled();
         void process();
         bool addModule(char* ip);
         module *getModule(int32_t index);
