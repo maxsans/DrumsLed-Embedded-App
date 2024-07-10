@@ -6,6 +6,8 @@ micro::micro(module *m)
     // Constructor
     m_module = m;
     m_microValue = 0;
+    m_microValueCorrected = 0;
+    m_correction.m_value = 1;
 }
 
 module *micro::getModule()
@@ -30,17 +32,12 @@ void micro::setMicroValue(uint8_t microValue)
 {
     // Set the value of the micro
     m_microValue = microValue;
-    // Correct the value of the micro
-    uint32_t l_microValueCorrected = m_microValue * m_correction.m_value / QUANTUM_COEFF;
-    // Check if the value is not too high
-    if (l_microValueCorrected > 255)
-    {
-        m_microValueCorrected = 255;
-    }
-    else
-    {
-        m_microValueCorrected = l_microValueCorrected;
-    }
+}
+
+void micro::setMicroValueCorrected(uint8_t microValueCorrected)
+{
+    // Set the corrected value of the micro
+    m_microValueCorrected = microValueCorrected;
 }
 
 uint8_t micro::getMicroValue()

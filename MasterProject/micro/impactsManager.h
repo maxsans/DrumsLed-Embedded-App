@@ -30,6 +30,13 @@ class impactsManager
         impactsManager();
 
         /**
+         * @brief Returns the number of micros
+         *
+         * @return The number of micros
+         */
+        uint32_t getMicroCount();
+
+        /**
          * @brief Reserves memory for the impacts when a new micro is added
          *
          */

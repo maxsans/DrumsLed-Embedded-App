@@ -32,6 +32,40 @@ void microManager::addMicro(module *m)
     m_impactsManager.addMicro();
 }
 
+void microManager::setMicro(module *m, uint8_t microValue)
+{
+    // Set the value of a micro
+    // Find the micro from his module
+    micro *m_micro = getMicro(m);
+    m_micro->setMicroValue(microValue);
+    // Find the index of the micro
+    uint32_t l_microIndex = 0;
+    for (uint32_t i = 0; i < m_micros.size(); i++)
+    {
+        if (m_micros[i] == m_micro)
+        {
+            l_microIndex = i;
+            break;
+        }
+    }
+    // Set the corrected value of the micro
+    // First, remove the impact of all other micros one this one
+    uint8_t l_microValueCorrected = microValue;
+    for (uint32_t l_ImpactorMicroIndex = 0; l_ImpactorMicroIndex < m_micros.size(); l_ImpactorMicroIndex++)
+    {
+        if (m_micros[l_ImpactorMicroIndex]->getModule() != m)
+        {
+            coeff l_impact = m_impactsManager.getImpact(l_ImpactorMicroIndex, l_microIndex)->m_ArtImpact;
+            uint8_t l_impactorMicroValue = m_micros[l_ImpactorMicroIndex]->getMicroValue();
+            l_microValueCorrected -= l_impactorMicroValue * l_impact.m_value / QUANTUM_COEFF;
+        }
+    }
+    // Then, apply the correction
+    l_microValueCorrected = l_microValueCorrected * m_micro->getCorrection().m_value / QUANTUM_COEFF;
+    // Finally, set the corrected value
+    m_micro->setMicroValueCorrected(l_microValueCorrected);
+}
+
 micro *microManager::getMicro(int32_t index)
 {
     // Get a micro by index

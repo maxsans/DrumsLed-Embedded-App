@@ -9,6 +9,11 @@ impactsManager::impactsManager()
 
 }
 
+uint32_t impactsManager::getMicroCount()
+{
+    return m_impacts.size();
+}
+
 void impactsManager::addMicro()
 {
     // Add a new micro on the two dimensions of the vector

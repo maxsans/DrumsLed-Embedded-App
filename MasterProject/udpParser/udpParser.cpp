@@ -94,11 +94,9 @@ void udpParser::parseUdp(char* packet, char* ip)
             module *l_module = m_currentSession->getModuleManager()->getModule(ip);
             if (l_module != NULL)
             {
-                micro *l_micro = m_currentSession->getMicroManager()->getMicro(l_module);
-                if (l_micro != NULL)
-                {
-                    l_micro->setMicroValue(packet[1]);
-                }
+                // Set the micro value of this module
+                uint8_t l_microValue = packet[1];
+                m_currentSession->getMicroManager()->setMicro(l_module, l_microValue);
             }
             break;
         }

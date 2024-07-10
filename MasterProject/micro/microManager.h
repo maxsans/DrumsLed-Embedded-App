@@ -17,6 +17,7 @@ class microManager
         microManager();
         ~microManager();
         void addMicro(module *m);
+        void setMicro(module *m, uint8_t microValue);
         micro *getMicro(int32_t index);
         micro *getMicro(module *m);
         uint32_t getMicroCount();

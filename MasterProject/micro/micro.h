@@ -22,6 +22,7 @@ class micro
         void setCorrection(coeff correction);
         coeff getCorrection();
         void setMicroValue(uint8_t microValue);
+        void setMicroValueCorrected(uint8_t microValueCorrected);
         uint8_t getMicroValue();
         uint8_t getMicroValueCorrected();
 };
