@@ -22,7 +22,14 @@ void impactsManager::addMicro()
     // x x x          x x x x
     //                x x x x
     uint32_t l_newSize = m_impacts.size() + 1;
-    m_impacts.push_back(std::vector<impact *>(l_newSize, new impact()));
+    m_impacts.push_back(new std::vector<impact *>(l_newSize, new impact()));
+    assert(m_impacts.size() == l_newSize);
+    for (uint32_t i = 0 ; i < l_newSize-1 ; i++)
+    {
+        m_impacts[i]->push_back(new impact());
+        uint32_t l_currentSize = m_impacts[i]->size();
+        assert(l_currentSize == l_newSize);
+    }
 }
 
 coeff impactsManager::getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro)
@@ -31,7 +38,7 @@ coeff impactsManager::getRealImpact(uint32_t impactorMicro, uint32_t impactedMic
         && impactedMicro < m_impacts.size()
         && impactorMicro >= 0
         && impactedMicro >= 0);
-    return m_impacts[impactorMicro][impactedMicro]->m_realImpact;
+    return m_impacts[impactorMicro]->at(impactedMicro)->m_realImpact;
 }
 
 coeff impactsManager::getArtImpact(uint32_t impactorMicro, uint32_t impactedMicro)
@@ -40,7 +47,7 @@ coeff impactsManager::getArtImpact(uint32_t impactorMicro, uint32_t impactedMicr
         && impactedMicro < m_impacts.size()
         && impactorMicro >= 0
         && impactedMicro >= 0);
-    return m_impacts[impactorMicro][impactedMicro]->m_ArtImpact;
+    return m_impacts[impactorMicro]->at(impactedMicro)->m_ArtImpact;
 }
 
 impact *impactsManager::getImpact(uint32_t impactorMicro, uint32_t impactedMicro)
@@ -49,7 +56,7 @@ impact *impactsManager::getImpact(uint32_t impactorMicro, uint32_t impactedMicro
         && impactedMicro < m_impacts.size()
         && impactorMicro >= 0
         && impactedMicro >= 0);
-    return m_impacts[impactorMicro][impactedMicro];
+    return m_impacts[impactorMicro]->at(impactedMicro);
 }
 
 void impactsManager::setRealImpact(uint32_t impactorMicro, uint32_t impactedMicro, coeff impact)
@@ -58,7 +65,7 @@ void impactsManager::setRealImpact(uint32_t impactorMicro, uint32_t impactedMicr
         && impactedMicro < m_impacts.size()
         && impactorMicro >= 0
         && impactedMicro >= 0);
-    m_impacts[impactorMicro][impactedMicro]->m_realImpact = impact;
+    m_impacts[impactorMicro]->at(impactedMicro)->m_realImpact = impact;
 }
 
 void impactsManager::setImpact(uint32_t impactorMicro, uint32_t impactedMicro, impact impact)
@@ -67,7 +74,7 @@ void impactsManager::setImpact(uint32_t impactorMicro, uint32_t impactedMicro, i
         && impactedMicro < m_impacts.size()
         && impactorMicro >= 0
         && impactedMicro >= 0);
-    *m_impacts[impactorMicro][impactedMicro] = impact;
+    *m_impacts[impactorMicro]->at(impactedMicro) = impact;
 }
 
 uint32_t impactsManager::impactRank(uint32_t impactorMicro, uint32_t impactedMicro)
@@ -187,7 +194,7 @@ void impactsManager::calculateArtImpacts()
                 // Get the rank of the link
                 uint32_t l_rank = impactRank(l_impactorMicro, l_impactedMicro);
 
-                l_realImpactsFromRank[l_rank].m_value = m_impacts[l_impactorMicro][l_impactedMicro]->m_realImpact.m_value;
+                l_realImpactsFromRank[l_rank].m_value = m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_realImpact.m_value;
 
                 // Generate the middle micros
                 for (uint32_t l_otherMicro = 0 ; l_otherMicro < l_nbMicros ; l_otherMicro++)
@@ -217,15 +224,15 @@ void impactsManager::calculateArtImpacts()
             // Skip the impact of a micro on itself
             if (l_impactorMicro == l_impactedMicro)
             {
-                m_impacts[l_impactorMicro][l_impactedMicro]->m_ArtImpact.m_value = QUANTUM_COEFF;
+                m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_ArtImpact.m_value = QUANTUM_COEFF;
             }
             else
             {
                 int l_line = impactRank(l_impactorMicro, l_impactedMicro);
-                m_impacts[l_impactorMicro][l_impactedMicro]->m_ArtImpact.m_value = 0;
+                m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_ArtImpact.m_value = 0;
                 for (int l_workColumn=0 ; l_workColumn<l_matrixSize ; l_workColumn++)
                 {
-                    m_impacts[l_impactorMicro][l_impactedMicro]->m_ArtImpact.m_value
+                    m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_ArtImpact.m_value
                         += l_matrix.get(l_line, l_workColumn).m_value * l_realImpactsFromRank[l_workColumn].m_value / QUANTUM_COEFF;
                 }
             }

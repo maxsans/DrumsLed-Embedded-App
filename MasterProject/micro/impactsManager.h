@@ -16,7 +16,7 @@ class impactsManager
          * Diagonal is the impact of the micro on itself so it is always 1
          *
          */
-        std::vector<std::vector<impact *>> m_impacts;
+        std::vector<std::vector<impact *>*> m_impacts;
         /**
          * @brief Return the matrix rank of an link between two micros
          *
