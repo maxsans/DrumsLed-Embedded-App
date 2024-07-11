@@ -8,7 +8,7 @@
 #include <ElegantOTA.h>
 #include <stdint.h>
 
-#define SSID "JM"
+#define SSID "IM"
 #define PASSWORD "JulIsaCasMaxCyp05."
 #define LOCAL_PORT 9999
 
