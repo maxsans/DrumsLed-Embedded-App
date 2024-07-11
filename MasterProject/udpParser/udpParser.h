@@ -2,13 +2,8 @@
 #define __UDP_PARSER_H__
 
 #include "session.h"
+#include "udpPacket.h"
 
-typedef enum
-{
-    PACKET_TYPE_INIT = 10,
-    PACKET_TYPE_RGB,
-    PACKET_TYPE_ADC
-} packet_type_t;
 
 class udpParser
 {

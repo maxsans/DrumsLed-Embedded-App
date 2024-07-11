@@ -1,5 +1,6 @@
 #include "moduleManager.h"
 #include "udp.h"
+#include "udpPacket.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -86,7 +87,7 @@ void moduleManager::ringModules()
     // The modules detected will respond
     char l_packet[] =
     {
-        1 // Ring packet
+        PACKET_TYPE_INIT // Ring packet
     };
     g_udp.sendbroadcast(l_packet, sizeof(l_packet));
 }
