@@ -5,7 +5,7 @@
 
 typedef enum
 {
-    PACKET_TYPE_INIT = 1,
+    PACKET_TYPE_INIT = 10,
     PACKET_TYPE_RGB,
     PACKET_TYPE_ADC
 } packet_type_t;
