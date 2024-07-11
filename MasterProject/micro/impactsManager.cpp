@@ -27,26 +27,46 @@ void impactsManager::addMicro()
 
 coeff impactsManager::getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro)
 {
+    assert(impactorMicro < m_impacts.size()
+        && impactedMicro < m_impacts.size()
+        && impactorMicro >= 0
+        && impactedMicro >= 0);
     return m_impacts[impactorMicro][impactedMicro]->m_realImpact;
 }
 
 coeff impactsManager::getArtImpact(uint32_t impactorMicro, uint32_t impactedMicro)
 {
+    assert(impactorMicro < m_impacts.size()
+        && impactedMicro < m_impacts.size()
+        && impactorMicro >= 0
+        && impactedMicro >= 0);
     return m_impacts[impactorMicro][impactedMicro]->m_ArtImpact;
 }
 
 impact *impactsManager::getImpact(uint32_t impactorMicro, uint32_t impactedMicro)
 {
+    assert(impactorMicro < m_impacts.size()
+        && impactedMicro < m_impacts.size()
+        && impactorMicro >= 0
+        && impactedMicro >= 0);
     return m_impacts[impactorMicro][impactedMicro];
 }
 
 void impactsManager::setRealImpact(uint32_t impactorMicro, uint32_t impactedMicro, coeff impact)
 {
+    assert(impactorMicro < m_impacts.size()
+        && impactedMicro < m_impacts.size()
+        && impactorMicro >= 0
+        && impactedMicro >= 0);
     m_impacts[impactorMicro][impactedMicro]->m_realImpact = impact;
 }
 
 void impactsManager::setImpact(uint32_t impactorMicro, uint32_t impactedMicro, impact impact)
 {
+    assert(impactorMicro < m_impacts.size()
+        && impactedMicro < m_impacts.size()
+        && impactorMicro >= 0
+        && impactedMicro >= 0);
     *m_impacts[impactorMicro][impactedMicro] = impact;
 }
 
