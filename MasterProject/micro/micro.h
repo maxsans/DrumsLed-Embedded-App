@@ -15,6 +15,7 @@ class micro
         uint8_t m_microValueCorrected;
         module *m_module;
         coeff m_correction;
+        uint8_t m_threshold;
 
     public:
         micro(module *m);
@@ -23,8 +24,11 @@ class micro
         coeff getCorrection();
         void setMicroValue(uint8_t microValue);
         void setMicroValueCorrected(uint8_t microValueCorrected);
+        void setThreshold(uint8_t threshold);
         uint8_t getMicroValue();
         uint8_t getMicroValueCorrected();
+        uint8_t getThreshold();
+        bool isHit();
 };
 
 #endif

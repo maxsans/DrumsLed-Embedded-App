@@ -15,11 +15,13 @@ set(SRCS_FILES
     maths/coeff/coeff.cpp
     maths/matrix/matrix.cpp
 
-    micro/impact.cpp
-    micro/impactsManager.cpp
-    micro/learning.cpp
     micro/micro.cpp
     micro/microManager.cpp
+    micro/learning/impact.cpp
+    micro/learning/impactsManager.cpp
+    micro/learning/learning.cpp
+    micro/learning/record.cpp
+    micro/learning/recordSlot.cpp
 
     modules/module.cpp
     modules/moduleManager.cpp
@@ -36,6 +38,7 @@ include_directories(
     maths/coeff
     maths/matrix
     micro
+    micro/learning
     modules
     session
     udpParser

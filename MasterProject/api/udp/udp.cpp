@@ -116,6 +116,11 @@ void udp::recv()
         {
             l_ignore = true;
         }
+        // Also ignore the ip that not begin like the ip of the machine
+        if (strncmp(m_localIp, l_packetIp, 6) != 0)
+        {
+            l_ignore = true;
+        }
 
         if (l_ignore)
         {

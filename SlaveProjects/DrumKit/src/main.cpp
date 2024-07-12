@@ -127,40 +127,46 @@ void loop()
         int packetSize = udp.parsePacket();
         if (packetSize)
         {
-            // Serial.print(" Received packet from : ");
-            // Serial.println(udp.remoteIP());
-            // Serial.print(" Size : ");
-            // Serial.println(packetSize);
-            int len = udp.read(packetBuffer, 255);
-            if (len > 0)
+            // Ignore packet if the ip not begin like the ip of the machine
+            if(udp.remoteIP()[0] == WiFi.localIP()[0]
+            || udp.remoteIP()[1] == WiFi.localIP()[1]
+            || udp.remoteIP()[2] == WiFi.localIP()[2])
             {
-                switch(packetBuffer[0])
+                // Serial.print(" Received packet from : ");
+                // Serial.println(udp.remoteIP());
+                // Serial.print(" Size : ");
+                // Serial.println(packetSize);
+                int len = udp.read(packetBuffer, 255);
+                if (len > 0)
                 {
-                    case PACKET_TYPE_INIT:
-                        Serial.print("Init packet received, master IP:");
-                        Serial.println(udp.remoteIP());
-                        masterFound = true;
-                        masterIP = udp.remoteIP();
-                        break;
+                    switch(packetBuffer[0])
+                    {
+                        case PACKET_TYPE_INIT:
+                            Serial.print("Init packet received, master IP:");
+                            Serial.println(udp.remoteIP());
+                            masterFound = true;
+                            masterIP = udp.remoteIP();
+                            break;
 
-                    case PACKET_TYPE_RGB:
-                        // Serial.println("RGB packet received");
-                        if (len == 4)
-                        {
-                            strip.fill(strip.Color(packetBuffer[1], packetBuffer[2], packetBuffer[3]));
-                            strip.show();
-                        }
-                        break;
+                        case PACKET_TYPE_RGB:
+                            // Serial.println("RGB packet received");
+                            if (len == 4)
+                            {
+                                strip.fill(strip.Color(packetBuffer[1], packetBuffer[2], packetBuffer[3]));
+                                strip.show();
+                            }
+                            break;
 
-                    case PACKET_TYPE_ADC:
-                    default:
-                        Serial.println("Unknown packet received");
-                        break;
+                        case PACKET_TYPE_ADC:
+                        default:
+                            Serial.println("Unknown packet received");
+                            break;
+                    }
+                    // Serial.println(String("Led strip: ")
+                    //     + String((int)packetBuffer[0]) + String(" ")
+                    //     + String((int)packetBuffer[1]) + String(" ")
+                    //     + String((int)packetBuffer[2]));
                 }
-                // Serial.println(String("Led strip: ")
-                //     + String((int)packetBuffer[0]) + String(" ")
-                //     + String((int)packetBuffer[1]) + String(" ")
-                //     + String((int)packetBuffer[2]));
             }
         }
     }

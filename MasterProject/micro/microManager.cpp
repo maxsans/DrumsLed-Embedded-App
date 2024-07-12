@@ -50,7 +50,7 @@ void microManager::setMicro(module *m, uint8_t microValue)
     }
     // Set the corrected value of the micro
     // First, remove the impact of all other micros one this one
-    uint8_t l_microValueCorrected = microValue;
+    int32_t l_microValueCorrected = microValue;
     for (uint32_t l_ImpactorMicroIndex = 0; l_ImpactorMicroIndex < m_micros.size(); l_ImpactorMicroIndex++)
     {
         if (m_micros[l_ImpactorMicroIndex]->getModule() != m)
@@ -59,6 +59,10 @@ void microManager::setMicro(module *m, uint8_t microValue)
             uint8_t l_impactorMicroValue = m_micros[l_ImpactorMicroIndex]->getMicroValue();
             l_microValueCorrected -= l_impactorMicroValue * l_impact.m_value / QUANTUM_COEFF;
         }
+    }
+    if (l_microValueCorrected < 0)
+    {
+        l_microValueCorrected = 0;
     }
     // Then, apply the correction
     l_microValueCorrected = l_microValueCorrected * m_micro->getCorrection().m_value / QUANTUM_COEFF;

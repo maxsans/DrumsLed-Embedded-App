@@ -40,6 +40,12 @@ void micro::setMicroValueCorrected(uint8_t microValueCorrected)
     m_microValueCorrected = microValueCorrected;
 }
 
+void micro::setThreshold(uint8_t threshold)
+{
+    // Set the threshold of the micro
+    m_threshold = threshold;
+}
+
 uint8_t micro::getMicroValue()
 {
     // Get the value of the micro
@@ -50,4 +56,16 @@ uint8_t micro::getMicroValueCorrected()
 {
     // Get the corrected value of the micro
     return m_microValueCorrected;
+}
+
+uint8_t micro::getThreshold()
+{
+    // Get the threshold of the micro
+    return m_threshold;
+}
+
+bool micro::isHit()
+{
+    // Check if the micro is hit
+    return (m_microValueCorrected > (m_threshold*m_correction.m_value/QUANTUM_COEFF));
 }

@@ -4,6 +4,7 @@
 #include "microManager.h"
 #include "ledManager.h"
 #include "moduleManager.h"
+#include "recordSlot.h"
 
 #include <stdint.h>
 #include <vector>
@@ -17,27 +18,30 @@ class learning
         bool m_inLearning;
         int32_t m_MicroInRecord;
         /**
-         * @brief Vector of records for each micro
-         * First index is the micro index
-         * Second index is the record index
+         * @brief Vector of record slot for each micro
          *
          */
-        std::vector<std::vector<uint8_t>> m_microRecords;
+        std::vector<recordSlot *> m_microRecordSlots;
         /**
          * @brief Record all the micros
          *
          */
-        void record();
+        void recordAllMic();
         /**
-         * @brief Calculate the correction for last record
+         * @brief Calculate the correction all the records
          *
          */
         void calculateCorrection();
         /**
-         * @brief Calculate the real impact of each micro for last record
+         * @brief Calculate the real impact of each micro for all the records
          *
          */
         void calculateRealImpacts();
+        /**
+         * @brief Calculate the threshold of each micro
+         *
+         */
+        void calculateThreshold();
 
     public:
         learning();

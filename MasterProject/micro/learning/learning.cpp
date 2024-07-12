@@ -11,7 +11,9 @@
 
 #define RECORD_LIMIT 10
 
-#define CORRECTION_NORMALIZATION 100
+#define CORRECTION_NORMALIZATION 180
+
+#define THRESHOLD_MARGIN 10
 
 learning::learning()
 {
@@ -44,27 +46,19 @@ void learning::startLearning()
 {
     // Disable the addition of new modules
     m_moduleManager->enableNewModules(false);
+    // TODO : Disable all process that can interfere with the learning process
+    // Ex : Disable all process that can control the leds
     if (m_microManager->getMicroCount() > 0)
     {
         printf("Start learning\n");
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
-        uint32_t l_lastVectorSize = m_microRecords.size();
-        uint32_t l_newVectorSize = m_microManager->getMicroCount();
-        if (l_lastVectorSize < l_newVectorSize)
+        uint32_t l_nbMicros = m_microManager->getMicroCount();
+        for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
         {
-            for (uint8_t i = l_lastVectorSize; i < l_newVectorSize; i++)
-            {
-                m_microRecords.push_back(std::vector<uint8_t>());
-            }
+            m_microRecordSlots.push_back(new recordSlot(l_nbMicros));
         }
-        else if (l_lastVectorSize > l_newVectorSize)
-        {
-            for (uint8_t i = l_newVectorSize; i < l_lastVectorSize; i++)
-            {
-                m_microRecords.pop_back();
-            }
-        }
+        // Start the learning on the first micro
         startLearning(0);
     }
     else
@@ -76,19 +70,10 @@ void learning::startLearning()
 void learning::startLearning(int32_t microIndex)
 {
     // Start the learning process on a specific micro
-    assert(microIndex >= 0 && microIndex < m_microRecords.size());
+    assert(microIndex >= 0 && microIndex < m_microRecordSlots.size());
     m_MicroInRecord = microIndex;
 
-    // If necessary, delete the previous records and free the memory
-    for (uint8_t l_microIndex = 0; l_microIndex < m_microRecords.size(); l_microIndex++)
-    {
-        m_microRecords[l_microIndex].clear();
-    }
-
-    printf("Start learning on micro %d\n", microIndex);
-
-    // First, disable all of process that control the leds
-    // TODO: Implement this function
+    printf("Start learning on micro %d\n", microIndex+1);
 
     // Get the main micro of this learning
     micro *l_mainMicro = m_microManager->getMicro(microIndex);
@@ -117,13 +102,13 @@ void learning::process()
         static uint64_t l_lastRecordTime = GetTickCount64();
         if (GetTickCount64() - l_lastRecordTime > TIME_BETWEEN_MEASURES)
         {
-            record();
+            recordAllMic();
             l_lastRecordTime = GetTickCount64();
         }
     }
 }
 
-void learning::record()
+void learning::recordAllMic()
 {
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
@@ -145,8 +130,10 @@ void learning::record()
     {
         // At least one micro has recorded something
         // Record all the micros
+        record l_record(m_microManager->getMicroCount());
         for(uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
         {
+
             // Get the micro
             micro *l_micro = m_microManager->getMicro(l_microIndex);
 
@@ -154,19 +141,20 @@ void learning::record()
             uint8_t l_value = l_micro->getMicroValue();
 
             // Add a record to the vector of records for each micro
-            m_microRecords[l_microIndex].push_back(l_value);
+            l_record.setValue(l_microIndex, l_value);
 
             printf("%d  ",l_value);
-
-            // Check if we have reached the maximum number of records
-            if (m_microRecords[l_microIndex].size() >= NB_MESURES_MAX)
-            {
-                // Stop the learning process
-                stopLearning();
-                break;
-            }
         }
         printf("\n");
+        // Add the record to the record slot
+        m_microRecordSlots[m_MicroInRecord]->addRecord(l_record);
+
+        // Check if we have reached the maximum number of records
+        if (m_microRecordSlots[m_MicroInRecord]->getSize() >= NB_MESURES_MAX)
+        {
+            // Stop the learning process
+            stopLearning();
+        }
     }
 }
 
@@ -177,10 +165,6 @@ void learning::stopLearning()
     {
         m_ledManager->getLed(l_ledIndex)->setColor(0, 0, 0);
     }
-
-    // Interpret the records
-    calculateCorrection();
-    calculateRealImpacts();
 
     // If there are still micros to learn
     if (m_MicroInRecord < m_microManager->getMicroCount() - 1)
@@ -195,11 +179,22 @@ void learning::stopLearning()
         m_inLearning = false;
         printf("\nEnd of learning\n");
 
-        // Calculate the artificial impacts
+        // Interpret the records
+        calculateCorrection();
+        calculateRealImpacts();
         m_microManager->getImpactsManager()->calculateArtImpacts();
+        calculateThreshold();
 
         // Print the results
         printResults();
+
+        // Enable all the process that have been disabled during the learning process
+
+        // Free the memory
+        for (uint8_t l_microIndex = 0; l_microIndex < m_microRecordSlots.size(); l_microIndex++)
+        {
+            delete m_microRecordSlots[l_microIndex];
+        }
 
         // Enable back the addition of new modules
         m_moduleManager->enableNewModules(true);
@@ -208,21 +203,23 @@ void learning::stopLearning()
 
 void learning::calculateCorrection()
 {
-    // Shearch the maximum of each micro for normalize the values
-    // So that the maximum of each micro is CORRECTION_NORMALIZATION
+    // Shearch the maximum of each micro on his learning for normalize the values
+    // So that the maximum of this micro must be normalizet at CORRECTION_NORMALIZATION
     // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
-    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
+
+    for (uint32_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
         micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Get the maximum of the micro
         uint8_t l_max = 0;
-        for (uint8_t l_recordIndex = 0; l_recordIndex < m_microRecords[l_microIndex].size(); l_recordIndex++)
+        for (uint8_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_microIndex]->getSize(); l_recordIndex++)
         {
-            if (m_microRecords[l_microIndex][l_recordIndex] > l_max)
+            uint8_t l_newValue = m_microRecordSlots[l_microIndex]->getRecord(l_recordIndex).getValue(l_microIndex);
+            if (l_newValue > l_max)
             {
-                l_max = m_microRecords[l_microIndex][l_recordIndex];
+                l_max = l_newValue;
             }
         }
 
@@ -247,47 +244,72 @@ void learning::calculateCorrection()
 
 void learning::calculateRealImpacts()
 {
-    // Calculate the real impacts of all micros on all micros
-    // Method :
-    // For each micro, calculate the sum of the records
-    // Then, calculate the ratio of the sum of the records of the micro
-    // with the sum of the records of all the other micros
-    // This will give us the real impacts of all micros on all the other micros
-
-    // For each micro, calculate the sum of the records
-    std::vector<uint64_t> l_sums(m_microManager->getMicroCount(), 0);
+    // Calculate the real impact of each micro for all the records
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
-        // Calculate the sum of the records
-        uint64_t l_sum = 0;
-        for (uint8_t l_recordIndex = 0; l_recordIndex < m_microRecords[l_microIndex].size(); l_recordIndex++)
-        {
-            l_sum += m_microRecords[l_microIndex][l_recordIndex];
-        }
-        l_sums[l_microIndex] = l_sum;
+        // Calculate the impacts of the micro on all the records
+        m_microRecordSlots[l_microIndex]->calculateImpacts(m_microManager->getImpactsManager());
     }
+}
 
-    // Fill the matrix of impacts
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
+void learning::calculateThreshold()
+{
+    // Calculate the threshold of each micro
+    // Method :
+    // Apply artificial impacts all records
+    // Then shearch the maximum positive error
+    // The threshold is the maximum positive error
+    // First, reset all the thresholds to 0
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
+        // Get the micro
+        micro *l_micro = m_microManager->getMicro(l_microIndex);
+
+        // Reset the threshold
+        l_micro->setThreshold(0);
+    }
+    uint32_t l_nbMicros = m_microManager->getMicroCount();
+    for(uint32_t l_learningIndex = 0; l_learningIndex < l_nbMicros; l_learningIndex++)
+    {
+        for(uint32_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
         {
-            // Calculate the ratio of the sum of the records of the impacted micro
-            // with the sum of the records of impactor micro
-            coeff l_impact;
-            if (l_sums[l_impactorMicro] != 0)
+            if (l_impactedMicro != l_learningIndex)
             {
-                // Calculate the real impact
-                l_impact.setFloat((float)l_sums[l_impactedMicro] / (float)l_sums[l_impactorMicro]);
+                // Get the micro
+                micro *l_micro = m_microManager->getMicro(l_impactedMicro);
+
+                // Apply the artificial impact on each record
+                for (uint32_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_learningIndex]->getSize(); l_recordIndex++)
+                {
+                    // Get the record
+                    record l_record = m_microRecordSlots[l_learningIndex]->getRecord(l_recordIndex);
+
+                    // Get the value of the micro
+                    int32_t l_value = l_record.getValue(l_impactedMicro);
+
+                    // Apply the artificial impact
+                    for (uint32_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
+                    {
+                        if (l_impactorMicro != l_impactedMicro)
+                        {
+                            // Get the artificial impact
+                            coeff l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
+
+                            // Get the value of the impactor micro
+                            uint8_t l_impactorValue = l_record.getValue(l_impactorMicro);
+
+                            // Apply the artificial impact
+                            uint32_t l_toSubstract = l_artImpact.m_value * l_impactorValue / QUANTUM_COEFF;
+                            l_value -= l_toSubstract;
+                        }
+                    }
+                    // Set the threshold if the value is greater
+                    if (l_value > l_micro->getThreshold())
+                    {
+                        l_micro->setThreshold(l_value + THRESHOLD_MARGIN);
+                    }
+                }
             }
-            else
-            {
-                // The sum of the impactor micro is 0
-                // It seems to be an error but let's admit that the impact is 0
-                l_impact.m_value = 0;
-            }
-            // Set the real impact
-            m_microManager->getImpactsManager()->setRealImpact(l_impactorMicro, l_impactedMicro, l_impact);
         }
     }
 }
@@ -324,6 +346,13 @@ void learning::printResults()
             printf("%.2f    ", l_artImpact.toFloat());
         }
         printf("\n");
+    }
+    printf("\nThresholds :\n");
+    for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
+    {
+        // Get the threshold
+        uint8_t l_threshold = m_microManager->getMicro(l_microIndex)->getThreshold();
+        printf("%d    ", l_threshold);
     }
     printf("\n");
 }
