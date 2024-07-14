@@ -21,6 +21,8 @@
 #define TIME_BETWEEN_READ_UDP 10 // in ms
 #define TIME_BETWEEN_ADC_MEASURES 2 // in ms
 
+#define MASTER_TIMEOUT 1000 // in ms
+
 char packetBuffer[255];
 bool masterFound = false;
 IPAddress masterIP = IPAddress(111, 111, 111, 111);
@@ -29,6 +31,7 @@ Adafruit_NeoPixel strip(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
 AsyncWebServer server(80);
 
 unsigned long ota_progress_millis = 0;
+unsigned long lastMasterPing = 0;
 
 #define NB_MEASURE_MAX 10
 uint8_t g_mesureBuff[NB_MEASURE_MAX];
@@ -132,6 +135,7 @@ void loop()
             || udp.remoteIP()[1] == WiFi.localIP()[1]
             || udp.remoteIP()[2] == WiFi.localIP()[2])
             {
+                lastMasterPing = millis();
                 // Serial.print(" Received packet from : ");
                 // Serial.println(udp.remoteIP());
                 // Serial.print(" Size : ");
@@ -209,5 +213,13 @@ void loop()
         udp.beginPacket(masterIP, LOCAL_PORT);
         udp.write((char)(PACKET_TYPE_INIT));
         udp.endPacket();
+    }
+
+    // Check if the master is still alive
+    if ( (millis() - lastMasterPing > MASTER_TIMEOUT) && (masterFound))
+    {
+        Serial.println("Master timeout, turn off the strip");
+        strip.fill(strip.Color(0, 0, 0));
+        strip.show();
     }
 }
