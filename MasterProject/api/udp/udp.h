@@ -15,7 +15,7 @@ class udp
     int slen , recv_len;
     udpPacket m_udpPacket;
     char m_localIp[16];
-    void recv();
+    bool recv();
 
     public:
     udp();
@@ -23,7 +23,7 @@ class udp
     void close();
     void send(char *ip_addr, char *msg, uint32_t msgSize);
     void sendbroadcast(char *msg, uint32_t msgSize);
-    udpPacket *getPacket();
+    udpPacket *getPacket(bool *receivedSomething);
 };
 
 extern udp g_udp;

@@ -38,8 +38,9 @@ void udpParser::setCurrentSession(session *currentSession)
 void udpParser::parseUdp()
 {
     // Get the udp packet and parse it
-    udpPacket *l_udpPacket = g_udp.getPacket();
-    if (l_udpPacket != NULL)
+    bool l_receivedSomething = false;
+    udpPacket *l_udpPacket = g_udp.getPacket(&l_receivedSomething);
+    if ( (l_udpPacket != NULL) && (l_receivedSomething) )
     {
         char *l_packet = l_udpPacket->getPacket();
         char *l_ip = l_udpPacket->getIp();
@@ -104,6 +105,12 @@ void udpParser::parseUdp(char* packet, char* ip)
         default:
             // Unknown packet type, ignore
             break;
+    }
+    // A packet has been received for a module, sync it
+    module *l_module = m_currentSession->getModuleManager()->getModule(ip);
+    if (l_module != NULL)
+    {
+        l_module->sync();
     }
 }
 

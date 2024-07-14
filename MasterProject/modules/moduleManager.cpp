@@ -38,6 +38,11 @@ void moduleManager::process()
         ringModules();
         l_lastRingTime = GetTickCount64();
     }
+    // Process all the modules
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        m_modules[i]->process();
+    }
 }
 
 bool moduleManager::addModule(char* ip)

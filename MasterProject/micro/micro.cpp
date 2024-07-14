@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define MICRO_TIMEOUT 500 // ms
+#define MICRO_TIMEOUT 100 // ms
 
 micro::micro(module *m)
 {
@@ -29,7 +29,7 @@ void micro::sync()
     // Sync the micro
     if (!m_connected)
     {
-        printf("Micro reconnected, ip: %s\n", m_module->getIp());
+        // printf("Micro reconnected, ip: %s\n", m_module->getIp());
         m_connected = true;
     }
     m_lastSyncTime = GetTickCount64();
@@ -38,18 +38,23 @@ void micro::sync()
 void micro::checkTime()
 {
     // Check if the micro is still connected
-    bool l_connected = m_connected;
     if (GetTickCount64() - m_lastSyncTime > MICRO_TIMEOUT)
     {
         if (m_connected)
         {
-            printf("Micro disconnected, ip: %s\n", m_module->getIp());
+            // printf("Micro disconnected, ip: %s\n", m_module->getIp());
             m_connected = false;
             // Reset values to 0
             m_microValue = 0;
             m_microValueCorrected = 0;
         }
     }
+}
+
+bool micro::isConnected()
+{
+    // Check if the micro is connected
+    return m_connected;
 }
 
 module *micro::getModule()

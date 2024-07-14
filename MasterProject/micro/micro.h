@@ -24,6 +24,7 @@ class micro
         micro(module *m);
         void process();
         void sync();
+        bool isConnected();
         module *getModule();
         void setCorrection(coeff correction);
         coeff getCorrection();

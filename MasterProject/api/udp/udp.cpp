@@ -90,8 +90,10 @@ void udp::send(char *ip_addr, char *msg, uint32_t msgSize)
     }
 }
 
-void udp::recv()
+bool udp::recv()
 {
+    bool l_received = false;
+
     //clear the buffer by filling null, it might have previously received data
     memset(m_udpPacket.getPacket(),'\0', BUFLEN);
 
@@ -131,6 +133,7 @@ void udp::recv()
         {
             // printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
             // printf("Data: %s\n" , m_udpPacket.getPacket());
+            l_received = true;
             m_udpPacket.setIp(l_packetIp);
         }
         if (l_packetIp != NULL)
@@ -138,6 +141,8 @@ void udp::recv()
             free(l_packetIp);
         }
     }
+
+    return l_received;
 }
 
 void udp::sendbroadcast(char *msg, uint32_t msgSize)
@@ -163,9 +168,9 @@ void udp::sendbroadcast(char *msg, uint32_t msgSize)
     }
 }
 
-udpPacket *udp::getPacket()
+udpPacket *udp::getPacket(bool *receivedSomething)
 {
-    recv();
+    *receivedSomething = recv();
     return &m_udpPacket;
 }
 
