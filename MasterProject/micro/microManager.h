@@ -16,6 +16,7 @@ class microManager
     public:
         microManager();
         ~microManager();
+        void process();
         void addMicro(module *m);
         void setMicro(module *m, uint8_t microValue);
         micro *getMicro(int32_t index);

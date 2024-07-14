@@ -16,6 +16,15 @@ microManager::~microManager()
     }
 }
 
+void microManager::process()
+{
+    // Process all micros
+    for (uint8_t i = 0; i < m_micros.size(); i++)
+    {
+        m_micros[i]->process();
+    }
+}
+
 void microManager::addMicro(module *m)
 {
     // Check if the micro already exists

@@ -11,14 +11,19 @@ class micro
     private:
 
     protected:
+        bool m_connected;
         uint8_t m_microValue;
         uint8_t m_microValueCorrected;
         module *m_module;
         coeff m_correction;
         uint8_t m_threshold;
+        uint64_t m_lastSyncTime;
+        void checkTime();
 
     public:
         micro(module *m);
+        void process();
+        void sync();
         module *getModule();
         void setCorrection(coeff correction);
         coeff getCorrection();
