@@ -23,7 +23,7 @@
 
 char packetBuffer[255];
 bool masterFound = false;
-IPAddress masterIP;
+IPAddress masterIP = IPAddress(111, 111, 111, 111);
 WiFiUDP udp;
 Adafruit_NeoPixel strip(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
 AsyncWebServer server(80);
