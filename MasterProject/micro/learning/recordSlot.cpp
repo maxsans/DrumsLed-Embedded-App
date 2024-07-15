@@ -1,5 +1,4 @@
 #include "recordSlot.h"
-#include "coeff.h"
 #include "impactsManager.h"
 
 #include <assert.h>
@@ -45,53 +44,39 @@ uint32_t recordSlot::getSize()
     return m_records.size();
 }
 
-void recordSlot::calculateImpacts(impactsManager *impactsManager)
+void recordSlot::calculateImpacts(impactsManager *impactsManager, uint32_t mainMicroIndex)
 {
-    // Calculate the real impacts of all micros on all micros
+    // Calculate the real impacts of the main micro of this record on all others micros
     // Method :
-    // For each micro, calculate the sum of the records
-    // Then, calculate the ratio of the sum of the records of the micro
-    // with the sum of the records of all the other micros
-    // This will give us the real impacts of all micros on all the other micros
+    // Calculate the average ratio of this micro on all others micros
 
     assert(m_records.size() > 0);
-    uint32_t l_nbMicros = m_records[0]->getSize();
+    assert( (mainMicroIndex < m_records.size()) && (mainMicroIndex >= 0) );
 
-    // For each micro, calculate the sum of the records
-    std::vector<uint64_t> l_sums(l_nbMicros, 0);
-    for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
+    uint32_t l_nbMicros = m_records[mainMicroIndex]->getSize();
+
+    for (uint32_t l_ImpactedMicro = 0; l_ImpactedMicro < l_nbMicros; l_ImpactedMicro++)
     {
-        // Calculate the sum of the records
-        uint64_t l_sum = 0;
-        for (uint8_t l_recordIndex = 0; l_recordIndex < m_records.size(); l_recordIndex++)
+        if (l_ImpactedMicro == mainMicroIndex)
         {
-            l_sum += m_records[l_recordIndex]->getValue(l_microIndex);
+            impactsManager->setRealImpact(mainMicroIndex, l_ImpactedMicro, 1.0f);
         }
-        l_sums[l_microIndex] = l_sum;
-    }
-
-    // Fill the matrix of impacts
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
-    {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
+        else
         {
-            // Calculate the ratio of the sum of the records of the impacted micro
-            // with the sum of the records of impactor micro
-            coeff l_impact;
-            if (l_sums[l_impactorMicro] != 0)
+            float l_sum = 0;
+            uint32_t l_nbRecords = m_records.size();
+            for (uint32_t l_recordIndex = 0; l_recordIndex < l_nbRecords; l_recordIndex++)
             {
-                // Calculate the real impact
-                l_impact.setFloat((float)l_sums[l_impactedMicro] / (float)l_sums[l_impactorMicro]);
+                record *l_record = m_records[l_recordIndex];
+                uint8_t l_ImpactorMicroValue = l_record->getValue(mainMicroIndex);
+                uint8_t l_ImpactedMicroValue = l_record->getValue(l_ImpactedMicro);
+                if (l_ImpactorMicroValue != 0)
+                {
+                    l_sum += (float)l_ImpactedMicroValue / (float)l_ImpactorMicroValue;
+                }
             }
-            else
-            {
-                // The sum of the impactor micro is 0
-                // It seems to be an error but let's admit that the impact is 0
-                printf("Error : the sum of the impactor micro is 0\n");
-                l_impact.m_value = 0;
-            }
-            // Set the real impact
-            impactsManager->setRealImpact(l_impactorMicro, l_impactedMicro, l_impact);
+            float l_impact = l_sum / l_nbRecords;
+            impactsManager->setRealImpact(mainMicroIndex, l_ImpactedMicro, l_impact);
         }
     }
 }

@@ -12,7 +12,7 @@ micro::micro(module *m)
     m_module = m;
     m_microValue = 0;
     m_microValueCorrected = 0;
-    m_correction.m_value = 1;
+    m_correction = 1;
     m_threshold = 0;
     m_lastSyncTime = GetTickCount64();
 }
@@ -63,13 +63,13 @@ module *micro::getModule()
     return m_module;
 }
 
-void micro::setCorrection(coeff correction)
+void micro::setCorrection(float correction)
 {
     // Set the correction of the micro
     m_correction = correction;
 }
 
-coeff micro::getCorrection()
+float micro::getCorrection()
 {
     // Get the correction of the micro
     return m_correction;
@@ -116,5 +116,5 @@ uint8_t micro::getThreshold()
 bool micro::isHit()
 {
     // Check if the micro is hit
-    return (m_microValueCorrected > (m_threshold*m_correction.m_value/QUANTUM_COEFF));
+    return (m_microValueCorrected > (m_threshold*m_correction));
 }

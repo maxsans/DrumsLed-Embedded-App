@@ -47,8 +47,9 @@ class recordSlot
          * @brief Calculate the impacts of the micros on this record slot
          *
          * @param impactsManager The impacts manager to fill
+         * @param mainMicroIndex The index of the main micro
          */
-        void calculateImpacts(impactsManager *impactsManager);
+        void calculateImpacts(impactsManager *impactsManager, uint32_t mainMicroIndex);
 };
 
 #endif

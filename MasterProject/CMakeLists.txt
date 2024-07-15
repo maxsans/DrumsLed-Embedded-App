@@ -12,7 +12,6 @@ set(SRCS_FILES
     led/rgbLed.cpp
     led/ledManager.cpp
 
-    maths/coeff/coeff.cpp
     maths/matrix/matrix.cpp
 
     micro/micro.cpp
@@ -35,7 +34,6 @@ include_directories(
     api/terminal
     api/udp
     led
-    maths/coeff
     maths/matrix
     micro
     micro/learning

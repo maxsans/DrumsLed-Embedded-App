@@ -224,17 +224,17 @@ void learning::calculateCorrection()
         }
 
         // Calculate the correction
-        coeff l_correction;
+        float l_correction;
         if (l_max != 0)
         {
             // Calculate the correction
-            l_correction.m_value = QUANTUM_COEFF * CORRECTION_NORMALIZATION / l_max;
+            l_correction = CORRECTION_NORMALIZATION / l_max;
         }
         else
         {
             // The maximum is 0
             // It seems to be an error but let's admit that the correction is 1
-            l_correction.m_value = QUANTUM_COEFF;
+            l_correction = 1;
             printf("Error : The maximum of the micro %d is 0, seems to be impossible. Correction applied is 1.00\n", l_microIndex);
         }
         // Set the correction
@@ -248,7 +248,7 @@ void learning::calculateRealImpacts()
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Calculate the impacts of the micro on all the records
-        m_microRecordSlots[l_microIndex]->calculateImpacts(m_microManager->getImpactsManager());
+        m_microRecordSlots[l_microIndex]->calculateImpacts(m_microManager->getImpactsManager(), l_microIndex);
     }
 }
 
@@ -269,12 +269,14 @@ void learning::calculateThreshold()
         l_micro->setThreshold(0);
     }
     uint32_t l_nbMicros = m_microManager->getMicroCount();
+    // printf("Nb micros : %d\n", l_nbMicros);
     for(uint32_t l_learningIndex = 0; l_learningIndex < l_nbMicros; l_learningIndex++)
     {
         for(uint32_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
         {
             if (l_impactedMicro != l_learningIndex)
             {
+                // printf("Impactor : %d, Impacted : %d\n", l_learningIndex, l_impactedMicro);
                 // Get the micro
                 micro *l_micro = m_microManager->getMicro(l_impactedMicro);
 
@@ -286,6 +288,7 @@ void learning::calculateThreshold()
 
                     // Get the value of the micro
                     int32_t l_value = l_record.getValue(l_impactedMicro);
+                    // printf("Initial Value : %d      ", l_value);
 
                     // Apply the artificial impact
                     for (uint32_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
@@ -293,19 +296,22 @@ void learning::calculateThreshold()
                         if (l_impactorMicro != l_impactedMicro)
                         {
                             // Get the artificial impact
-                            coeff l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
+                            float l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
 
                             // Get the value of the impactor micro
                             uint8_t l_impactorValue = l_record.getValue(l_impactorMicro);
 
                             // Apply the artificial impact
-                            uint32_t l_toSubstract = l_artImpact.m_value * l_impactorValue / QUANTUM_COEFF;
+                            int32_t l_toSubstract = l_artImpact * l_impactorValue;
                             l_value -= l_toSubstract;
                         }
                     }
+
+                    // printf("Final Value : %d\n", l_value);
                     // Set the threshold if the value is greater
                     if (l_value > l_micro->getThreshold())
                     {
+                        // printf("Threshold of micro %d is %d\n", l_impactedMicro, l_value + THRESHOLD_MARGIN);
                         l_micro->setThreshold(l_value + THRESHOLD_MARGIN);
                     }
                 }
@@ -321,8 +327,8 @@ void learning::printResults()
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the correction
-        coeff l_correction = m_microManager->getMicro(l_microIndex)->getCorrection();
-        printf("%.2f    ", l_correction.toFloat());
+        float l_correction = m_microManager->getMicro(l_microIndex)->getCorrection();
+        printf("%.2f    ", l_correction);
     }
     // Display the impacts calculated as 2 matrix (real and artificial)
     printf("\n\nReal impacts :\n");
@@ -331,8 +337,8 @@ void learning::printResults()
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the real impact
-            coeff l_realImpact = m_microManager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
-            printf("%.2f    ", l_realImpact.toFloat());
+            float l_realImpact = m_microManager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
+            printf("%.2f    ", l_realImpact);
         }
         printf("\n");
     }
@@ -342,8 +348,8 @@ void learning::printResults()
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the artificial impact
-            coeff l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
-            printf("%.2f    ", l_artImpact.toFloat());
+            float l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
+            printf("%.2f    ", l_artImpact);
         }
         printf("\n");
     }

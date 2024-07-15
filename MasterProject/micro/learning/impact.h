@@ -1,7 +1,6 @@
 #ifndef __IMPACT_H__
 #define __IMPACT_H__
 
-#include "coeff.h"
 
 #include <stdint.h>
 
@@ -11,8 +10,8 @@ class impact
 
     public:
         impact();
-        coeff m_realImpact;
-        coeff m_ArtImpact;
+        float m_realImpact;
+        float m_ArtImpact;
 };
 
 #endif

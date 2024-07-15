@@ -49,7 +49,7 @@ class impactsManager
          * @param impactedMicro The index of micro that is impacted
          * @return The real impact of the micro
          */
-        coeff getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro);
+        float getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro);
 
         /**
          * @brief Returns the artifical impact of a micro on an other micro
@@ -58,17 +58,7 @@ class impactsManager
          * @param impactedMicro The index of micro that is impacted
          * @return The artificial impact of the micro
          */
-        coeff getArtImpact(uint32_t impactorMicro, uint32_t impactedMicro);
-
-        /**
-         * @brief Return the impacts of a micro on an other micro
-         *
-         * @param impactorMicro The index of micro that impacts
-         * @param impactedMicro The index of micro that is impacted
-         *
-         * @return The impact of the micro
-         */
-        impact *getImpact(uint32_t impactorMicro, uint32_t impactedMicro);
+        float getArtImpact(uint32_t impactorMicro, uint32_t impactedMicro);
 
         /**
          * @brief Set the real impact of a micro on an other micro
@@ -77,7 +67,7 @@ class impactsManager
          * @param impactedMicro The index of micro that is impacted
          * @param impact The real impact of the micro
          */
-        void setRealImpact(uint32_t impactorMicro, uint32_t impactedMicro, coeff impact);
+        void setRealImpact(uint32_t impactorMicro, uint32_t impactedMicro, float impact);
 
         /**
          * @brief Set the impacts of a micro on an other micro

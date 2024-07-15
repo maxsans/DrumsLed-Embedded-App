@@ -6,17 +6,17 @@
 matrix::matrix(uint32_t size)
 {
     m_size = size;
-    m_data = new coeff*[size];
+    m_data = new float*[size];
     for (uint32_t i = 0; i < size; i++)
     {
-        m_data[i] = new coeff[size];
+        m_data[i] = new float[size];
     }
     // Fill the matrix with 0
     for (uint32_t i = 0; i < size; i++)
     {
         for (uint32_t j = 0; j < size; j++)
         {
-            m_data[i][j].m_value = 0;
+            m_data[i][j] = 0;
         }
     }
 }
@@ -37,19 +37,19 @@ void matrix::print()
     {
         for (uint32_t j = 0; j < m_size; j++)
         {
-            printf("%.2f   ", m_data[i][j].toFloat());
+            printf("%.2f   ", m_data[i][j]);
         }
         printf("\n");
     }
 }
 
-void matrix::set(uint32_t x, uint32_t y, coeff value)
+void matrix::set(uint32_t x, uint32_t y, float value)
 {
     assert(x < m_size && y < m_size && x >= 0 && y >= 0);
     m_data[x][y] = value;
 }
 
-coeff matrix::get(uint32_t x, uint32_t y)
+float matrix::get(uint32_t x, uint32_t y)
 {
     assert(x < m_size && y < m_size && x >= 0 && y >= 0);
     return m_data[x][y];
@@ -64,10 +64,10 @@ void matrix::invert()
     // Finally, the matrix will be inverted
 
     // Create a matrix with the size of m_size x 2m_size
-    coeff **l_juxMatrix = new coeff*[m_size];
+    float **l_juxMatrix = new float*[m_size];
     for (uint32_t i = 0; i < m_size; i++)
     {
-        l_juxMatrix[i] = new coeff[2 * m_size];
+        l_juxMatrix[i] = new float[2 * m_size];
     }
     // Fill the left side of the matrix with the original matrix
     for (uint32_t i = 0; i < m_size; i++)
@@ -84,11 +84,11 @@ void matrix::invert()
         {
             if (i == j - m_size)
             {
-                l_juxMatrix[i][j].m_value = QUANTUM_COEFF;
+                l_juxMatrix[i][j] = 1;
             }
             else
             {
-                l_juxMatrix[i][j].m_value = 0;
+                l_juxMatrix[i][j] = 0;
             }
         }
     }
@@ -101,22 +101,22 @@ void matrix::invert()
             if (l_line != l_column)
             {
                 // Constant to eliminate
-                coeff l_elimConst = l_juxMatrix[l_line][l_column];
+                float l_elimConst = l_juxMatrix[l_line][l_column];
                 // Check if the constant is not null
                 // If it is null, it is useless to eliminate
-                if (l_elimConst.m_value != 0)
+                if (l_elimConst != 0)
                 {
                     // Eliminate the constant
                     uint32_t l_elimLine = l_column;
                     for (int l_column2=0;l_column2<2*m_size;l_column2++)
                     {
-                        l_juxMatrix[l_line][l_column2].m_value -= l_juxMatrix[l_elimLine][l_column2].m_value * l_elimConst.m_value / QUANTUM_COEFF;
+                        l_juxMatrix[l_line][l_column2] -= l_juxMatrix[l_elimLine][l_column2] * l_elimConst;
                     }
                     // Then we make again the 1 on the diagonal
-                    coeff l_diagConst = l_juxMatrix[l_line][l_line];
+                    float l_diagConst = l_juxMatrix[l_line][l_line];
                     for (int l_column2=0;l_column2<2*m_size;l_column2++)
                     {
-                        l_juxMatrix[l_line][l_column2].m_value = QUANTUM_COEFF * l_juxMatrix[l_line][l_column2].m_value / l_diagConst.m_value;
+                        l_juxMatrix[l_line][l_column2] = l_juxMatrix[l_line][l_column2] / l_diagConst;
                     }
                 }
             }

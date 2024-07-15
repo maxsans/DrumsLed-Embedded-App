@@ -64,9 +64,9 @@ void microManager::setMicro(module *m, uint8_t microValue)
     {
         if (m_micros[l_ImpactorMicroIndex]->getModule() != m)
         {
-            coeff l_impact = m_impactsManager.getImpact(l_ImpactorMicroIndex, l_microIndex)->m_ArtImpact;
+            float l_impact = m_impactsManager.getArtImpact(l_ImpactorMicroIndex, l_microIndex);
             uint8_t l_impactorMicroValue = m_micros[l_ImpactorMicroIndex]->getMicroValue();
-            l_microValueCorrected -= l_impactorMicroValue * l_impact.m_value / QUANTUM_COEFF;
+            l_microValueCorrected -= l_impactorMicroValue * l_impact ;
         }
     }
     if (l_microValueCorrected < 0)
@@ -74,7 +74,7 @@ void microManager::setMicro(module *m, uint8_t microValue)
         l_microValueCorrected = 0;
     }
     // Then, apply the correction
-    l_microValueCorrected = l_microValueCorrected * m_micro->getCorrection().m_value / QUANTUM_COEFF;
+    l_microValueCorrected = l_microValueCorrected * m_micro->getCorrection();
     // Finally, set the corrected value
     m_micro->setMicroValueCorrected(l_microValueCorrected);
 }

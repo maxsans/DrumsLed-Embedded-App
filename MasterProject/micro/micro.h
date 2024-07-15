@@ -2,7 +2,6 @@
 #define __MICRO_H__
 
 #include "module.h"
-#include "coeff.h"
 
 #include <stdint.h>
 
@@ -15,7 +14,7 @@ class micro
         uint8_t m_microValue;
         uint8_t m_microValueCorrected;
         module *m_module;
-        coeff m_correction;
+        float m_correction;
         uint8_t m_threshold;
         uint64_t m_lastSyncTime;
         void checkTime();
@@ -26,8 +25,8 @@ class micro
         void sync();
         bool isConnected();
         module *getModule();
-        void setCorrection(coeff correction);
-        coeff getCorrection();
+        void setCorrection(float correction);
+        float getCorrection();
         void setMicroValue(uint8_t microValue);
         void setMicroValueCorrected(uint8_t microValueCorrected);
         void setThreshold(uint8_t threshold);
