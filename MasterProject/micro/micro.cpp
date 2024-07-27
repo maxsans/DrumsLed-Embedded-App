@@ -4,6 +4,8 @@
 #include <windows.h>
 
 #define MICRO_TIMEOUT 100 // ms
+#define DEFAULT_CORRECTION 1.00
+#define DEFAULT_THRESHOLD 5
 
 micro::micro(module *m)
 {
@@ -12,8 +14,8 @@ micro::micro(module *m)
     m_module = m;
     m_microValue = 0;
     m_microValueCorrected = 0;
-    m_correction = 1;
-    m_threshold = 0;
+    m_correction = DEFAULT_CORRECTION;
+    m_threshold = DEFAULT_THRESHOLD;
     m_lastSyncTime = GetTickCount64();
 }
 

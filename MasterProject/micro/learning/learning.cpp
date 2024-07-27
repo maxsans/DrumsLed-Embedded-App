@@ -13,7 +13,7 @@
 
 #define CORRECTION_NORMALIZATION 180
 
-#define THRESHOLD_MARGIN 10
+#define THRESHOLD_MARGIN 0
 
 learning::learning()
 {
@@ -228,7 +228,7 @@ void learning::calculateCorrection()
         if (l_max != 0)
         {
             // Calculate the correction
-            l_correction = CORRECTION_NORMALIZATION / l_max;
+            l_correction = (float)CORRECTION_NORMALIZATION / l_max;
         }
         else
         {
