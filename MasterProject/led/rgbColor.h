@@ -18,6 +18,9 @@ class rgbColor
         void setColor(uint32_t color);
         void getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue);
         uint32_t getColor();
+
+        // Operators
+        rgbColor operator*(float value);
 };
 
 #endif

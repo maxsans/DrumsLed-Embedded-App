@@ -32,3 +32,12 @@ uint32_t rgbColor::getColor()
 {
     return ((uint32_t)m_redValue << 16) | ((uint32_t)m_greenValue << 8) | m_blueValue;
 }
+
+rgbColor rgbColor::operator*(float value)
+{
+    rgbColor l_color;
+    l_color.m_redValue = (uint8_t)((float)m_redValue * value);
+    l_color.m_greenValue = (uint8_t)((float)m_greenValue * value);
+    l_color.m_blueValue = (uint8_t)((float)m_blueValue * value);
+    return l_color;
+}

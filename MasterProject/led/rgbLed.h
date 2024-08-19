@@ -11,6 +11,7 @@ class rgbLed
     private:
         rgbColor m_color;
         module *m_module;
+        uint8_t m_gamma8[256];
 
     public:
         rgbLed(module *m);
