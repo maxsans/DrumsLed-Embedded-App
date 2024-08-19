@@ -21,7 +21,7 @@
 #define TIME_BETWEEN_READ_UDP 10 // in ms
 #define TIME_BETWEEN_ADC_MEASURES 2 // in ms
 
-#define MASTER_TIMEOUT 1000 // in ms
+#define MASTER_TIMEOUT 10000 // in ms
 
 char packetBuffer[255];
 bool masterFound = false;

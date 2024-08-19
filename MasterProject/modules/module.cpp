@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#define MODULE_TIMEOUT 3000 // ms
+#define MODULE_TIMEOUT 10000 // ms
 
 module::module(char* ip)
 {
