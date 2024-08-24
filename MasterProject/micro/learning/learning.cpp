@@ -15,6 +15,8 @@
 
 #define THRESHOLD_MARGIN 0
 
+#define LEARNING_COLOR rgbColor(255, 255, 255)
+
 learning::learning()
 {
     // Constructor
@@ -83,7 +85,7 @@ void learning::startLearning(int32_t microIndex)
     if (l_led != NULL)
     {
         // The module has leds, highlight it
-        l_led->setColor(255, 255, 255);
+        l_led->setColor(COLOR_PRIORITY_LEARNING, LEARNING_COLOR);
     }
 
     // Start the learning process
@@ -163,7 +165,7 @@ void learning::stopLearning()
     // Turn off all the leds
     for (uint16_t l_ledIndex = 0; l_ledIndex < m_ledManager->getLedCount(); l_ledIndex++)
     {
-        m_ledManager->getLed(l_ledIndex)->setColor(0, 0, 0);
+        m_ledManager->getLed(l_ledIndex)->releaseColor(COLOR_PRIORITY_LEARNING);
     }
 
     // If there are still micros to learn

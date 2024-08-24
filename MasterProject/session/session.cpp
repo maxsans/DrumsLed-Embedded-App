@@ -12,6 +12,7 @@ session::~session()
 void session::process()
 {
     m_moduleManager.process();
+    m_microManager.process();
     m_ledManager.process();
     m_learning.process();
 }

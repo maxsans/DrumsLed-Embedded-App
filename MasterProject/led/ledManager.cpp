@@ -81,7 +81,8 @@ void ledManager::update()
     {
         // Send the color to the module over UDP
         uint8_t redValue, greenValue, blueValue;
-        m_leds[i]->getColor(&redValue, &greenValue, &blueValue);
+        rgbColor color = m_leds[i]->getColor();
+        color.getColor(&redValue, &greenValue, &blueValue);
         char msg[] =
         {
             PACKET_TYPE_RGB,

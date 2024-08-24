@@ -14,6 +14,8 @@ class rgbColor
 
     public:
         rgbColor();
+        rgbColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
+        rgbColor(uint32_t color);
         void setColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
         void setColor(uint32_t color);
         void getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue);

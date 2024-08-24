@@ -8,9 +8,10 @@ set(SRCS_FILES
     api/udp/udp.cpp
     api/udp/udpPacket.cpp
 
+    led/colorOrder.cpp
+    led/ledManager.cpp
     led/rgbColor.cpp
     led/rgbLed.cpp
-    led/ledManager.cpp
 
     maths/matrix/matrix.cpp
 

@@ -1,6 +1,8 @@
 #include "rgbLed.h"
 
 #include <cmath>
+#include <windows.h>
+#include <assert.h>
 
 #define GAMMA 2.314
 
@@ -20,28 +22,39 @@ module *rgbLed::getModule()
     return m_module;
 }
 
-void rgbLed::getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue)
+rgbColor rgbLed::getColor()
 {
-    m_color.getColor(redValue, greenValue, blueValue);
+    // Sherch for the highest priority enabled color
+    for (int i = 0; i < COLOR_PRIORITY_COUNT; i++)
+    {
+        if (m_colorOrders[i].isEnabled())
+        {
+            return m_colorOrders[i].getColor();
+        }
+    }
+    // No color is enabled
+    // Return black
+    return rgbColor(0, 0, 0);
 }
 
-void rgbLed::setColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue)
+void rgbLed::setColor(colorPriority_t priority, rgbColor color)
 {
     // Apply gamma correction
+    uint8_t redValue, greenValue, blueValue;
+    color.getColor(&redValue, &greenValue, &blueValue);
     redValue = m_gamma8[redValue];
     greenValue = m_gamma8[greenValue];
     blueValue = m_gamma8[blueValue];
+    color.setColor(redValue, greenValue, blueValue);
 
     // Set the color
-    m_color.setColor(redValue, greenValue, blueValue);
+    assert(priority < COLOR_PRIORITY_COUNT);
+    m_colorOrders[priority].setColor(color);
 }
 
-void rgbLed::setColor(uint32_t color)
+void rgbLed::releaseColor(colorPriority_t priority)
 {
-    m_color.setColor(color);
-}
-
-uint32_t rgbLed::getColor()
-{
-    return m_color.getColor();
+    // Release the color
+    assert(priority < COLOR_PRIORITY_COUNT);
+    m_colorOrders[priority].releaseColor();
 }
