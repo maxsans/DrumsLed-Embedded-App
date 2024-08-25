@@ -4,6 +4,11 @@ project(MasterProject VERSION 0.1.0 LANGUAGES C CXX)
 set(SRCS_FILES
     main.cpp
 
+    animation/animation.cpp
+    animation/animationManager.cpp
+    animation/fade.cpp
+    animation/simpleColor.cpp
+
     api/terminal/terminal.cpp
     api/udp/udp.cpp
     api/udp/udpPacket.cpp
@@ -32,6 +37,7 @@ set(SRCS_FILES
     )
 
 include_directories(
+    animation
     api/terminal
     api/udp
     led
