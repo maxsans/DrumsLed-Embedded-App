@@ -15,6 +15,7 @@ void session::process()
     m_microManager.process();
     m_ledManager.process();
     m_learning.process();
+    m_animationManager.process();
 }
 
 microManager *session::getMicroManager()
@@ -35,4 +36,9 @@ moduleManager *session::getModuleManager()
 learning *session::getLearning()
 {
     return &m_learning;
+}
+
+animationManager *session::getAnimationManager()
+{
+    return &m_animationManager;
 }

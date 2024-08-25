@@ -5,7 +5,7 @@
 #include "ledManager.h"
 #include "moduleManager.h"
 #include "learning.h"
-
+#include "animationManager.h"
 
 class session
 {
@@ -14,6 +14,7 @@ class session
         ledManager m_ledManager;
         moduleManager m_moduleManager;
         learning m_learning;
+        animationManager m_animationManager;
 
     public:
         session();
@@ -23,6 +24,7 @@ class session
         ledManager *getLedManager();
         moduleManager *getModuleManager();
         learning *getLearning();
+        animationManager *getAnimationManager();
 };
 
 #endif
