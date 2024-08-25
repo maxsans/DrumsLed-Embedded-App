@@ -10,6 +10,9 @@ set(SRCS_FILES
     animation/simpleColor.cpp
 
     api/terminal/terminal.cpp
+    api/time/chronoMs.cpp
+    api/time/periodicCallsMs.cpp
+    api/time/timeMs.cpp
     api/udp/udp.cpp
     api/udp/udpPacket.cpp
 
@@ -39,6 +42,7 @@ set(SRCS_FILES
 include_directories(
     animation
     api/terminal
+    api/time
     api/udp
     led
     maths/matrix
