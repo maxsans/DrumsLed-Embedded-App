@@ -30,9 +30,17 @@ void fade::process()
         uint64_t currentTime = GetTickCount64();
         uint64_t elapsedTime = currentTime - m_hitTime;
 
-        if (elapsedTime < m_duration)
+        if (elapsedTime <= m_duration)
         {
-            float ratio = (float)elapsedTime / m_duration;
+            float ratio;
+            if (elapsedTime == 0)
+            {
+                ratio = 1;
+            }
+            else
+            {
+                ratio = 1 - (float)elapsedTime / m_duration;
+            }
             rgbColor color = m_color * ratio;
             m_rgbLed->setColor(COLOR_PRIORITY_FADE, color);
         }
