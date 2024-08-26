@@ -7,11 +7,12 @@ periodicCallsMs::periodicCallsMs()
     m_instances.push_back(this);
 }
 
-periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)())
+periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *object)
 {
     m_instances.push_back(this);
     m_chrono.arm(period);
     m_callback = callback;
+    m_object = object;
 }
 
 periodicCallsMs::~periodicCallsMs()
@@ -31,7 +32,7 @@ void periodicCallsMs::process()
 {
     if (m_chrono.ring())
     {
-        m_callback();
+        m_callback(m_object);
         m_chrono.restart();
     }
 }
@@ -41,7 +42,8 @@ void periodicCallsMs::setPeriod(timeMs period)
     m_chrono.arm(period);
 }
 
-void periodicCallsMs::setCallback(void (*callback)())
+void periodicCallsMs::setCallback(void (*callback)(void*), void *object)
 {
     m_callback = callback;
+    m_object = object;
 }
