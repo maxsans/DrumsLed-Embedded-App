@@ -38,7 +38,7 @@ void fade::process()
         }
         else
         {
-            m_rgbLed->setColor(COLOR_PRIORITY_FADE, m_color);
+            m_rgbLed->releaseColor(COLOR_PRIORITY_FADE);
             m_hitTime = 0;
         }
     }
