@@ -11,6 +11,8 @@
 ledManager::ledManager()
 {
     // Constructor
+    m_updatePeriodicCalls.setCallback(updateCallBack, this);
+    m_updatePeriodicCalls.setPeriod(UPDATE_INTERVAL);
 }
 
 ledManager::~ledManager()
@@ -19,17 +21,6 @@ ledManager::~ledManager()
     for (uint8_t i = 0; i < m_leds.size(); i++)
     {
         delete m_leds[i];
-    }
-}
-
-void ledManager::process()
-{
-    // Update the leds every UPDATE_INTERVAL ms
-    static uint64_t l_lastRingTime = GetTickCount64();
-    if ((GetTickCount64() - l_lastRingTime) > UPDATE_INTERVAL)
-    {
-        update();
-        l_lastRingTime = GetTickCount64();
     }
 }
 
@@ -72,6 +63,12 @@ uint32_t ledManager::getLedCount()
 {
     // Get the number of leds
     return m_leds.size();
+}
+
+void ledManager::updateCallBack(void *object)
+{
+    // Callback to update the leds
+    ((ledManager*)object)->update();
 }
 
 void ledManager::update()

@@ -2,6 +2,7 @@
 #define __MODULE_MANAGER_H__
 
 #include "module.h"
+#include "periodicCallsMs.h"
 
 #include <vector>
 #include <stdint.h>
@@ -12,6 +13,8 @@ class moduleManager
     private:
         std::vector<module *> m_modules;
         bool m_enableNewModules;
+        periodicCallsMs m_ringPeriodicCalls;
+        static void ringCallback(void *object);
 
     public:
         moduleManager();

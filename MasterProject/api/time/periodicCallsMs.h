@@ -4,6 +4,7 @@
 #include "chronoMs.h"
 
 #include <list>
+#include <stdbool.h>
 
 class periodicCallsMs
 {
@@ -11,6 +12,7 @@ class periodicCallsMs
         chronoMs m_chrono;
         void (*m_callback)(void*);
         void *m_object;
+        bool m_enable;
         static std::list <periodicCallsMs*> m_instances;
 
     public:
@@ -23,6 +25,9 @@ class periodicCallsMs
 
         void setPeriod(timeMs period);
         void setCallback(void (*callback)(void*), void *object);
+
+        void enable(bool enable);
+        bool isEnabled();
 };
 
 #endif

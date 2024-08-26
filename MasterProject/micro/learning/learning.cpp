@@ -1,6 +1,7 @@
 #include "learning.h"
 #include "moduleManager.h"
 #include "ledManager.h"
+#include "periodicCallsMs.h"
 
 #include <winsock2.h>
 #include <stdio.h>
@@ -21,8 +22,10 @@ learning::learning()
 {
     // Constructor
     m_microManager = NULL;
-    m_inLearning = false;
     m_MicroInRecord = -1;
+    m_recordPeriodicCall.setPeriod(TIME_BETWEEN_MEASURES);
+    m_recordPeriodicCall.setCallback(recordCallback, this);
+    m_recordPeriodicCall.enable(false); // At start, learning isn't started
 }
 
 learning::~learning()
@@ -33,7 +36,7 @@ learning::~learning()
 bool learning::isLearning()
 {
     // Check if a learning process is running
-    return m_inLearning;
+    return m_recordPeriodicCall.isEnabled();
 }
 
 void learning::setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager)
@@ -48,8 +51,6 @@ void learning::startLearning()
 {
     // Disable the addition of new modules
     m_moduleManager->enableNewModules(false);
-    // TODO : Disable all process that can interfere with the learning process
-    // Ex : Disable all process that can control the leds
     if (m_microManager->getMicroCount() > 0)
     {
         printf("Start learning\n");
@@ -81,33 +82,27 @@ void learning::startLearning(int32_t microIndex)
     micro *l_mainMicro = m_microManager->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
-    rgbLed *l_led = m_ledManager->getLed(l_mainMicro->getModule());
-    if (l_led != NULL)
+    // and put black the others
+    for (uint16_t l_ledIndex = 0; l_ledIndex < m_ledManager->getLedCount(); l_ledIndex++)
     {
-        // The module has leds, highlight it
-        l_led->setColor(COLOR_PRIORITY_LEARNING, LEARNING_COLOR);
+        rgbLed *l_led = m_ledManager->getLed(l_ledIndex);
+        if (l_led->getModule() == l_mainMicro->getModule())
+        {
+            l_led->setColor(COLOR_PRIORITY_LEARNING, LEARNING_COLOR);
+        }
+        else if (l_led->getModule() != NULL) // Check if the module has leds
+        {
+            l_led->setColor(COLOR_PRIORITY_LEARNING, rgbColor(0, 0, 0));
+        }
     }
 
     // Start the learning process
-    m_inLearning = true;
+    m_recordPeriodicCall.enable(true);
 }
 
-void learning::process()
+void learning::recordCallback(void* object)
 {
-    // Function to process the learning
-    // Must be called in the main loop
-
-    // Check if we are in learning mode
-    if (m_inLearning)
-    {
-        // Record all micros all TIME_BETWEEN_MEASURES ms
-        static uint64_t l_lastRecordTime = GetTickCount64();
-        if (GetTickCount64() - l_lastRecordTime > TIME_BETWEEN_MEASURES)
-        {
-            recordAllMic();
-            l_lastRecordTime = GetTickCount64();
-        }
-    }
+    ((learning*)object)->recordAllMic();
 }
 
 void learning::recordAllMic()
@@ -178,7 +173,7 @@ void learning::stopLearning()
     {
         // All the micros have been learned
         // Stop the learning process
-        m_inLearning = false;
+        m_recordPeriodicCall.enable(false);
         printf("\nEnd of learning\n");
 
         // Interpret the records

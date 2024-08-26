@@ -12,6 +12,9 @@
 moduleManager::moduleManager()
 {
     m_enableNewModules = true;
+    // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
+    m_ringPeriodicCalls.setPeriod(RING_INTERVAL);
+    m_ringPeriodicCalls.setCallback(ringCallback, this);
 }
 
 moduleManager::~moduleManager()
@@ -29,15 +32,14 @@ bool moduleManager::NewModulesEnabled()
     return m_enableNewModules;
 }
 
-void moduleManager::process()
+void moduleManager::ringCallback(void *object)
 {
     // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
-    static uint64_t l_lastRingTime = GetTickCount64();
-    if (GetTickCount64() - l_lastRingTime > RING_INTERVAL)
-    {
-        ringModules();
-        l_lastRingTime = GetTickCount64();
-    }
+    ((moduleManager*)object)->ringModules();
+}
+
+void moduleManager::process()
+{
     // Process all the modules
     for (int32_t i = 0; i < m_modules.size(); i++)
     {

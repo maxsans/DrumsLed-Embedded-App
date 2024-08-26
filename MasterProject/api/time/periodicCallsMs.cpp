@@ -5,6 +5,7 @@ std::list <periodicCallsMs*> periodicCallsMs::m_instances;
 periodicCallsMs::periodicCallsMs()
 {
     m_instances.push_back(this);
+    m_enable = true;
 }
 
 periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *object)
@@ -30,7 +31,7 @@ void periodicCallsMs::processAll()
 
 void periodicCallsMs::process()
 {
-    if (m_chrono.ring())
+    if ( (m_chrono.ring()) && (m_enable))
     {
         m_callback(m_object);
         m_chrono.restart();
@@ -46,4 +47,14 @@ void periodicCallsMs::setCallback(void (*callback)(void*), void *object)
 {
     m_callback = callback;
     m_object = object;
+}
+
+void periodicCallsMs::enable(bool enable)
+{
+    m_enable = enable;
+}
+
+bool periodicCallsMs::isEnabled()
+{
+    return m_enable;
 }

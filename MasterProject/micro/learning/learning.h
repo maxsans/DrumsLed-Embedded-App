@@ -15,13 +15,19 @@ class learning
         microManager *m_microManager;
         ledManager *m_ledManager;
         moduleManager *m_moduleManager;
-        bool m_inLearning;
         int32_t m_MicroInRecord;
+        periodicCallsMs m_recordPeriodicCall;
         /**
          * @brief Vector of record slot for each micro
          *
          */
         std::vector<recordSlot *> m_microRecordSlots;
+        /**
+         * @brief Callback to periodically call recordAllMic()
+         *
+         * @param object learning object (this)
+         */
+        static void recordCallback(void *object);
         /**
          * @brief Record all the micros
          *
@@ -73,13 +79,6 @@ class learning
          * @param microIndex The index of the micro to start learning
          */
         void startLearning(int32_t microIndex);
-
-        /**
-         * @brief Function to process the learning
-         * Must be called in the main loop
-         *
-         */
-        void process();
 
         /**
          * @brief Stop the learning process
