@@ -94,9 +94,9 @@ void matrix::invert()
     }
 
     // Apply the Gauss-Jordan elimination method
-    for(int l_column=0 ; l_column<m_size ; l_column++)
+    for(uint32_t l_column=0 ; l_column<m_size ; l_column++)
     {
-        for (int l_line=0;l_line<m_size;l_line++)
+        for (uint32_t l_line=0;l_line<m_size;l_line++)
         {
             if (l_line != l_column)
             {
@@ -108,13 +108,13 @@ void matrix::invert()
                 {
                     // Eliminate the constant
                     uint32_t l_elimLine = l_column;
-                    for (int l_column2=0;l_column2<2*m_size;l_column2++)
+                    for (uint32_t l_column2=0;l_column2<2*m_size;l_column2++)
                     {
                         l_juxMatrix[l_line][l_column2] -= l_juxMatrix[l_elimLine][l_column2] * l_elimConst;
                     }
                     // Then we make again the 1 on the diagonal
                     float l_diagConst = l_juxMatrix[l_line][l_line];
-                    for (int l_column2=0;l_column2<2*m_size;l_column2++)
+                    for (uint32_t l_column2=0;l_column2<2*m_size;l_column2++)
                     {
                         l_juxMatrix[l_line][l_column2] = l_juxMatrix[l_line][l_column2] / l_diagConst;
                     }

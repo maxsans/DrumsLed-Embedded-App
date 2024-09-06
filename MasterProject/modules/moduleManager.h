@@ -25,7 +25,7 @@ class moduleManager
         bool addModule(char* ip);
         module *getModule(int32_t index);
         module *getModule(char* ip);
-        int getModuleCount();
+        uint32_t getModuleCount();
         void ringModules();
 };
 

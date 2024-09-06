@@ -12,7 +12,7 @@ class udp
     private:
     SOCKET s;
     struct sockaddr_in si_other;
-    int slen , recv_len;
+    int32_t slen , recv_len;
     udpPacket m_udpPacket;
     char m_localIp[16];
     bool recv();

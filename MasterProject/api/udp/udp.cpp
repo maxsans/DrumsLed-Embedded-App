@@ -60,7 +60,7 @@ void  udp::init()
     else
     {
         struct hostent *phe = gethostbyname(ac);
-        for (int i = 0; phe->h_addr_list[i] != 0; ++i)
+        for (uint16_t i = 0; phe->h_addr_list[i] != 0; ++i)
         {
             if (i > 0)
             {

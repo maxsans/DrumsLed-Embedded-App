@@ -83,7 +83,7 @@ module *moduleManager::getModule(char* ip)
     return NULL;
 }
 
-int moduleManager::getModuleCount()
+uint32_t moduleManager::getModuleCount()
 {
     return m_modules.size();
 }

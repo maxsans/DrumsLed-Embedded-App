@@ -11,7 +11,7 @@ rgbLed::rgbLed(module *m)
     // Constructor
     m_module = m;
     // Initialize gamma correction
-    for (int i = 0; i < 256; i++)
+    for (uint16_t i = 0; i < 256; i++)
     {
         m_gamma8[i] = (uint8_t)(pow((float)i / 255.0, GAMMA) * 255.0 + 0.5);
     }
@@ -25,7 +25,7 @@ module *rgbLed::getModule()
 rgbColor rgbLed::getColor()
 {
     // Sherch for the highest priority enabled color
-    for (int i = 0; i < COLOR_PRIORITY_COUNT; i++)
+    for (uint32_t i = 0; i < COLOR_PRIORITY_COUNT; i++)
     {
         if (m_colorOrders[i].isEnabled())
         {

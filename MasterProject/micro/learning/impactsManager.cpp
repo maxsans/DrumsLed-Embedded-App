@@ -203,8 +203,8 @@ void impactsManager::calculateArtImpacts()
                     {
                         // Get the rank of the other link
                         // Fill the matrix
-                        int l_line = impactRank(l_impactorMicro, l_impactedMicro);
-                        int l_column = impactRank(l_otherMicro, l_impactedMicro);
+                        uint32_t l_line = impactRank(l_impactorMicro, l_impactedMicro);
+                        uint32_t l_column = impactRank(l_otherMicro, l_impactedMicro);
                         l_matrix.set(l_line, l_column, getRealImpact(l_impactorMicro, l_otherMicro));
                     }
                 }
@@ -227,9 +227,9 @@ void impactsManager::calculateArtImpacts()
             }
             else
             {
-                int l_line = impactRank(l_impactorMicro, l_impactedMicro);
+                uint32_t l_line = impactRank(l_impactorMicro, l_impactedMicro);
                 m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_ArtImpact = 0;
-                for (int l_workColumn=0 ; l_workColumn<l_matrixSize ; l_workColumn++)
+                for (uint32_t l_workColumn=0 ; l_workColumn<l_matrixSize ; l_workColumn++)
                 {
                     m_impacts[l_impactorMicro]->at(l_impactedMicro)->m_ArtImpact
                         += l_matrix.get(l_line, l_workColumn) * l_realImpactsFromRank[l_workColumn];
