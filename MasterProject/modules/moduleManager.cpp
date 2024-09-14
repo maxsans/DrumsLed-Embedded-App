@@ -32,54 +32,58 @@ bool moduleManager::NewModulesEnabled()
     return m_enableNewModules;
 }
 
-void moduleManager::ringCallback(void *object)
+bool moduleManager::addModule(module *m)
 {
-    // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
-    ((moduleManager*)object)->ringModules();
-}
-
-void moduleManager::process()
-{
-    // Process all the modules
-    for (int32_t i = 0; i < m_modules.size(); i++)
+    if (m_enableNewModules)
     {
-        m_modules[i]->process();
+        m_modules.push_back(m);
+        return true;
     }
-}
-
-bool moduleManager::addModule(char* ip)
-{
-    if (!m_enableNewModules)
-    {
-        return false;
-    }
-    // Check if the module already exists
-    for (int32_t i = 0; i < m_modules.size(); i++)
-    {
-        if (strcmp(m_modules[i]->getIp(), ip) == 0)
-        {
-            return false; // Already exists, dont add again
-        }
-    }
-    m_modules.push_back(new module(ip));
-    return true;
+    return false;
 }
 
 module *moduleManager::getModule(int32_t index)
 {
-    return m_modules[index];
+    if (index < m_modules.size())
+    {
+        return m_modules[index];
+    }
+    return NULL;
 }
 
-module *moduleManager::getModule(char* ip)
+module *moduleManager::getModule(Client client)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
-        if (strcmp(m_modules[i]->getIp(), ip) == 0)
+        if (m_modules[i]->getClient() == client)
         {
             return m_modules[i];
         }
     }
+    return NULL;
+}
 
+module *moduleManager::getModule(IPv4 ip)
+{
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        if (m_modules[i]->getClient().getIP() == ip)
+        {
+            return m_modules[i];
+        }
+    }
+    return NULL;
+}
+
+module *moduleManager::getModule(MacAddr mac)
+{
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        if (m_modules[i]->getClient().getMAC() == mac)
+        {
+            return m_modules[i];
+        }
+    }
     return NULL;
 }
 
@@ -87,6 +91,12 @@ uint32_t moduleManager::getModuleCount()
 {
     return m_modules.size();
 }
+
+void moduleManager::ringCallback(void *object)
+{
+    ((moduleManager *)object)->ringModules();
+}
+
 
 void moduleManager::ringModules()
 {

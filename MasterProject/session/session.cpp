@@ -11,7 +11,6 @@ session::~session()
 
 void session::process()
 {
-    m_moduleManager.process();
     m_microManager.process();
     m_animationManager.process();
 }

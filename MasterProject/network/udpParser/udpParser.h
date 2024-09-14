@@ -3,7 +3,7 @@
 
 #include "session.h"
 #include "udpPacket.h"
-
+#include "client.h"
 
 class udpParser
 {
@@ -16,7 +16,7 @@ class udpParser
         ~udpParser();
         void setCurrentSession(session *currentSession);
         void parseUdp();
-        void parseUdp(char* packet, char* ip);
+        void parseUdp(udpPacket *packet);
 };
 
 extern udpParser g_udpParser;

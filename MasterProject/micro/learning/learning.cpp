@@ -3,7 +3,6 @@
 #include "ledManager.h"
 #include "periodicCallsMs.h"
 
-#include <winsock2.h>
 #include <stdio.h>
 #include <assert.h>
 

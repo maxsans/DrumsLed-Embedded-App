@@ -13,8 +13,6 @@ set(SRCS_FILES
     api/time/chronoMs.cpp
     api/time/periodicCallsMs.cpp
     api/time/timeMs.cpp
-    api/udp/udp.cpp
-    api/udp/udpPacket.cpp
 
     led/colorOrder.cpp
     led/ledManager.cpp
@@ -34,26 +32,34 @@ set(SRCS_FILES
     modules/module.cpp
     modules/moduleManager.cpp
 
-    session/session.cpp
+    network/client/client.cpp
+    network/client/ipv4.cpp
+    network/client/macAddr.cpp
+    network/udp/udp.cpp
+    network/udp/udpPacket.cpp
+    network/udpParser/udpParser.cpp
 
-    udpParser/udpParser.cpp
+    session/session.cpp
     )
 
 include_directories(
     animation
     api/terminal
     api/time
-    api/udp
     led
     maths/matrix
     micro
     micro/learning
     modules
+    network
+    network/client
+    network/udp
+    network/udpParser
     session
-    udpParser
 )
 add_executable(MasterProject ${SRCS_FILES})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} Ws2_32)
 target_link_libraries(${CMAKE_PROJECT_NAME} Mswsock)
 target_link_libraries(${CMAKE_PROJECT_NAME} AdvApi32)
+target_link_libraries(${CMAKE_PROJECT_NAME} iphlpapi)

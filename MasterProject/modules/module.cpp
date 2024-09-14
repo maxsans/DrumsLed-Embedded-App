@@ -1,71 +1,48 @@
 #include "module.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <windows.h>
+#include "timeMs.h"
 
 #define MODULE_TIMEOUT 10000 // ms
+#define MODULE_CHECK_TIME_PERIODIC_CALLS 1000 // ms
 
-module::module(char* ip)
+module::module(Client client)
 {
-    // Constructor
-    m_ip = (char*)malloc(strlen(ip) + 1);
-    strcpy(m_ip, ip);
-    m_connected = true;
-    m_lastSyncTime = GetTickCount64();
-}
-
-void module::process()
-{
-    // Process the module
-    // Check if the module is still connected
-    checkTime();
-}
-
-void module::sync()
-{
-    // Sync the module
-    if (!m_connected)
-    {
-        printf("Module reconnected, ip: %s\n", m_ip);
-        m_connected = true;
-    }
-    m_lastSyncTime = GetTickCount64();
-}
-
-void module::checkTime()
-{
-    // Check if the module is still connected
-    if (GetTickCount64() - m_lastSyncTime > MODULE_TIMEOUT)
-    {
-        if (m_connected)
-        {
-            printf("Module disconnected, ip: %s\n", m_ip);
-            m_connected = false;
-        }
-    }
+    m_client = client;
+    m_connected = false;
+    m_lastSyncTime = 0;
+    m_checkTimePeriodicCalls = periodicCallsMs(MODULE_CHECK_TIME_PERIODIC_CALLS, checkTimeCallBack, this);
 }
 
 bool module::isConnected()
 {
-    // Check if the module is connected
     return m_connected;
 }
 
-void module::setIp(char* ip)
+void module::checkTime()
 {
-    // Set the ip
-    if (m_ip != NULL)
+    if (timeMs() - m_lastSyncTime > MODULE_TIMEOUT)
     {
-        free(m_ip);
+        m_connected = false;
     }
-    m_ip = (char*)malloc(strlen(ip) + 1);
-    strcpy(m_ip, ip);
 }
 
-char* module::getIp()
+void module::checkTimeCallBack(void *object)
 {
-    // Get the ip
-    return m_ip;
+    module *m = (module*)object;
+    m->checkTime();
+}
+
+void module::sync()
+{
+    m_lastSyncTime = timeMs::nowMs();
+    m_connected = true;
+}
+
+void module::setIp(IPv4 ip)
+{
+    m_client.setIP(ip);
+}
+
+Client module::getClient()
+{
+    return m_client;
 }

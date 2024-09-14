@@ -3,6 +3,7 @@
 
 #include "module.h"
 #include "periodicCallsMs.h"
+#include "Client.h"
 
 #include <vector>
 #include <stdint.h>
@@ -21,10 +22,11 @@ class moduleManager
         ~moduleManager();
         void enableNewModules(bool enable);
         bool NewModulesEnabled();
-        void process();
-        bool addModule(char* ip);
+        bool addModule(module *m);
         module *getModule(int32_t index);
-        module *getModule(char* ip);
+        module *getModule(Client client);
+        module *getModule(IPv4 ip);
+        module *getModule(MacAddr mac);
         uint32_t getModuleCount();
         void ringModules();
 };

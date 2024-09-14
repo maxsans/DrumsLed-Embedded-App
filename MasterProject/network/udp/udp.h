@@ -2,6 +2,7 @@
 #define __UDP_H__
 
 #include "udpPacket.h"
+#include "client.h"
 
 #include <winsock2.h>
 #include <stdio.h>
@@ -14,16 +15,16 @@ class udp
     struct sockaddr_in si_other;
     int32_t slen , recv_len;
     udpPacket m_udpPacket;
-    char m_localIp[16];
-    bool recv();
+    Client m_host;
+    void recv();
 
     public:
     udp();
     void init();
     void close();
-    void send(char *ip_addr, char *msg, uint32_t msgSize);
+    void send(Client client, char *msg, uint32_t msgSize);
     void sendbroadcast(char *msg, uint32_t msgSize);
-    udpPacket *getPacket(bool *receivedSomething);
+    udpPacket *getPacket();
 };
 
 extern udp g_udp;

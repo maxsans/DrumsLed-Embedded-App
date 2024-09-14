@@ -37,48 +37,54 @@ void udpParser::setCurrentSession(session *currentSession)
 
 void udpParser::parseUdp()
 {
-    // Get the udp packet and parse it
-    bool l_receivedSomething = false;
-    udpPacket *l_udpPacket = g_udp.getPacket(&l_receivedSomething);
-    if ( (l_udpPacket != NULL) && (l_receivedSomething) )
+    // Parse the UDP packets
+    udpPacket *l_packet =  g_udp.getPacket();
+    if(l_packet != NULL && l_packet->getLen() > 0)
     {
-        char *l_packet = l_udpPacket->getPacket();
-        char *l_ip = l_udpPacket->getIp();
-        if (l_packet != NULL && l_ip != NULL)
-        {
-            parseUdp(l_packet, l_ip);
-        }
+        parseUdp(l_packet);
     }
 }
 
-void udpParser::parseUdp(char* packet, char* ip)
+void udpParser::parseUdp(udpPacket *packet)
 {
+    char *data = packet->getData();
+    Client client = packet->getClient();
     // Parse the UDP packet
-    uint32_t packetSize = strlen(packet);
-    switch (packet[0])
+    switch (data[0])
     {
         case PACKET_TYPE_INIT:
         {
             // A new module is found, add it to the list of modules
-            if (m_currentSession->getModuleManager()->addModule(ip))
+            // Check if the module is already in the list
+            if (m_currentSession->getModuleManager()->getModule(client) != NULL)
             {
-                module *newModule = m_currentSession->getModuleManager()->getModule(ip);
+                // Module already in the list, ignore
+                break;
+            }
+            // Add the module to the list
+            if (m_currentSession->getModuleManager()->addModule(new module(client)))
+            {
+                module *newModule = m_currentSession->getModuleManager()->getModule(client);
                 if (newModule == NULL)
                 {
                     printf("Error while adding new module !\n");
                     return;
                 }
-                switch(packet[1]) // type of module
+                switch(data[1]) // type of module
                 {
                     case TYPE_DRUM_MODULE:
                         m_currentSession->getMicroManager()->addMicro(newModule);
                         m_currentSession->getLedManager()->addLed(newModule);
-                        printf("New drum module ! ip : %s\n", ip);
+                        printf("New drum module ! ip : %s, mac : %s\n",
+                                    client.getIP().getIpString().c_str(),
+                                    client.getMAC().getMacString().c_str());
                         break;
 
                     default:
                         // Unknowed module, ignore
-                        printf("Unknown module detected ! ip : %s\n", ip);
+                        printf("Unknown module detected ! ip : %s, mac : %s\n",
+                                    client.getIP().getIpString().c_str(),
+                                    client.getMAC().getMacString().c_str());
                         break;
                 }
             }
@@ -92,11 +98,11 @@ void udpParser::parseUdp(char* packet, char* ip)
         case PACKET_TYPE_ADC:
         {
             // New value on the adc of this module, uptate it micro value
-            module *l_module = m_currentSession->getModuleManager()->getModule(ip);
+            module *l_module = m_currentSession->getModuleManager()->getModule(client);
             if (l_module != NULL)
             {
                 // Set the micro value of this module
-                uint8_t l_microValue = packet[1];
+                uint8_t l_microValue = data[1];
                 m_currentSession->getMicroManager()->setMicro(l_module, l_microValue);
             }
             break;
@@ -107,7 +113,7 @@ void udpParser::parseUdp(char* packet, char* ip)
             break;
     }
     // A packet has been received for a module, sync it
-    module *l_module = m_currentSession->getModuleManager()->getModule(ip);
+    module *l_module = m_currentSession->getModuleManager()->getModule(client);
     if (l_module != NULL)
     {
         l_module->sync();

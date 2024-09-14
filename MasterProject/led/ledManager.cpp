@@ -87,7 +87,7 @@ void ledManager::update()
             (char)greenValue,
             (char)blueValue
         };
-        g_udp.send(m_leds[i]->getModule()->getIp(), msg, sizeof(msg));
+        m_leds[i]->getModule()->getClient().send(msg, sizeof(msg));
     }
 }
 
