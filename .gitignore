@@ -6,7 +6,9 @@
 **/.vscode/ipch
 **/.vscode/settings.json
 **/.vscode/tasks.json
+**/.vscode/extensions.json
 **/.cache
 **/.devcontainer
 **/sdkconfig
 **/sdkconfig.old
+**/CMakePresets.json
