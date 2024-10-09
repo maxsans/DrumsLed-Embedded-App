@@ -1,4 +1,4 @@
-# ![logo_App](./assets/img/Logo32_New.png) DrumsLed Embedded Application
+# ![logo_App](./assets/img/Logo32_New.png) Tunes (DrumsLed) Embedded Application
 
 DrumsLed is an embedded application that allows you to control LED lights on a drum set. The primary purpose of this app is to detect when a drum is struck and illuminate LEDs accordingly. The communication between the mobile app and the drum set is established via Bluetooth Low Energy (BLE). The drum set, equipped with ESP32 and piezo sensors, detects drum strikes, and the mobile app controls LED animations and colors.
 
