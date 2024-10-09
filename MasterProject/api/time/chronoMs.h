@@ -12,7 +12,6 @@ class chronoMs
 
     public:
         chronoMs();
-
         void start();
         void setStart(timeMs start);
         void arm(timeMs duration);

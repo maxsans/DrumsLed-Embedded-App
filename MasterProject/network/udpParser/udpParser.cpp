@@ -45,6 +45,10 @@ void udpParser::parseUdp()
     }
 }
 
+/**
+ * @brief Bad implementation of the udp parser.
+ * @todo Refactor this function after slave projet refactoring.
+ */
 void udpParser::parseUdp(udpPacket *packet)
 {
     char *data = packet->getData();

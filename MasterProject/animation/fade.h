@@ -5,6 +5,10 @@
 
 #include <stdint.h>
 
+/**
+ * @brief Fades the LED to a color.
+ * @see animation.h for more information.
+ */
 class fade : public animation
 {
     private:

@@ -4,6 +4,9 @@
 #include "micro.h"
 #include "rgbLed.h"
 
+/**
+ * @brief Enumerates the animation types.
+ */
 typedef enum
 {
     ANIMATION_TYPE_NONE,
@@ -12,6 +15,9 @@ typedef enum
     ANIMATION_TYPE_COUNT
 } animationType;
 
+/**
+ * @brief Base class for animations.
+ */
 class animation
 {
     private:
@@ -24,11 +30,38 @@ class animation
     public:
         animation(animationType type, micro *m, rgbLed *rgbLed);
         ~animation();
+        /**
+         * @brief Get the type of the animation.
+         *
+         * @return animationType
+         */
         animationType getType();
+        /**
+         * @brief Get the micro object.
+         *
+         * @return micro* A pointer to the micro object.
+         */
         micro *getMicro();
+        /**
+         * @brief Get the rgbLed object.
+         *
+         * @return rgbLed* A pointer to the rgbLed object.
+         */
         rgbLed *getRgbLed();
+        /**
+         * @brief Start the animation.
+         * @note This function is pure virtual and must be implemented by the derived class.
+         */
         virtual void start() = 0;
+        /**
+         * @brief Process the animation.
+         * @note This function is pure virtual and must be implemented by the derived class.
+         */
         virtual void process() = 0;
+        /**
+         * @brief Stop the animation.
+         * @note This function is pure virtual and must be implemented by the derived class.
+         */
         virtual void stop() = 0;
 };
 

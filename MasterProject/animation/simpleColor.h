@@ -3,6 +3,10 @@
 
 #include "animation.h"
 
+/**
+ * @brief Sets the LED to a color.
+ * @see animation.h for more information.
+ */
 class simpleColor : public animation
 {
     private:

@@ -27,6 +27,9 @@ typedef enum
 } colorPriority_t;
 
 
+/**
+ * @brief Class to represent an RGB LED.
+ */
 class rgbLed
 {
     private:
@@ -39,9 +42,28 @@ class rgbLed
 
     public:
         rgbLed(module *m);
+        /**
+         * @brief Get the Module object
+         *
+         * @return module* The module.
+         */
         module *getModule();
+        /**
+         * @brief Set the color.
+         *
+         * @param color The color.
+         */
         rgbColor getColor();
+        /**
+         * @brief Set the color.
+         *
+         * @param color The color.
+         */
         void setColor(colorPriority_t priority, rgbColor color);
+        /**
+         * @brief Release the color.
+         * @warning Don't forget to release the color when you don't need it anymore.
+         */
         void releaseColor(colorPriority_t priority);
 };
 
