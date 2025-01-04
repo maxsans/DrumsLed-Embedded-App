@@ -10,6 +10,11 @@ add_compile_options(-D__TARGET_MASTER)
 add_sources(
     master/masterLaunch.cpp
 
+    master/animation/animation.cpp
+    master/animation/animationManager.cpp
+    master/animation/fade.cpp
+    master/animation/simpleColor.cpp
+
     master/modules/module.cpp
     master/modules/moduleManager.cpp
 
