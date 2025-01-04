@@ -9,6 +9,8 @@ add_compile_options(-D__TARGET_MASTER)
 ####################################################################################################
 add_sources(
     master/masterLaunch.cpp
+    master/modules/module.cpp
+    master/modules/moduleManager.cpp
     )
 
 # Specific windows source files
