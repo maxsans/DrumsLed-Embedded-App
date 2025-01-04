@@ -10,6 +10,7 @@ add_compile_options(-D__TARGET_SLAVES)
 add_sources(
     slaves/slavesLaunch.cpp
     api/udp/udpEsp8266.cpp
+    api/time/timeEsp8266.cpp
     )
 
 ####################################################################################################

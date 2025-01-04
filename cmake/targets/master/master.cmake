@@ -15,6 +15,7 @@ add_sources(
 if(WIN32)
     add_sources(
         api/udp/udpWindows.cpp
+        api/time/timeWindows.cpp
         )
 endif()
 
@@ -22,6 +23,7 @@ endif()
 if(UNIX)
     add_sources(
         api/udp/udpLinux.cpp
+        api/time/timeLinux.cpp
         )
 endif()
 
