@@ -1,10 +1,9 @@
-#if 0
 #ifndef __UDP_PARSER_H__
 #define __UDP_PARSER_H__
 
-#include "session.h"
-#include "udpPacket.h"
-#include "client.h"
+#include "session/session.h"
+#include "network/udp/udpPacket.h"
+#include "network/client/client.h"
 
 /**
  * @brief Class to parse UDP packets.
@@ -38,5 +37,4 @@ class udpParser
 
 extern udpParser g_udpParser;
 
-#endif
 #endif

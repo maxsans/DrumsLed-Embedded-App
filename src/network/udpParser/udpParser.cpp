@@ -1,8 +1,8 @@
-#if 0
 #include "udpParser.h"
 
 #include "api/udp/udp.h"
-#include "session.h"
+#include "session/session.h"
+#include "network/udp/getUdpPacket.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -38,11 +38,13 @@ void udpParser::setCurrentSession(session *currentSession)
 
 void udpParser::parseUdp()
 {
-    // Parse the UDP packets
-    udpPacket *l_packet =  g_udp.getPacket();
-    if(l_packet != NULL && l_packet->getLen() > 0)
+    // Get the udp Packet
+    udpPacket l_packet;
+    // Check if there is a packet to parse
+    if(getUdpPacket(&l_packet))
     {
-        parseUdp(l_packet);
+        // Parse the UDP packets
+        parseUdp(&l_packet);
     }
 }
 
@@ -126,4 +128,3 @@ void udpParser::parseUdp(udpPacket *packet)
 }
 
 udpParser g_udpParser;
-#endif

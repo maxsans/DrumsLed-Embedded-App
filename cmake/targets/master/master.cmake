@@ -30,6 +30,8 @@ add_sources(
     master/micro/learning/recordSlot.cpp
     master/micro/micro.cpp
     master/micro/microManager.cpp
+
+    master/session/session.cpp
     )
 
 # Specific windows source files
@@ -70,6 +72,7 @@ target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
 # Windows libraries
 if(WIN32)
     target_link_libraries(${TARGET} Ws2_32)
+    target_link_libraries(${TARGET} iphlpapi)
 endif()
 
 # Linux libraries
