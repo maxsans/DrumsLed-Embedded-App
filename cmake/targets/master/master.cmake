@@ -32,6 +32,8 @@ add_sources(
     master/micro/microManager.cpp
 
     master/session/session.cpp
+
+    network/udpParser/udpParser.cpp
     )
 
 # Specific windows source files

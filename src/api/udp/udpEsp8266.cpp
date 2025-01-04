@@ -2,6 +2,7 @@
 
 #include <lwip/sockets.h>
 #include <lwip/netdb.h>
+#include <lwip/etharp.h>
 #include <string.h>
 #include <esp_wifi.h>
 
@@ -36,32 +37,35 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
 
 uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
-    struct sockaddr_in src_addr;
-    socklen_t addr_len = sizeof(src_addr);
-    int recv_len = recvfrom(udp_socket, data, len, 0, (struct sockaddr *)&src_addr, &addr_len);
-    if (recv_len > 0) {
-        inet_ntoa_r(src_addr.sin_addr, ip, INET_ADDRSTRLEN);
-        *port = ntohs(src_addr.sin_port);
+    struct sockaddr_in source_addr;
+    socklen_t socklen = sizeof(source_addr);
+    int ret = recvfrom(udp_socket, data, len, 0, (struct sockaddr *)&source_addr, &socklen);
+    if (ret > 0) {
+        inet_ntop(AF_INET, &source_addr.sin_addr, ip, INET_ADDRSTRLEN);
+        *port = ntohs(source_addr.sin_port);
 
-        // Retrieve MAC address from ARP table
-        struct eth_addr *eth_ret;
-        ip4_addr_t ipaddr;
-        inet_pton(AF_INET, ip, &ipaddr);
-        eth_ret = etharp_find_addr(netif_default, &ipaddr, (struct eth_addr *)mac, NULL);
-        if (eth_ret != NULL) {
-            sprintf(mac, "%02x:%02x:%02x:%02x:%02x:%02x",
-                    eth_ret->addr[0], eth_ret->addr[1], eth_ret->addr[2],
-                    eth_ret->addr[3], eth_ret->addr[4], eth_ret->addr[5]);
+        // Find MAC address using ARP table
+        for(int i=0;i<ARP_TABLE_SIZE;i++)
+        {
+            ip4_addr_t *ret_ip;
+            struct netif *ret_netif;
+            struct eth_addr *ret_eth;
+            if(etharp_get_entry(i, &ret_ip, &ret_netif, &ret_eth) == 1)
+            {
+                sprintf(mac, "%02x:%02x:%02x:%02x:%02x:%02x",
+                        ret_eth->addr[0], ret_eth->addr[1], ret_eth->addr[2],
+                        ret_eth->addr[3], ret_eth->addr[4], ret_eth->addr[5]);
+            }
         }
     }
-    return recv_len;
+    return ret;
 }
 
 void udp_get_host_ip(char *ip)
 {
-    struct ip_addr ipaddr;
-    ipaddr.addr = netif_default->ip_addr.addr;
-    inet_ntoa_r(ipaddr, ip, INET_ADDRSTRLEN);
+    tcpip_adapter_ip_info_t ip_info;
+    tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info);
+    sprintf(ip, IPSTR, IP2STR(&ip_info.ip));
 }
 
 void udp_get_host_mac(char *mac)

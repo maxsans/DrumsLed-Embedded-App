@@ -44,7 +44,6 @@ add_sources(
     network/client/macAddr.cpp
     network/udp/getUdpPacket.cpp
     network/udp/udpPacket.cpp
-    network/udpParser/udpParser.cpp
     )
 
 ####################################################################################################
