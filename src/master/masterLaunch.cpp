@@ -1,8 +1,8 @@
-#include "masterLaunch.h"
+#include "launch.h"
 
 #include <iostream>
 
-void masterLaunch()
+void launch()
 {
     std::cout << "Master Start !" << std::endl;
 }

@@ -1,8 +1,8 @@
-#include "slavesLaunch.h"
+#include "launch.h"
 
 #include <stdio.h>
 
-void slavesLaunch()
+void launch()
 {
     printf("Slaves start !\n");
 }
