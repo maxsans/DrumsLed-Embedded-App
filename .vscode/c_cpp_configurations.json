@@ -1,0 +1,4 @@
+{
+    "name": "CMake Tools",
+    "configurationProvider": "ms-vscode.cmake-tools"
+}

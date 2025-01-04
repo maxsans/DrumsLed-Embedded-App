@@ -1,0 +1,45 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "DefaultPreset",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+            }
+        },
+        {
+            "name": "master",
+            "inherits": "DefaultPreset",
+            "cacheVariables": {
+                "TARGET": "Master"
+            }
+        },
+        {
+            "name": "SlavePreset",
+            "inherits": "DefaultPreset",
+            "hidden": true,
+            "environment": {
+                "IDF_PATH": "${env.HOME}/esp/ESP8266_RTOS_SDK",
+                "PATH": "/usr/local/bin:/usr/bin:/bin:${env.HOME}/esp/xtensa-lx106-elf/bin"
+            }
+        },
+        {
+            "name": "DrumKit",
+            "inherits": "SlavePreset",
+            "cacheVariables": {
+                "TARGET": "DrumKit"
+            }
+        },
+        {
+            "name": "CymbalKit",
+            "inherits": "SlavePreset",
+            "cacheVariables": {
+                "TARGET": "CymbalKit"
+            }
+        }
+    ]
+}
