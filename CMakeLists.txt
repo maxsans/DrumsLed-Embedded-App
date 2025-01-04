@@ -33,6 +33,10 @@ endif()
 ####################################################################################################
 add_sources(
     main.cpp
+    tools/maths/matrix/matrix.cpp
+    tools/timeTools/timeMs.cpp
+    tools/timeTools/chronoMs.cpp
+    tools/timeTools/periodicCallsMs.cpp
     )
 
 ####################################################################################################
