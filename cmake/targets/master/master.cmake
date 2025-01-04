@@ -17,6 +17,14 @@ add_sources(
     master/led/ledManager.cpp
     master/led/rgbColor.cpp
     master/led/rgbLed.cpp
+
+    master/micro/learning/impact.cpp
+    master/micro/learning/impactsManager.cpp
+    master/micro/learning/learning.cpp
+    master/micro/learning/record.cpp
+    master/micro/learning/recordSlot.cpp
+    master/micro/micro.cpp
+    master/micro/microManager.cpp
     )
 
 # Specific windows source files
