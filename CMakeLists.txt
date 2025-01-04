@@ -33,10 +33,17 @@ endif()
 ####################################################################################################
 add_sources(
     main.cpp
+
     tools/maths/matrix/matrix.cpp
     tools/timeTools/timeMs.cpp
     tools/timeTools/chronoMs.cpp
     tools/timeTools/periodicCallsMs.cpp
+
+    network/client/client.cpp
+    network/client/ipv4.cpp
+    network/client/macAddr.cpp
+    network/udp/udpPacket.cpp
+    network/udpParser/udpParser.cpp
     )
 
 ####################################################################################################

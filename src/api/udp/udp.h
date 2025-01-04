@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define UDP_DEFAULT_PORT 4321
+
 /**
  * @brief Function to initialize the UDP connection
  */
