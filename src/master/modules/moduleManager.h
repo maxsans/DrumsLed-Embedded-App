@@ -1,7 +1,7 @@
 #ifndef __MODULE_MANAGER_H__
 #define __MODULE_MANAGER_H__
 
-#include "module.h"
+#include "modules/module.h"
 #include "tools/timeTools/periodicCallsMs.h"
 #include "network/client/client.h"
 
