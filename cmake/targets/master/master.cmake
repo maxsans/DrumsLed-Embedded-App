@@ -11,6 +11,22 @@ add_sources(
     master/masterLaunch.cpp
     )
 
+# Specific windows source files
+if(WIN32)
+    add_sources(
+        api/udp/udpWindows.cpp
+        api/time/timeWindows.cpp
+        )
+endif()
+
+# Specific linux source files
+if(UNIX)
+    add_sources(
+        api/udp/udpLinux.cpp
+        api/time/timeLinux.cpp
+        )
+endif()
+
 ####################################################################################################
 # Master include directories (from src directory)
 ####################################################################################################
@@ -23,3 +39,19 @@ print_sources_and_include_dirs()
 
 add_executable(${TARGET} ${SRCS})
 target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
+
+####################################################################################################
+# Link libraries
+####################################################################################################
+
+# Common libraries
+
+# Windows libraries
+if(WIN32)
+    target_link_libraries(${TARGET} Ws2_32)
+endif()
+
+# Linux libraries
+if(UNIX)
+    target_link_libraries(${TARGET} pthread)
+endif()
