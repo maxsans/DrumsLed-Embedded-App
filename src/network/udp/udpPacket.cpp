@@ -25,6 +25,10 @@ void udpPacket::setPacket(Client client, char *packet, uint32_t len)
 {
     // Set the packet
     m_client = client;
+    if(len > BUFLEN)
+    {
+        len = BUFLEN;
+    }
     memcpy(m_data, packet, len);
     m_len = len;
 }
