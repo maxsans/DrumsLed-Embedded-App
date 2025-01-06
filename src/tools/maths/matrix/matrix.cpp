@@ -45,13 +45,13 @@ void matrix::print()
 
 void matrix::set(uint32_t x, uint32_t y, float value)
 {
-    assert(x < m_size && y < m_size && x >= 0 && y >= 0);
+    assert(x < m_size && y < m_size);
     m_data[x][y] = value;
 }
 
 float matrix::get(uint32_t x, uint32_t y)
 {
-    assert(x < m_size && y < m_size && x >= 0 && y >= 0);
+    assert(x < m_size && y < m_size);
     return m_data[x][y];
 }
 
