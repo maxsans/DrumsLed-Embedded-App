@@ -1,6 +1,6 @@
 #include "moduleManager.h"
 #include "api/udp/udp.h"
-#include "network/udp/udpPacket.h"
+#include "network/udpParser/udpPackets/udpPacket.h"
 
 #include <stdint.h>
 #include <stdio.h>

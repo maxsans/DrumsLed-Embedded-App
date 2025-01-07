@@ -1,0 +1,32 @@
+#ifndef __UDP_PACKET_H__
+#define __UDP_PACKET_H__
+
+#include "network/client/client.h"
+
+typedef enum
+{
+    PACKET_TYPE_INIT,
+    PACKET_TYPE_RGB,
+    PACKET_TYPE_ADC
+    // Add new packet types here
+} UdpPacketType;
+
+class UdpPacket
+{
+    private:
+        const UdpPacketType m_type;
+
+    protected:
+        Client m_client;
+
+    public:
+        UdpPacket(Client client, UdpPacketType type);
+        ~UdpPacket();
+
+        /**
+         * @brief Virtual method to do the action of the packet
+         */
+        virtual void parse() = 0;
+};
+
+#endif // __UDP_PACKET_H__

@@ -1,40 +1,41 @@
 #ifndef __UDP_PARSER_H__
 #define __UDP_PARSER_H__
 
-#include "session/session.h"
-#include "network/udp/udpPacket.h"
+#include "tools/timeTools/periodicCallsMs.h"
+#include "udpPackets/udpPacket.h"
 #include "network/client/client.h"
 
 /**
  * @brief Class to parse UDP packets.
  */
-class udpParser
+class UdpParser
 {
     private:
-        session *m_currentSession;
+        /**
+         * @brief This method identifies the packet and return an instance of it
+         * @param data Received data
+         * @param client Client that sent the packet
+         * @return UdpPacket* Packet identified
+         */
+        static UdpPacket *identify(char *data, Client client);
 
     public:
-        udpParser();
-        udpParser(session *currentSession);
-        ~udpParser();
         /**
-         * @brief Set the current session.
-         *
-         * @param currentSession The current session.
+         * @brief Process the UDP packets
+         * @note This function must be called in the main loop.
          */
-        void setCurrentSession(session *currentSession);
+        static void process();
         /**
-         * @brief Parse UDP if there is one to parse.
+         * @brief Parse a UDP packet
+         * @param data Received data
          */
-        void parseUdp();
+        static void parseUdp(char *data);
         /**
-         * @brief Parse a specific UDP packet.
-         *
-         * @param packet The UDP packet to parse.
+         * @brief Parse a UDP packet
+         * @param data Received data
+         * @param client Client that sent the packet
          */
-        void parseUdp(udpPacket *packet);
+        static void parseUdp(char *data, Client client);
 };
-
-extern udpParser g_udpParser;
 
 #endif
