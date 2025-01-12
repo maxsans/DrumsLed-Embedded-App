@@ -1,6 +1,6 @@
 #include "udpPacketInit.h"
 
-#include <iostream>
+#include "api/logs/logStream.h"
 
 UdpPacketInit::UdpPacketInit(Client client, char *data) : UdpPacket(client, PACKET_TYPE_INIT)
 {
@@ -10,5 +10,5 @@ UdpPacketInit::UdpPacketInit(Client client, char *data) : UdpPacket(client, PACK
 void UdpPacketInit::parse()
 {
     // Implement parsing logic
-    std::cout << "Init packet received" << std::endl;
+    LogStream() << "Init packet received" << LogStream::endl;
 }

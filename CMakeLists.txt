@@ -34,6 +34,8 @@ endif()
 add_sources(
     main.cpp
 
+    api/logs/logStream.cpp
+
     tools/maths/matrix/matrix.cpp
     tools/timeTools/timeMs.cpp
     tools/timeTools/chronoMs.cpp

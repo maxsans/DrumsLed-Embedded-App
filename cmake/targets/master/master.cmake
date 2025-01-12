@@ -39,6 +39,7 @@ add_sources(
 # Specific windows source files
 if(WIN32)
     add_sources(
+        api/logs/logsWindows.cpp
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
         )
@@ -47,6 +48,7 @@ endif()
 # Specific linux source files
 if(UNIX)
     add_sources(
+        api/logs/logsLinux.cpp
         api/udp/udpLinux.cpp
         api/time/timeLinux.cpp
         )

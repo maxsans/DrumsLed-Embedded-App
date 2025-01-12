@@ -14,7 +14,6 @@
 #include <linux/if_packet.h>
 #include <cstdio>
 #include <fcntl.h>
-#include <iostream>
 
 int udp_socket;
 struct sockaddr_in udp_addr;

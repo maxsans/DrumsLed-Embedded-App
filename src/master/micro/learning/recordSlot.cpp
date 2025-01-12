@@ -2,7 +2,6 @@
 #include "impactsManager.h"
 
 #include <assert.h>
-#include <stdio.h>
 
 recordSlot::recordSlot(uint32_t nbMicros)
 {

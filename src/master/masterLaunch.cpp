@@ -1,14 +1,13 @@
 #include "launch.h"
 #include "api/udp/udp.h"
+#include "api/logs/logStream.h"
 #include "network/udpParser/udpParser.h"
 #include "session/session.h"
 #include "tools/timeTools/periodicCallsMs.h"
 
-#include <iostream>
-
 void launch()
 {
-    std::cout << "Master Start !" << std::endl;
+    LogStream() << "Master started" << LogStream::endl;
 
     /* Initialization */
     // Initialize the udp api
@@ -17,10 +16,10 @@ void launch()
     // Print the host IP address and MAC address
     char l_ip[16];
     udp_get_host_ip(l_ip);
-    std::cout << "Host IP: " << l_ip << std::endl;
+    LogStream() << "Host IP: " << l_ip << LogStream::endl;
     char l_mac[18];
     udp_get_host_mac(l_mac);
-    std::cout << "Host MAC: " << l_mac << std::endl;
+    LogStream() << "Host MAC: " << l_mac << LogStream::endl;
 
     // Create a session
     session l_session;

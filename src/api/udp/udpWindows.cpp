@@ -1,5 +1,7 @@
 #include "udp.h"
 
+#include "api/logs/logStream.h"
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
@@ -35,10 +37,10 @@ void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
     inet_pton(AF_INET, ip, &dest_addr.sin_addr);
-    printf("Sending data to IP: %s, Port: %d\n", ip, port); // Debug message
+    LogStream() << "Sending data to IP: "<< ip << ", Port: " << port << LogStream::endl;
     int result = sendto(udp_socket, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
     if (result == SOCKET_ERROR) {
-        printf("sendto() failed with error code : %d\n", WSAGetLastError());
+        LogStream() << "sendto() failed with error code : " << WSAGetLastError() << LogStream::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -65,7 +67,7 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         if (error == WSAEWOULDBLOCK) {
             return 0; // No data received
         } else {
-            printf("recvfrom() failed with error code : %d\n", error);
+            LogStream() << "recvfrom() failed with error code : " << error << LogStream::endl;
             exit(EXIT_FAILURE);
         }
     }

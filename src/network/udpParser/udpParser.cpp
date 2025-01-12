@@ -1,7 +1,5 @@
 #include "udpParser.h"
 
-#include <iostream>
-
 #include "api/udp/udp.h"
 
 #include "udpPackets/udpPacketInit.h"
@@ -37,7 +35,6 @@ UdpPacket *UdpParser::identify(char *data, Client client)
 #endif
 
         default:
-            // std::cout << "Unknown packet type (" << type << ")" << std::endl;
             break;
     }
 
@@ -59,7 +56,6 @@ void UdpParser::process()
         MacAddr l_packetMac(l_Mac);
         // Get the client from the IP address and MAC address
         Client l_packetClient(l_packetIp, l_packetMac);
-        // std::cout << "Received UDP packet from " << l_packetIp.getIpString() << " on port " << l_Port <<  " with MAC " << l_packetMac.getMacString() << std::endl;
         // Parse the packet
         UdpParser::parseUdp(l_PacketData, l_packetClient);
     }

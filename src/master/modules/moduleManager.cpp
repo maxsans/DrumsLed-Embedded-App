@@ -3,7 +3,6 @@
 #include "network/udpParser/udpPackets/udpPacket.h"
 
 #include <stdint.h>
-#include <stdio.h>
 #include <sys/time.h>
 
 #define RING_INTERVAL 500 // ms
