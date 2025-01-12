@@ -1,6 +1,5 @@
 #include "moduleManager.h"
-#include "api/udp/udp.h"
-#include "network/udpParser/udpPackets/udpPacket.h"
+#include "network/udpParser/udpPackets/udpPacketPingSlaves.h"
 
 #include <stdint.h>
 #include <sys/time.h>
@@ -101,9 +100,5 @@ void moduleManager::ringModules()
 {
     // Send a broadcast UDP packet to ring new modules
     // The modules detected will respond
-    char l_packet[] =
-    {
-        PACKET_TYPE_INIT // Ring packet
-    };
-    udp_send_broadcast(l_packet, sizeof(l_packet), UDP_DEFAULT_PORT);
+    UdpPacketPingSlaves().send();
 }

@@ -3,11 +3,12 @@
 
 #include "udpPacket.h"
 
-class UdpPacketInit : public UdpPacket
+class UdpPacketInitModule : public UdpPacket
 {
     public:
-        UdpPacketInit(Client client, char *data);
+        UdpPacketInitModule(Client client, char *data);
         void parse() override;
+        void send() override;
 };
 
 #endif // __UDP_PACKET_INIT_H__

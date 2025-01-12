@@ -2,7 +2,8 @@
 
 #include "api/udp/udp.h"
 
-#include "udpPackets/udpPacketInit.h"
+#include "udpPackets/udpPacketPingSlaves.h"
+#include "udpPackets/udpPacketInitModule.h"
 #include "udpPackets/udpPacketRgb.h"
 #include "udpPackets/udpPacketAdc.h"
 
@@ -17,22 +18,19 @@ UdpPacket *UdpParser::identify(char *data, Client client)
 
     switch (type)
     {
-#ifdef __TARGET_MASTER // If master
-        case PACKET_TYPE_INIT:
-            packet = new UdpPacketInit(client, dataWithoutType);
+        case PACKET_TYPE_PING_SLAVES:
+            packet = new UdpPacketPingSlaves();
+            break;
+        case PACKET_TYPE_INIT_MODULE:
+            packet = new UdpPacketInitModule(client, dataWithoutType);
             break;
         case PACKET_TYPE_ADC:
             packet = new UdpPacketAdc(client, dataWithoutType);
             break;
-        // Add new packet types here
-#endif
-
-#ifdef __TARGET_SLAVES // If slave
         case PACKET_TYPE_RGB:
             packet = new UdpPacketRgb(client, dataWithoutType);
             break;
         // Add new packet types here
-#endif
 
         default:
             break;

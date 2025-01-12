@@ -12,6 +12,7 @@ class UdpPacketAdc : public UdpPacket
         UdpPacketAdc(Client client, char *data);
         UdpPacketAdc(Client client, uint8_t adcValue);
         void parse() override;
+        void send() override;
 };
 
 #endif // __UDP_PACKET_ADC_H__

@@ -13,6 +13,7 @@ class UdpPacketRgb : public UdpPacket
         UdpPacketRgb(Client client, char *data);
         UdpPacketRgb(Client client, rgbColor color);
         void parse() override;
+        void send() override;
 };
 
 #endif // __UDP_PACKET_RGB_H__

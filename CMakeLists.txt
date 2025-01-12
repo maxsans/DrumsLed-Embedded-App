@@ -47,7 +47,8 @@ add_sources(
     network/udpParser/udpParser.cpp
     network/udpParser/udpPackets/udpPacket.cpp
     network/udpParser/udpPackets/udpPacketAdc.cpp
-    network/udpParser/udpPackets/udpPacketInit.cpp
+    network/udpParser/udpPackets/udpPacketInitModule.cpp
+    network/udpParser/udpPackets/udpPacketPingSlaves.cpp
     network/udpParser/udpPackets/udpPacketRgb.cpp
     )
 

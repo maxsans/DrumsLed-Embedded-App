@@ -49,6 +49,15 @@ class rgbColor
         uint32_t getColor();
 
         /**
+         * @brief Get the R/G/B value.
+         *
+         * @return uint8_t The R/G/B value.
+         */
+        uint8_t getRed() { return m_redValue; }
+        uint8_t getGreen() { return m_greenValue; }
+        uint8_t getBlue() { return m_blueValue; }
+
+        /**
          * @brief Operators for rgbColor.
          */
         rgbColor operator*(float value);

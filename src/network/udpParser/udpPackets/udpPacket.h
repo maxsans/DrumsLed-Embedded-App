@@ -5,7 +5,8 @@
 
 typedef enum
 {
-    PACKET_TYPE_INIT,
+    PACKET_TYPE_PING_SLAVES,
+    PACKET_TYPE_INIT_MODULE,
     PACKET_TYPE_RGB,
     PACKET_TYPE_ADC
     // Add new packet types here
@@ -27,6 +28,8 @@ class UdpPacket
          * @brief Virtual method to do the action of the packet
          */
         virtual void parse() = 0;
+
+        virtual void send() = 0;
 };
 
 #endif // __UDP_PACKET_H__
