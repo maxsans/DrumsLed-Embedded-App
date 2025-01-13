@@ -11,6 +11,7 @@ class UdpPacketAdc : public UdpPacket
     public:
         UdpPacketAdc(Client client, char *data);
         UdpPacketAdc(Client client, uint8_t adcValue);
+        virtual ~UdpPacketAdc() = default;
         void parse() override;
         void send() override;
 };

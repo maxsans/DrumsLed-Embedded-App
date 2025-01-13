@@ -3,9 +3,8 @@
 #include "api/logs/logStream.h"
 #include "api/udp/udp.h"
 
-UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(Client(), PACKET_TYPE_PING_SLAVES)
+UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)
 {
-    // No this packet type does not have any data
 }
 
 void UdpPacketPingSlaves::parse()

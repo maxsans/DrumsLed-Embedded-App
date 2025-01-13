@@ -22,7 +22,7 @@ class udpPacket
     public:
         udpPacket();
         udpPacket(Client client, char *packet, uint32_t len);
-        ~udpPacket();
+        virtual ~udpPacket() = default;
         void setPacket(Client client, char *packet, uint32_t len);
         void setClient(Client client);
         void setData(char *packet, uint32_t len);

@@ -16,6 +16,7 @@ class UdpPacketInitModule : public UdpPacket
     public:
         UdpPacketInitModule(Client client, char *data);
         UdpPacketInitModule(Client client, moduleType_t moduleType);
+        virtual ~UdpPacketInitModule() = default;
         void parse() override;
         void send() override;
 };

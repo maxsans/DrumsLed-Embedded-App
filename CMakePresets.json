@@ -21,12 +21,16 @@
         },
         {
             "name": "master-linux",
-            "inherits": "master"
+            "inherits": "master",
+            "cacheVariables": {
+                "miDebuggerPath" : "C:/msys64/ucrt64/bin/gdb.exe"
+            }
         },
         {
             "name": "master-windows",
             "inherits": "master",
             "cacheVariables": {
+                "miDebuggerPath" : "/usr/bin/gdb",
                 "CMAKE_MAKE_PROGRAM" : "C:/Users/cipry/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe"
             }
         },

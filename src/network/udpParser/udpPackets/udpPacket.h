@@ -21,8 +21,8 @@ class UdpPacket
         Client m_client;
 
     public:
+        UdpPacket(UdpPacketType type);
         UdpPacket(Client client, UdpPacketType type);
-        ~UdpPacket();
 
         /**
          * @brief Virtual method to do the action of the packet
@@ -30,6 +30,8 @@ class UdpPacket
         virtual void parse() = 0;
 
         virtual void send() = 0;
+
+        virtual ~UdpPacket() = default;
 };
 
 #endif // __UDP_PACKET_H__
