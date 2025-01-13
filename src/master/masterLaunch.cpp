@@ -21,8 +21,6 @@ void launch()
     udp_get_host_mac(l_mac);
     LogStream() << "Host MAC: " << l_mac << LogStream::endl;
 
-    // Create a session
-    session l_session;
     // TODO: Move terminal from old project and enable this line
     // terminal::setCurrentSession(&l_session);
 
@@ -33,7 +31,8 @@ void launch()
         // TODO: Move terminal from old project and enable this line
         // terminal::process();
         // Process the session
-        l_session.process();
+        g_session.process();
+        // Process the periodic calls
         periodicCallsMs::processAll();
     }
 }

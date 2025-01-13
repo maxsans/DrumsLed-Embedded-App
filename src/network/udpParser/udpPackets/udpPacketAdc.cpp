@@ -1,6 +1,9 @@
 #include "udpPacketAdc.h"
 
 #include "api/udp/udp.h"
+#ifdef __TARGET_MASTER
+    #include "session/session.h"
+#endif
 
 UdpPacketAdc::UdpPacketAdc(Client client, char *data) : UdpPacket(client, PACKET_TYPE_ADC)
 {
@@ -14,7 +17,15 @@ UdpPacketAdc::UdpPacketAdc(Client client, uint8_t adcValue) : UdpPacket(client, 
 
 void UdpPacketAdc::parse()
 {
-    // Implement parsing logic
+#ifdef __TARGET_MASTER
+    // New value on the adc of this module, uptate it micro value
+    module *l_module = g_session.getModuleManager()->getModule(m_client);
+    if (l_module != NULL)
+    {
+        // Set the micro value of this module
+        g_session.getMicroManager()->setMicro(l_module, m_adcValue);
+    }
+#endif
 }
 
 void UdpPacketAdc::send()

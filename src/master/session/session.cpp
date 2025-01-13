@@ -39,3 +39,5 @@ animationManager *session::getAnimationManager()
 {
     return &m_animationManager;
 }
+
+session g_session;
