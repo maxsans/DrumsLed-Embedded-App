@@ -10,26 +10,26 @@ add_compile_options(-D__TARGET_MASTER)
 add_sources(
     master/masterLaunch.cpp
 
-    master/animation/animation.cpp
-    master/animation/animationManager.cpp
-    master/animation/fade.cpp
-    master/animation/simpleColor.cpp
+    animation/animation.cpp
+    animation/animationManager.cpp
+    animation/fade.cpp
+    animation/simpleColor.cpp
 
-    master/modules/module.cpp
-    master/modules/moduleManager.cpp
+    modules/module.cpp
+    modules/moduleManager.cpp
 
-    master/led/colorOrder.cpp
-    master/led/ledManager.cpp
-    master/led/rgbColor.cpp
-    master/led/rgbLed.cpp
+    led/colorOrder.cpp
+    led/ledManager.cpp
+    led/rgbColor.cpp
+    led/rgbLed.cpp
 
-    master/micro/learning/impact.cpp
-    master/micro/learning/impactsManager.cpp
-    master/micro/learning/learning.cpp
-    master/micro/learning/record.cpp
-    master/micro/learning/recordSlot.cpp
-    master/micro/micro.cpp
-    master/micro/microManager.cpp
+    micro/learning/impact.cpp
+    micro/learning/impactsManager.cpp
+    micro/learning/learning.cpp
+    micro/learning/record.cpp
+    micro/learning/recordSlot.cpp
+    micro/micro.cpp
+    micro/microManager.cpp
 
     master/session/session.cpp
 
@@ -39,6 +39,7 @@ add_sources(
 # Specific windows source files
 if(WIN32)
     add_sources(
+        api/logs/logsWindows.cpp
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
         )
@@ -47,6 +48,7 @@ endif()
 # Specific linux source files
 if(UNIX)
     add_sources(
+        api/logs/logsLinux.cpp
         api/udp/udpLinux.cpp
         api/time/timeLinux.cpp
         )

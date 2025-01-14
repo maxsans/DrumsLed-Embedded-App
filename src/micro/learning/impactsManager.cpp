@@ -1,7 +1,6 @@
 #include "impactsManager.h"
 #include "tools/maths/matrix/matrix.h"
 
-#include <stdio.h>
 #include <assert.h>
 
 impactsManager::impactsManager()

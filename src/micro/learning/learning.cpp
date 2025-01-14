@@ -1,9 +1,9 @@
 #include "learning.h"
+#include "api/logs/logStream.h"
 #include "modules/moduleManager.h"
 #include "led/ledManager.h"
 #include "tools/timeTools/periodicCallsMs.h"
 
-#include <stdio.h>
 #include <assert.h>
 
 #define NB_MESURES_MAX 200
@@ -52,7 +52,7 @@ void learning::startLearning()
     m_moduleManager->enableNewModules(false);
     if (m_microManager->getMicroCount() > 0)
     {
-        printf("Start learning\n");
+        LogStream() << "Start learning" << LogStream::endl;
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
         uint32_t l_nbMicros = m_microManager->getMicroCount();
@@ -65,7 +65,7 @@ void learning::startLearning()
     }
     else
     {
-        printf("No micros to learn\n");
+        LogStream() << "No micros to learn" << LogStream::endl;
     }
 }
 
@@ -75,7 +75,7 @@ void learning::startLearning(int32_t microIndex)
     assert(microIndex >= 0 && microIndex < m_microRecordSlots.size());
     m_MicroInRecord = microIndex;
 
-    printf("Start learning on micro %d\n", microIndex+1);
+    LogStream() << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
     micro *l_mainMicro = m_microManager->getMicro(microIndex);
@@ -139,9 +139,9 @@ void learning::recordAllMic()
             // Add a record to the vector of records for each micro
             l_record.setValue(l_microIndex, l_value);
 
-            printf("%d  ",l_value);
+            LogStream() << l_value << "  ";
         }
-        printf("\n");
+        LogStream() << LogStream::endl;
         // Add the record to the record slot
         m_microRecordSlots[m_MicroInRecord]->addRecord(l_record);
 
@@ -173,7 +173,7 @@ void learning::stopLearning()
         // All the micros have been learned
         // Stop the learning process
         m_recordPeriodicCall.enable(false);
-        printf("\nEnd of learning\n");
+        LogStream() << LogStream::endl << "End of learning" << LogStream::endl;
 
         // Interpret the records
         calculateCorrection();
@@ -231,7 +231,7 @@ void learning::calculateCorrection()
             // The maximum is 0
             // It seems to be an error but let's admit that the correction is 1
             l_correction = 1;
-            printf("Error : The maximum of the micro %d is 0, seems to be impossible. Correction applied is 1.00\n", l_microIndex);
+            LogStream() << "Error : The maximum of the micro " << l_microIndex << " is 0, seems to be impossible. Correction applied is 1.00" << LogStream::endl;
         }
         // Set the correction
         l_micro->setCorrection(l_correction);
@@ -265,14 +265,12 @@ void learning::calculateThreshold()
         l_micro->setThreshold(0);
     }
     uint32_t l_nbMicros = m_microManager->getMicroCount();
-    // printf("Nb micros : %d\n", l_nbMicros);
     for(uint32_t l_learningIndex = 0; l_learningIndex < l_nbMicros; l_learningIndex++)
     {
         for(uint32_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
         {
             if (l_impactedMicro != l_learningIndex)
             {
-                // printf("Impactor : %d, Impacted : %d\n", l_learningIndex, l_impactedMicro);
                 // Get the micro
                 micro *l_micro = m_microManager->getMicro(l_impactedMicro);
 
@@ -284,7 +282,6 @@ void learning::calculateThreshold()
 
                     // Get the value of the micro
                     int32_t l_value = l_record.getValue(l_impactedMicro);
-                    // printf("Initial Value : %d      ", l_value);
 
                     // Apply the artificial impact
                     for (uint32_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
@@ -303,11 +300,9 @@ void learning::calculateThreshold()
                         }
                     }
 
-                    // printf("Final Value : %d\n", l_value);
                     // Set the threshold if the value is greater
                     if (l_value > l_micro->getThreshold())
                     {
-                        // printf("Threshold of micro %d is %d\n", l_impactedMicro, l_value + THRESHOLD_MARGIN);
                         l_micro->setThreshold(l_value + THRESHOLD_MARGIN);
                     }
                 }
@@ -319,42 +314,42 @@ void learning::calculateThreshold()
 void learning::printResults()
 {
     // Display the corrections calculated
-    printf("\nCorrections :\n");
+    LogStream() << "\nCorrections :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the correction
         float l_correction = m_microManager->getMicro(l_microIndex)->getCorrection();
-        printf("%.2f    ", l_correction);
+        LogStream() << l_correction << "    ";
     }
     // Display the impacts calculated as 2 matrix (real and artificial)
-    printf("\n\nReal impacts :\n");
+    LogStream() << "\n\nReal impacts :" << LogStream::endl;
     for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
     {
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the real impact
             float l_realImpact = m_microManager->getImpactsManager()->getRealImpact(l_impactorMicro, l_impactedMicro);
-            printf("%.2f    ", l_realImpact);
+            LogStream() << l_realImpact << "    ";
         }
-        printf("\n");
+        LogStream() << LogStream::endl;
     }
-    printf("\nArtificial impacts :\n");
+    LogStream() << "\nArtificial impacts :" << LogStream::endl;
     for (uint8_t l_impactorMicro = 0; l_impactorMicro < m_microManager->getMicroCount(); l_impactorMicro++)
     {
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < m_microManager->getMicroCount(); l_impactedMicro++)
         {
             // Get the artificial impact
             float l_artImpact = m_microManager->getImpactsManager()->getArtImpact(l_impactorMicro, l_impactedMicro);
-            printf("%.2f    ", l_artImpact);
+            LogStream() << l_artImpact << "    ";
         }
-        printf("\n");
+        LogStream() << "" << LogStream::endl;
     }
-    printf("\nThresholds :\n");
+    LogStream() << "\nThresholds :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the threshold
         uint8_t l_threshold = m_microManager->getMicro(l_microIndex)->getThreshold();
-        printf("%d    ", l_threshold);
+        LogStream() << l_threshold << "    ";
     }
-    printf("\n");
+    LogStream() << LogStream::endl;
 }

@@ -1,7 +1,6 @@
 #include "micro.h"
 #include "api/time/time.h"
-
-#include <stdio.h>
+#include "api/logs/logStream.h"
 
 #define MICRO_TIMEOUT 100 // ms
 #define DEFAULT_CORRECTION 1.00
@@ -31,7 +30,7 @@ void micro::sync()
     // Sync the micro
     if (!m_connected)
     {
-        // printf("Micro reconnected, ip: %s\n", m_module->getIp());
+        // LogStream() << "Micro reconnected, ip: "<< m_module->getIp() << LogStream::endl;
         m_connected = true;
     }
     m_lastSyncTime = timeMs();
@@ -44,7 +43,7 @@ void micro::checkTime()
     {
         if (m_connected)
         {
-            // printf("Micro disconnected, ip: %s\n", m_module->getIp());
+            // LogStream() << "Micro disconnected, ip: " << m_module->getIp() << LogStream::endl;
             m_connected = false;
             // Reset values to 0
             m_microValue = 0;

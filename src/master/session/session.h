@@ -27,4 +27,6 @@ class session
         animationManager *getAnimationManager();
 };
 
+extern session g_session;
+
 #endif

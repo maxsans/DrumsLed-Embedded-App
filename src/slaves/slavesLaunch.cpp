@@ -1,8 +1,7 @@
 #include "launch.h"
-
-#include <stdio.h>
+#include "api/logs/logStream.h"
 
 void launch()
 {
-    printf("Slaves start !\n");
+    LogStream() << "Slaves start !" << LogStream::endl;
 }

@@ -1,130 +1,70 @@
 #include "udpParser.h"
 
 #include "api/udp/udp.h"
-#include "session/session.h"
-#include "network/udp/getUdpPacket.h"
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
+#include "udpPackets/udpPacketPingSlaves.h"
+#include "udpPackets/udpPacketInitModule.h"
+#include "udpPackets/udpPacketRgb.h"
+#include "udpPackets/udpPacketAdc.h"
 
-typedef enum
+#define MAX_UDP_PACKET_SIZE 1024
+#define MAX_IP_SIZE_CHARS 16
+
+UdpPacket *UdpParser::identify(char *data, Client client)
 {
-    TYPE_DRUM_MODULE
-} moduleType;
+    UdpPacketType type = (UdpPacketType)data[0];
+    UdpPacket *packet = nullptr;
+    char *dataWithoutType = data + sizeof(UdpPacketType);
 
-udpParser::udpParser()
-{
-    // Constructor
-    m_currentSession = NULL;
-}
-
-udpParser::udpParser(session *currentSession)
-{
-    // Constructor
-    m_currentSession = currentSession;
-}
-
-udpParser::~udpParser()
-{
-    // Destructor
-}
-
-void udpParser::setCurrentSession(session *currentSession)
-{
-    // Set the current session
-    m_currentSession = currentSession;
-}
-
-void udpParser::parseUdp()
-{
-    // Get the udp Packet
-    udpPacket l_packet;
-    // Check if there is a packet to parse
-    if(getUdpPacket(&l_packet))
+    switch (type)
     {
-        // Parse the UDP packets
-        parseUdp(&l_packet);
-    }
-}
-
-/**
- * @brief Bad implementation of the udp parser.
- * @todo Refactor this function after slave projet refactoring.
- */
-void udpParser::parseUdp(udpPacket *packet)
-{
-    char *data = packet->getData();
-    Client client = packet->getClient();
-    // Parse the UDP packet
-    switch (data[0])
-    {
-        case PACKET_TYPE_INIT:
-        {
-            // A new module is found, add it to the list of modules
-            // Check if the module is already in the list
-            if (m_currentSession->getModuleManager()->getModule(client) != NULL)
-            {
-                // Module already in the list, ignore
-                break;
-            }
-            // Add the module to the list
-            if (m_currentSession->getModuleManager()->addModule(new module(client)))
-            {
-                module *newModule = m_currentSession->getModuleManager()->getModule(client);
-                if (newModule == NULL)
-                {
-                    printf("Error while adding new module !\n");
-                    return;
-                }
-                switch(data[1]) // type of module
-                {
-                    case TYPE_DRUM_MODULE:
-                        m_currentSession->getMicroManager()->addMicro(newModule);
-                        m_currentSession->getLedManager()->addLed(newModule);
-                        printf("New drum module ! ip : %s, mac : %s\n",
-                                    client.getIP().getIpString().c_str(),
-                                    client.getMAC().getMacString().c_str());
-                        break;
-
-                    default:
-                        // Unknowed module, ignore
-                        printf("Unknown module detected ! ip : %s, mac : %s\n",
-                                    client.getIP().getIpString().c_str(),
-                                    client.getMAC().getMacString().c_str());
-                        break;
-                }
-            }
+        case PACKET_TYPE_PING_SLAVES:
+            packet = new UdpPacketPingSlaves();
             break;
-        }
-
-        case PACKET_TYPE_RGB:
-            // Normally impossible on master, ignore
+        case PACKET_TYPE_INIT_MODULE:
+            packet = new UdpPacketInitModule(client, dataWithoutType);
             break;
-
         case PACKET_TYPE_ADC:
-        {
-            // New value on the adc of this module, uptate it micro value
-            module *l_module = m_currentSession->getModuleManager()->getModule(client);
-            if (l_module != NULL)
-            {
-                // Set the micro value of this module
-                uint8_t l_microValue = data[1];
-                m_currentSession->getMicroManager()->setMicro(l_module, l_microValue);
-            }
+            packet = new UdpPacketAdc(client, dataWithoutType);
             break;
-        }
+        case PACKET_TYPE_RGB:
+            packet = new UdpPacketRgb(client, dataWithoutType);
+            break;
+        // Add new packet types here
 
         default:
-            // Unknown packet type, ignore
             break;
     }
-    // A packet has been received for a module, sync it
-    module *l_module = m_currentSession->getModuleManager()->getModule(client);
-    if (l_module != NULL)
+
+    return packet;
+}
+
+void UdpParser::process()
+{
+    char l_PacketData[MAX_UDP_PACKET_SIZE];
+    char l_IP[MAX_IP_SIZE_CHARS];
+    char l_Mac[18];
+    int16_t l_Port;
+    uint32_t l_len = udp_recv(l_PacketData, MAX_UDP_PACKET_SIZE, l_IP, &l_Port, l_Mac);
+    if (l_len)
     {
-        l_module->sync();
+        // Get the IP address of the packet
+        IPv4 l_packetIp(l_IP);
+        // Get the MAC address of the packet
+        MacAddr l_packetMac(l_Mac);
+        // Get the client from the IP address and MAC address
+        Client l_packetClient(l_packetIp, l_packetMac);
+        // Parse the packet
+        UdpParser::parseUdp(l_PacketData, l_packetClient);
     }
 }
 
-udpParser g_udpParser;
+void UdpParser::parseUdp(char *data, Client client)
+{
+    UdpPacket *packet = identify(data, client);
+    if(packet != nullptr)
+    {
+        packet->parse();
+        delete packet;
+    }
+}

@@ -1,6 +1,6 @@
 #include "matrix.h"
+#include "api/logs/logStream.h"
 
-#include <stdio.h>
 #include <assert.h>
 
 matrix::matrix(uint32_t size)
@@ -32,14 +32,14 @@ matrix::~matrix()
 
 void matrix::print()
 {
-    printf("Matrix of size %d\n", m_size);
+    LogStream() << "Matrix of size " << m_size << LogStream::endl;
     for (uint32_t i = 0; i < m_size; i++)
     {
         for (uint32_t j = 0; j < m_size; j++)
         {
-            printf("%.2f   ", m_data[i][j]);
+            LogStream() << m_data[i][j] << "   ";
         }
-        printf("\n");
+        LogStream() << LogStream::endl;
     }
 }
 

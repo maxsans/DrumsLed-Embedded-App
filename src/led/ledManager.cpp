@@ -1,7 +1,7 @@
 #include "ledManager.h"
 
 #include "api/udp/udp.h"
-#include "network/udp/udpPacket.h"
+#include "network/udpParser/udpPackets/udpPacketRgb.h"
 #include "assert.h"
 
 #include <sys/time.h>
@@ -77,17 +77,9 @@ void ledManager::update()
     for (uint8_t i = 0; i < m_leds.size(); i++)
     {
         // Send the color to the module over UDP
-        uint8_t redValue, greenValue, blueValue;
-        rgbColor color = m_leds[i]->getColor();
-        color.getColor(&redValue, &greenValue, &blueValue);
-        char msg[] =
-        {
-            PACKET_TYPE_RGB,
-            (char)redValue,
-            (char)greenValue,
-            (char)blueValue
-        };
-        m_leds[i]->getModule()->getClient().send(msg, sizeof(msg));
+        rgbColor l_color = m_leds[i]->getColor();
+        Client l_client = m_leds[i]->getModule()->getClient();
+        UdpPacketRgb(l_client, l_color).send();
     }
 }
 

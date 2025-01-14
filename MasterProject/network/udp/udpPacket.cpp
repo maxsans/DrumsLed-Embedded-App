@@ -15,12 +15,6 @@ udpPacket::udpPacket(Client client, char *packet, uint32_t len)
     m_len = len;
 }
 
-
-udpPacket::~udpPacket()
-{
-    // Destructor
-}
-
 void udpPacket::setPacket(Client client, char *packet, uint32_t len)
 {
     // Set the packet

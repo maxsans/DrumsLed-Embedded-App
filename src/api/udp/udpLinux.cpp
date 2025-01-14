@@ -13,6 +13,7 @@
 #include <net/if_arp.h>
 #include <linux/if_packet.h>
 #include <cstdio>
+#include <fcntl.h>
 
 int udp_socket;
 struct sockaddr_in udp_addr;
@@ -23,6 +24,11 @@ void udp_init()
     assert(udp_socket != -1);
     memset(&udp_addr, 0, sizeof(udp_addr));
     udp_addr.sin_family = AF_INET;
+    // Set a timeout for the socket
+    struct timeval tv;
+    tv.tv_sec = 0;  // Timeout in seconds
+    tv.tv_usec = 1; // Timeout in microseconds
+    setsockopt(udp_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
 }
 
 void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
@@ -71,15 +77,20 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 
 void udp_get_host_ip(char *ip)
 {
-    char host[256];
-    if (gethostname(host, sizeof(host)) == 0) {
-        struct hostent *host_entry = gethostbyname(host);
-        assert(host_entry);
-        if (host_entry) {
-            strcpy(ip, inet_ntoa(*(struct in_addr*)host_entry->h_addr_list[0]));
+    struct ifaddrs *ifaddr, *ifa;
+    if (getifaddrs(&ifaddr) == 0) {
+        for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+            if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_INET) {
+                struct sockaddr_in *s = (struct sockaddr_in *)ifa->ifa_addr;
+                if (strcmp(ifa->ifa_name, "eth0") == 0) {
+                    strcpy(ip, inet_ntoa(s->sin_addr));
+                    break;
+                }
+            }
         }
+        freeifaddrs(ifaddr);
     } else {
-        assert(false);
+        // Handle error
     }
 }
 
@@ -89,8 +100,8 @@ void udp_get_host_mac(char *mac)
     if (getifaddrs(&ifaddr) == 0) {
         for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
             if (ifa->ifa_addr && ifa->ifa_addr->sa_family == AF_PACKET) {
-                struct sockaddr_ll *s = (struct sockaddr_ll*)ifa->ifa_addr;
-                if (s->sll_halen == 6) {
+                struct sockaddr_ll *s = (struct sockaddr_ll *)ifa->ifa_addr;
+                if (strcmp(ifa->ifa_name, "eth0") == 0) {
                     sprintf(mac, "%02x:%02x:%02x:%02x:%02x:%02x",
                             s->sll_addr[0], s->sll_addr[1], s->sll_addr[2],
                             s->sll_addr[3], s->sll_addr[4], s->sll_addr[5]);
