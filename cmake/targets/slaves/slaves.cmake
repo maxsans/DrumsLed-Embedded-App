@@ -13,6 +13,7 @@ add_sources(
     api/udp/udpEsp8266.cpp
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
+    api/adc/adcEsp8266.cpp
     )
 
 ####################################################################################################
