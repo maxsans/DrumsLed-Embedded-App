@@ -6,6 +6,7 @@ add_compile_options(-D__TARGET_DRUMKIT)
 # DrumKit source files (from src directory)
 ####################################################################################################
 add_sources(
+    api/addrLed/addrLedDrumKit.cpp
     )
 
 ####################################################################################################
