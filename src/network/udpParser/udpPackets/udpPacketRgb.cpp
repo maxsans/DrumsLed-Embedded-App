@@ -1,6 +1,9 @@
 #include "udpPacketRgb.h"
 
 #include "api/udp/udp.h"
+#ifdef __TARGET_SLAVES
+
+#endif
 
 UdpPacketRgb::UdpPacketRgb(Client client, char *data) : UdpPacket(client, PACKET_TYPE_RGB)
 {
@@ -14,7 +17,9 @@ UdpPacketRgb::UdpPacketRgb(Client client, rgbColor color) : UdpPacket(client, PA
 
 void UdpPacketRgb::parse()
 {
-    // Implement parsing logic
+#ifdef __TARGET_SLAVES
+
+#endif
 }
 
 void UdpPacketRgb::send()
