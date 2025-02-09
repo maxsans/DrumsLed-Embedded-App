@@ -6,9 +6,11 @@
 
 void launch()
 {
-    LogStream() << "Slaves start !" << LogStream::endl;
+    LogStream::cout << "Slaves start !" << LogStream::endl;
 
     adc_init();
     wifi_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
+
+    while(1);
 }

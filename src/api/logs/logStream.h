@@ -2,44 +2,25 @@
 #define __LOG_STREAM_H__
 
 #include "logs.h"
-#include <sstream>
+#include <cstring>
+#include <cstdio>
+#include <string>
 
 class LogStream
 {
-    private:
-        std::ostringstream buffer;
-
     public:
         LogStream() = default;
-        ~LogStream();
 
-        std::ostringstream& getBuffer();
+        static LogStream cout;
 
-        template <typename T>
-        LogStream& operator<<(const T& value)
-        {
-            buffer << value;
-            return *this;
-        }
-        LogStream& operator<<(std::ostream& (*func)(std::ostream&))
-        {
-            buffer << func;
-            return *this;
-        }
-        LogStream& operator<<(std::ios& (*func)(std::ios&))
-        {
-            buffer << func;
-            return *this;
-        }
-        LogStream& operator<<(std::ios_base& (*func)(std::ios_base&))
-        {
-            buffer << func;
-            return *this;
-        }
-        LogStream& operator<<(LogStream& (*func)(LogStream&))
-        {
-            return func(*this);
-        }
+        LogStream& operator<<(const char* value);
+        LogStream& operator<<(int value);
+        LogStream& operator<<(unsigned int value);
+        LogStream& operator<<(float value);
+        LogStream& operator<<(double value);
+        LogStream& operator<<(char value);
+        LogStream& operator<<(std::string value);
+        LogStream& operator<<(LogStream& (*func)(LogStream&));
 
         static LogStream& endl(LogStream& stream);
 };
