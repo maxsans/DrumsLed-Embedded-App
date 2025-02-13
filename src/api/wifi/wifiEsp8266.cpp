@@ -68,7 +68,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        log("got ip:%s \n",
+        log("got ip: %s \n",
             ip4addr_ntoa(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
@@ -121,11 +121,11 @@ void wifi_init_sta(void)
      * happened. */
     if (bits & WIFI_CONNECTED_BIT)
     {
-        log("connected to ap SSID:%s password:%s\n", g_ssid, g_password);
+        log("connected to ap SSID: %s password: %s\n", g_ssid, g_password);
     }
     else if (bits & WIFI_FAIL_BIT)
     {
-        log("Failed to connect to SSID:%s, password:%s\n", g_ssid, g_password);
+        log("Failed to connect to SSID: %s, password: %s\n", g_ssid, g_password);
     }
     else
     {
