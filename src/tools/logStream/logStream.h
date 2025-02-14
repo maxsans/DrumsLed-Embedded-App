@@ -1,7 +1,7 @@
 #ifndef __LOG_STREAM_H__
 #define __LOG_STREAM_H__
 
-#include "logs.h"
+#include "api/logs/logs.h"
 #include <cstring>
 #include <cstdio>
 #include <string>

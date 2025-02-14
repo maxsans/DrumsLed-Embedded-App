@@ -1,6 +1,6 @@
 #include "udpPacketPingSlaves.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
 
 UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)

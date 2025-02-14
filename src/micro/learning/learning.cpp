@@ -1,5 +1,5 @@
 #include "learning.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "modules/moduleManager.h"
 #include "tools/timeTools/periodicCallsMs.h"
 

@@ -1,6 +1,6 @@
 #include "launch.h"
 #include "api/target/common.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "api/wifi/wifi.h"
 #include "api/adc/adc.h"
 #include "network/networkConfig.h"

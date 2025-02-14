@@ -1,6 +1,6 @@
 #include "udp.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>

@@ -1,6 +1,6 @@
 #include "udpPacketInitModule.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
 #ifdef __TARGET_MASTER
     #include "session/session.h"

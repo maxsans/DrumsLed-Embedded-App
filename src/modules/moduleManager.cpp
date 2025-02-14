@@ -2,7 +2,7 @@
 #include "modules/drumModule.h"
 #include "modules/cymbalModule.h"
 #include "network/udpParser/udpPackets/udpPacketPingSlaves.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 
 #include <stdint.h>
 #include <sys/time.h>

@@ -1,6 +1,6 @@
 #include "micro.h"
 #include "api/time/time.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 
 #define MICRO_TIMEOUT 100 // ms
 #define DEFAULT_CORRECTION 1.00

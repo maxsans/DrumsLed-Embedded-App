@@ -1,6 +1,6 @@
 #include "launch.h"
 #include "api/udp/udp.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "network/udpParser/udpParser.h"
 #include "session/session.h"
 #include "tools/timeTools/periodicCallsMs.h"
