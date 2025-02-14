@@ -12,9 +12,9 @@
 class learning
 {
     private:
-        microManager *m_microManager;
-        ledManager *m_ledManager;
-        moduleManager *m_moduleManager;
+        MicroManager *m_microManager;
+        LedManager *m_ledManager;
+        ModuleManager *m_moduleManager;
         int32_t m_MicroInRecord;
         periodicCallsMs m_recordPeriodicCall;
         /**
@@ -65,7 +65,7 @@ class learning
          *
          * @param sessionToLearn The session to learn
          */
-        void setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager);
+        void setSession(ModuleManager *moduleManager, MicroManager *microManager, LedManager *ledManager);
 
         /**
          * @brief Start the learning process on all the micros

@@ -1,23 +1,23 @@
 #include "fade.h"
 #include "api/time/time.h"
 
-fade::fade(micro *m, rgbLed *rgbLed, rgbColor color, uint32_t duration) : animation(ANIMATION_TYPE_FADE, m, rgbLed)
+Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, uint32_t duration) : Animation(ANIMATION_TYPE_FADE, m, rgbLed)
 {
     m_color = color;
     m_duration = duration;
     m_hitTime = 0;
 }
 
-fade::~fade()
+Fade::~Fade()
 {
 }
 
-void fade::start()
+void Fade::start()
 {
     m_rgbLed->releaseColor(COLOR_PRIORITY_FADE);
 }
 
-void fade::process()
+void Fade::process()
 {
     if (m_micro->isHit())
     {
@@ -40,7 +40,7 @@ void fade::process()
             {
                 ratio = 1 - (float)elapsedTime / m_duration;
             }
-            rgbColor color = m_color * ratio;
+            RgbColor color = m_color * ratio;
             m_rgbLed->setColor(COLOR_PRIORITY_FADE, color);
         }
         else
@@ -51,7 +51,7 @@ void fade::process()
     }
 }
 
-void fade::stop()
+void Fade::stop()
 {
     m_rgbLed->releaseColor(COLOR_PRIORITY_FADE);
 }

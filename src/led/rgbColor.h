@@ -6,7 +6,7 @@
 /**
  * @brief Class to manage the RGB color.
  */
-class rgbColor
+class RgbColor
 {
     private:
         uint8_t m_redValue;
@@ -16,9 +16,9 @@ class rgbColor
     protected:
 
     public:
-        rgbColor();
-        rgbColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
-        rgbColor(uint32_t color);
+        RgbColor();
+        RgbColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
+        RgbColor(uint32_t color);
         /**
          * @brief Set the color.
          *
@@ -60,7 +60,7 @@ class rgbColor
         /**
          * @brief Operators for rgbColor.
          */
-        rgbColor operator*(float value);
+        RgbColor operator*(float value);
 };
 
 #endif

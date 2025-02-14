@@ -7,26 +7,26 @@
 #include "micro/learning/learning.h"
 #include "animation/animationManager.h"
 
-class session
+class Session
 {
     private:
-        microManager m_microManager;
-        ledManager m_ledManager;
-        moduleManager m_moduleManager;
+        MicroManager m_microManager;
+        LedManager m_ledManager;
+        ModuleManager m_moduleManager;
         learning m_learning;
-        animationManager m_animationManager;
+        AnimationManager m_animationManager;
 
     public:
-        session();
-        ~session();
+        Session();
+        ~Session();
         void process();
-        microManager *getMicroManager();
-        ledManager *getLedManager();
-        moduleManager *getModuleManager();
+        MicroManager *getMicroManager();
+        LedManager *getLedManager();
+        ModuleManager *getModuleManager();
         learning *getLearning();
-        animationManager *getAnimationManager();
+        AnimationManager *getAnimationManager();
 };
 
-extern session g_session;
+extern Session g_session;
 
 #endif

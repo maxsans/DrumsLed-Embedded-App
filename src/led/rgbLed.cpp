@@ -5,7 +5,7 @@
 
 #define GAMMA 2.314
 
-rgbLed::rgbLed(module *m)
+RgbLed::RgbLed(Module *m)
 {
     // Constructor
     m_module = m;
@@ -16,12 +16,12 @@ rgbLed::rgbLed(module *m)
     }
 }
 
-module *rgbLed::getModule()
+Module *RgbLed::getModule()
 {
     return m_module;
 }
 
-rgbColor rgbLed::getColor()
+RgbColor RgbLed::getColor()
 {
     // Sherch for the highest priority enabled color
     for (uint32_t i = 0; i < COLOR_PRIORITY_COUNT; i++)
@@ -33,10 +33,10 @@ rgbColor rgbLed::getColor()
     }
     // No color is enabled
     // Return black
-    return rgbColor(0, 0, 0);
+    return RgbColor(0, 0, 0);
 }
 
-void rgbLed::setColor(colorPriority_t priority, rgbColor color)
+void RgbLed::setColor(colorPriority_t priority, RgbColor color)
 {
     // Apply gamma correction
     uint8_t redValue, greenValue, blueValue;
@@ -51,7 +51,7 @@ void rgbLed::setColor(colorPriority_t priority, rgbColor color)
     m_colorOrders[priority].setColor(color);
 }
 
-void rgbLed::releaseColor(colorPriority_t priority)
+void RgbLed::releaseColor(colorPriority_t priority)
 {
     // Release the color
     assert(priority < COLOR_PRIORITY_COUNT);

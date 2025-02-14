@@ -49,7 +49,7 @@ void UdpParser::process()
     if (l_len)
     {
         // Get the IP address of the packet
-        IPv4 l_packetIp(l_IP);
+        Ipv4 l_packetIp(l_IP);
         // Get the MAC address of the packet
         MacAddr l_packetMac(l_Mac);
         // Get the client from the IP address and MAC address

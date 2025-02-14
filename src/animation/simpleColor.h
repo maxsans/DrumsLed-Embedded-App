@@ -7,14 +7,14 @@
  * @brief Sets the LED to a color.
  * @see animation.h for more information.
  */
-class simpleColor : public animation
+class SimpleColor : public Animation
 {
     private:
-        rgbColor m_color;
+        RgbColor m_color;
 
     public:
-        simpleColor(rgbLed *rgbLed, rgbColor color);
-        ~simpleColor();
+        SimpleColor(RgbLed *rgbLed, RgbColor color);
+        ~SimpleColor();
         void start();
         void process();
         void stop();

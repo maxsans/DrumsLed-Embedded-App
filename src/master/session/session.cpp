@@ -1,43 +1,43 @@
 #include "session.h"
 
-session::session()
+Session::Session()
 {
     m_learning.setSession(&m_moduleManager, &m_microManager, &m_ledManager);
 }
 
-session::~session()
+Session::~Session()
 {
 }
 
-void session::process()
+void Session::process()
 {
     m_microManager.process();
     m_animationManager.process();
 }
 
-microManager *session::getMicroManager()
+MicroManager *Session::getMicroManager()
 {
     return &m_microManager;
 }
 
-ledManager *session::getLedManager()
+LedManager *Session::getLedManager()
 {
     return &m_ledManager;
 }
 
-moduleManager *session::getModuleManager()
+ModuleManager *Session::getModuleManager()
 {
     return &m_moduleManager;
 }
 
-learning *session::getLearning()
+learning *Session::getLearning()
 {
     return &m_learning;
 }
 
-animationManager *session::getAnimationManager()
+AnimationManager *Session::getAnimationManager()
 {
     return &m_animationManager;
 }
 
-session g_session;
+Session g_session;

@@ -12,17 +12,17 @@
 /**
  * @brief Class to manage the modules.
  */
-class moduleManager
+class ModuleManager
 {
     private:
-        std::vector<module *> m_modules;
+        std::vector<Module *> m_modules;
         bool m_enableNewModules;
         periodicCallsMs m_ringPeriodicCalls;
         static void ringCallback(void *object);
 
     public:
-        moduleManager();
-        ~moduleManager();
+        ModuleManager();
+        ~ModuleManager();
         /**
          * @brief Enable or disable the addition of new modules.
          *
@@ -41,35 +41,35 @@ class moduleManager
          * @param m The module to add.
          * @return True if the module was added.
          */
-        bool addModule(module *m);
+        bool addModule(Module *m);
         /**
          * @brief Get a module.
          *
          * @param index The index of the module.
          * @return module* The module.
          */
-        module *getModule(int32_t index);
+        Module *getModule(int32_t index);
         /**
          * @brief Get a module.
          *
          * @param client The client of the module.
          * @return module* The module.
          */
-        module *getModule(Client client);
+        Module *getModule(Client client);
         /**
          * @brief Get a module.
          *
          * @param ip The IP of the module.
          * @return module* The module.
          */
-        module *getModule(IPv4 ip);
+        Module *getModule(Ipv4 ip);
         /**
          * @brief Get a module.
          *
          * @param mac The MAC address of the module.
          * @return module* The module.
          */
-        module *getModule(MacAddr mac);
+        Module *getModule(MacAddr mac);
         /**
          * @brief Get the number of modules.
          *

@@ -5,7 +5,7 @@ Client::Client()
 {
 }
 
-Client::Client(IPv4 ip, MacAddr mac)
+Client::Client(Ipv4 ip, MacAddr mac)
 {
     m_ip = ip;
     m_mac = mac;
@@ -21,7 +21,7 @@ Client::~Client()
 {
 }
 
-IPv4 Client::getIP()
+Ipv4 Client::getIP()
 {
     return m_ip;
 }
@@ -31,7 +31,7 @@ MacAddr Client::getMAC()
     return m_mac;
 }
 
-void Client::setIP(IPv4 ip)
+void Client::setIP(Ipv4 ip)
 {
     m_ip = ip;
 }

@@ -8,14 +8,14 @@
 
 #define UPDATE_INTERVAL 20 // ms
 
-ledManager::ledManager()
+LedManager::LedManager()
 {
     // Constructor
     m_updatePeriodicCalls.setCallback(updateCallBack, this);
     m_updatePeriodicCalls.setPeriod(UPDATE_INTERVAL);
 }
 
-ledManager::~ledManager()
+LedManager::~LedManager()
 {
     // Destructor
     for (uint8_t i = 0; i < m_leds.size(); i++)
@@ -24,7 +24,7 @@ ledManager::~ledManager()
     }
 }
 
-void ledManager::addLed(module *m)
+void LedManager::addLed(Module *m)
 {
     // Check if the led already exists
     for (uint8_t i = 0; i < m_leds.size(); i++)
@@ -35,17 +35,17 @@ void ledManager::addLed(module *m)
         }
     }
     // Add a new led to the manager
-    m_leds.push_back(new rgbLed(m));
+    m_leds.push_back(new RgbLed(m));
 }
 
-rgbLed *ledManager::getLed(uint8_t index)
+RgbLed *LedManager::getLed(uint8_t index)
 {
     // Get a led by index
     assert(index < m_leds.size());
     return m_leds[index];
 }
 
-rgbLed *ledManager::getLed(module *m)
+RgbLed *LedManager::getLed(Module *m)
 {
     // Get a led by module
     for (uint8_t i = 0; i < m_leds.size(); i++)
@@ -59,38 +59,38 @@ rgbLed *ledManager::getLed(module *m)
     return NULL;
 }
 
-uint32_t ledManager::getLedCount()
+uint32_t LedManager::getLedCount()
 {
     // Get the number of leds
     return m_leds.size();
 }
 
-void ledManager::updateCallBack(void *object)
+void LedManager::updateCallBack(void *object)
 {
     // Callback to update the leds
-    ((ledManager*)object)->update();
+    ((LedManager*)object)->update();
 }
 
-void ledManager::update()
+void LedManager::update()
 {
     // Update all leds
     for (uint8_t i = 0; i < m_leds.size(); i++)
     {
         // Send the color to the module over UDP
-        rgbColor l_color = m_leds[i]->getColor();
+        RgbColor l_color = m_leds[i]->getColor();
         Client l_client = m_leds[i]->getModule()->getClient();
         UdpPacketRgb(l_client, l_color).send();
     }
 }
 
-module *ledManager::getModule(uint8_t index)
+Module *LedManager::getModule(uint8_t index)
 {
     // Get a module by index
     assert(index < m_leds.size());
     return m_leds[index]->getModule();
 }
 
-module *ledManager::getModule(module *m)
+Module *LedManager::getModule(Module *m)
 {
     // Get a module by led
     for (uint8_t i = 0; i < m_leds.size(); i++)

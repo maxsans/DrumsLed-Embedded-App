@@ -9,7 +9,7 @@
 /**
  * @brief Class to represent a microphone.
  */
-class micro
+class Micro
 {
     private:
 
@@ -17,14 +17,14 @@ class micro
         bool m_connected;
         uint8_t m_microValue;
         uint8_t m_microValueCorrected;
-        module *m_module;
+        Module *m_module;
         float m_correction;
         uint8_t m_threshold;
         timeMs m_lastSyncTime;
         void checkTime();
 
     public:
-        micro(module *m);
+        Micro(Module *m);
         /**
          * @brief Process the microphone.
          * @note This function must be called in the main loop.
@@ -45,7 +45,7 @@ class micro
          *
          * @return module* The module.
          */
-        module *getModule();
+        Module *getModule();
         /**
          * @brief Set the correction of the microphone.
          *

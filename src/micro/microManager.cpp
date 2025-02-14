@@ -2,12 +2,12 @@
 
 #include <assert.h>
 
-microManager::microManager()
+MicroManager::MicroManager()
 {
     // Constructor
 }
 
-microManager::~microManager()
+MicroManager::~MicroManager()
 {
     // Destructor
     for (uint8_t i = 0; i < m_micros.size(); i++)
@@ -16,7 +16,7 @@ microManager::~microManager()
     }
 }
 
-void microManager::process()
+void MicroManager::process()
 {
     // Process all micros
     for (uint8_t i = 0; i < m_micros.size(); i++)
@@ -25,7 +25,7 @@ void microManager::process()
     }
 }
 
-void microManager::addMicro(module *m)
+void MicroManager::addMicro(Module *m)
 {
     // Check if the micro already exists
     for (uint8_t i = 0; i < m_micros.size(); i++)
@@ -36,16 +36,16 @@ void microManager::addMicro(module *m)
         }
     }
     // Add a new micro to the manager
-    m_micros.push_back(new micro(m));
+    m_micros.push_back(new Micro(m));
     // Add a new micro to the impacts manager
     m_impactsManager.addMicro();
 }
 
-void microManager::setMicro(module *m, uint8_t microValue)
+void MicroManager::setMicro(Module *m, uint8_t microValue)
 {
     // Set the value of a micro
     // Find the micro from his module
-    micro *m_micro = getMicro(m);
+    Micro *m_micro = getMicro(m);
     m_micro->setMicroValue(microValue);
     // Find the index of the micro
     uint32_t l_microIndex = 0;
@@ -79,14 +79,14 @@ void microManager::setMicro(module *m, uint8_t microValue)
     m_micro->setMicroValueCorrected(l_microValueCorrected);
 }
 
-micro *microManager::getMicro(int32_t index)
+Micro *MicroManager::getMicro(int32_t index)
 {
     // Get a micro by index
     assert(index >= 0 && index < m_micros.size());
     return m_micros[index];
 }
 
-micro *microManager::getMicro(module *m)
+Micro *MicroManager::getMicro(Module *m)
 {
     // Get a micro by module
     for (uint8_t i = 0; i < m_micros.size(); i++)
@@ -100,13 +100,13 @@ micro *microManager::getMicro(module *m)
     return NULL;
 }
 
-uint32_t microManager::getMicroCount()
+uint32_t MicroManager::getMicroCount()
 {
     // Get the number of micros
     return m_micros.size();
 }
 
-impactsManager *microManager::getImpactsManager()
+impactsManager *MicroManager::getImpactsManager()
 {
     // Get the impacts manager
     return &m_impactsManager;

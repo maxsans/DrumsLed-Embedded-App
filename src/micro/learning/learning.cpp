@@ -15,7 +15,7 @@
 
 #define THRESHOLD_MARGIN 0
 
-#define LEARNING_COLOR rgbColor(255, 255, 255)
+#define LEARNING_COLOR RgbColor(255, 255, 255)
 
 learning::learning()
 {
@@ -38,7 +38,7 @@ bool learning::isLearning()
     return m_recordPeriodicCall.isEnabled();
 }
 
-void learning::setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager)
+void learning::setSession(ModuleManager *moduleManager, MicroManager *microManager, LedManager *ledManager)
 {
     // Set the session to learn
     m_moduleManager = moduleManager;
@@ -78,20 +78,20 @@ void learning::startLearning(int32_t microIndex)
     LogStream() << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
-    micro *l_mainMicro = m_microManager->getMicro(microIndex);
+    Micro *l_mainMicro = m_microManager->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
     // and put black the others
     for (uint16_t l_ledIndex = 0; l_ledIndex < m_ledManager->getLedCount(); l_ledIndex++)
     {
-        rgbLed *l_led = m_ledManager->getLed(l_ledIndex);
+        RgbLed *l_led = m_ledManager->getLed(l_ledIndex);
         if (l_led->getModule() == l_mainMicro->getModule())
         {
             l_led->setColor(COLOR_PRIORITY_LEARNING, LEARNING_COLOR);
         }
         else if (l_led->getModule() != NULL) // Check if the module has leds
         {
-            l_led->setColor(COLOR_PRIORITY_LEARNING, rgbColor(0, 0, 0));
+            l_led->setColor(COLOR_PRIORITY_LEARNING, RgbColor(0, 0, 0));
         }
     }
 
@@ -111,7 +111,7 @@ void learning::recordAllMic()
     for(uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
-        micro *l_micro = m_microManager->getMicro(l_microIndex);
+        Micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Get the micro's value
         uint8_t l_value = l_micro->getMicroValue();
@@ -131,7 +131,7 @@ void learning::recordAllMic()
         {
 
             // Get the micro
-            micro *l_micro = m_microManager->getMicro(l_microIndex);
+            Micro *l_micro = m_microManager->getMicro(l_microIndex);
 
             // Get the micro's value
             uint8_t l_value = l_micro->getMicroValue();
@@ -206,7 +206,7 @@ void learning::calculateCorrection()
     for (uint32_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
-        micro *l_micro = m_microManager->getMicro(l_microIndex);
+        Micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Get the maximum of the micro
         uint8_t l_max = 0;
@@ -259,7 +259,7 @@ void learning::calculateThreshold()
     for (uint8_t l_microIndex = 0; l_microIndex < m_microManager->getMicroCount(); l_microIndex++)
     {
         // Get the micro
-        micro *l_micro = m_microManager->getMicro(l_microIndex);
+        Micro *l_micro = m_microManager->getMicro(l_microIndex);
 
         // Reset the threshold
         l_micro->setThreshold(0);
@@ -272,7 +272,7 @@ void learning::calculateThreshold()
             if (l_impactedMicro != l_learningIndex)
             {
                 // Get the micro
-                micro *l_micro = m_microManager->getMicro(l_impactedMicro);
+                Micro *l_micro = m_microManager->getMicro(l_impactedMicro);
 
                 // Apply the artificial impact on each record
                 for (uint32_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_learningIndex]->getSize(); l_recordIndex++)

@@ -10,15 +10,15 @@
 /**
  * @brief Class to manage the microphones.
  */
-class microManager
+class MicroManager
 {
     private:
-        std::vector<micro *> m_micros;
+        std::vector<Micro *> m_micros;
         impactsManager m_impactsManager;
 
     public:
-        microManager();
-        ~microManager();
+        MicroManager();
+        ~MicroManager();
         /**
          * @brief Process the microphones.
          * @note This function must be called in the main loop.
@@ -29,28 +29,28 @@ class microManager
          *
          * @param m A pointer on the module to wich the microphone is attached.
          */
-        void addMicro(module *m);
+        void addMicro(Module *m);
         /**
          * @brief Set the micro value.
          *
          * @param m A pointer on the module to wich the microphone is attached.
          * @param microValue The new micro value.
          */
-        void setMicro(module *m, uint8_t microValue);
+        void setMicro(Module *m, uint8_t microValue);
         /**
          * @brief Get the micro.
          *
          * @param index The index of the micro.
          * @return micro* A pointer on the micro.
          */
-        micro *getMicro(int32_t index);
+        Micro *getMicro(int32_t index);
         /**
          * @brief Get the micro of a specific module.
          *
          * @param m A pointer on the module to wich the microphone is attached.
          * @return micro* A pointer on the micro.
          */
-        micro *getMicro(module *m);
+        Micro *getMicro(Module *m);
         /**
          * @brief Get the number of micros.
          *

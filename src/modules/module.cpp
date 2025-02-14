@@ -4,7 +4,7 @@
 #define MODULE_TIMEOUT 10000 // ms
 #define MODULE_CHECK_TIME_PERIODIC_CALLS 1000 // ms
 
-module::module(Client client)
+Module::Module(Client client)
 {
     m_client = client;
     m_connected = false;
@@ -12,12 +12,12 @@ module::module(Client client)
     m_checkTimePeriodicCalls = periodicCallsMs(MODULE_CHECK_TIME_PERIODIC_CALLS, checkTimeCallBack, this);
 }
 
-bool module::isConnected()
+bool Module::isConnected()
 {
     return m_connected;
 }
 
-void module::checkTime()
+void Module::checkTime()
 {
     if (timeMs() - m_lastSyncTime > MODULE_TIMEOUT)
     {
@@ -25,24 +25,24 @@ void module::checkTime()
     }
 }
 
-void module::checkTimeCallBack(void *object)
+void Module::checkTimeCallBack(void *object)
 {
-    module *m = (module*)object;
+    Module *m = (Module*)object;
     m->checkTime();
 }
 
-void module::sync()
+void Module::sync()
 {
     m_lastSyncTime = timeMs::nowMs();
     m_connected = true;
 }
 
-void module::setIp(IPv4 ip)
+void Module::setIp(Ipv4 ip)
 {
     m_client.setIP(ip);
 }
 
-Client module::getClient()
+Client Module::getClient()
 {
     return m_client;
 }

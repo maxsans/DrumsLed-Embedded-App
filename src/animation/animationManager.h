@@ -8,14 +8,14 @@
 /**
  * @brief Manages animations.
  */
-class animationManager
+class AnimationManager
 {
     private:
-        std::vector<animation*> m_animations;
+        std::vector<Animation*> m_animations;
 
     public:
-        animationManager();
-        ~animationManager();
+        AnimationManager();
+        ~AnimationManager();
         /**
          * @brief Process all animations.
          * @note This function must be called in the main loop.
@@ -26,7 +26,7 @@ class animationManager
          *
          * @param anim A pointer to the animation object to add.
          */
-        void addAnimation(animation* anim);
+        void addAnimation(Animation* anim);
         /**
          * @brief Remove an animation.
          *
@@ -38,7 +38,7 @@ class animationManager
          *
          * @param anim A pointer to the animation object to remove.
          */
-        void removeAnimation(animation* anim);
+        void removeAnimation(Animation* anim);
 };
 
 #endif

@@ -7,7 +7,7 @@
 #define RING_INTERVAL 500 // ms
 
 
-moduleManager::moduleManager()
+ModuleManager::ModuleManager()
 {
     m_enableNewModules = true;
     // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
@@ -15,22 +15,22 @@ moduleManager::moduleManager()
     m_ringPeriodicCalls.setCallback(ringCallback, this);
 }
 
-moduleManager::~moduleManager()
+ModuleManager::~ModuleManager()
 {
 
 }
 
-void moduleManager::enableNewModules(bool enable)
+void ModuleManager::enableNewModules(bool enable)
 {
     m_enableNewModules = enable;
 }
 
-bool moduleManager::NewModulesEnabled()
+bool ModuleManager::NewModulesEnabled()
 {
     return m_enableNewModules;
 }
 
-bool moduleManager::addModule(module *m)
+bool ModuleManager::addModule(Module *m)
 {
     if (m_enableNewModules)
     {
@@ -40,7 +40,7 @@ bool moduleManager::addModule(module *m)
     return false;
 }
 
-module *moduleManager::getModule(int32_t index)
+Module *ModuleManager::getModule(int32_t index)
 {
     if (index < m_modules.size())
     {
@@ -49,7 +49,7 @@ module *moduleManager::getModule(int32_t index)
     return NULL;
 }
 
-module *moduleManager::getModule(Client client)
+Module *ModuleManager::getModule(Client client)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -61,7 +61,7 @@ module *moduleManager::getModule(Client client)
     return NULL;
 }
 
-module *moduleManager::getModule(IPv4 ip)
+Module *ModuleManager::getModule(Ipv4 ip)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -73,7 +73,7 @@ module *moduleManager::getModule(IPv4 ip)
     return NULL;
 }
 
-module *moduleManager::getModule(MacAddr mac)
+Module *ModuleManager::getModule(MacAddr mac)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -85,18 +85,18 @@ module *moduleManager::getModule(MacAddr mac)
     return NULL;
 }
 
-uint32_t moduleManager::getModuleCount()
+uint32_t ModuleManager::getModuleCount()
 {
     return m_modules.size();
 }
 
-void moduleManager::ringCallback(void *object)
+void ModuleManager::ringCallback(void *object)
 {
-    ((moduleManager *)object)->ringModules();
+    ((ModuleManager *)object)->ringModules();
 }
 
 
-void moduleManager::ringModules()
+void ModuleManager::ringModules()
 {
     // Send a broadcast UDP packet to ring new modules
     // The modules detected will respond

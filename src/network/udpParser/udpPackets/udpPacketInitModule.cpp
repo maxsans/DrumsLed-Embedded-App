@@ -27,9 +27,9 @@ void UdpPacketInitModule::parse()
         return;
     }
     // Add the module to the list
-    if (g_session.getModuleManager()->addModule(new module(m_client)))
+    if (g_session.getModuleManager()->addModule(new Module(m_client)))
     {
-        module *newModule = g_session.getModuleManager()->getModule(m_client);
+        Module *newModule = g_session.getModuleManager()->getModule(m_client);
         if (newModule == NULL)
         {
             printf("Error while adding new module !\n");

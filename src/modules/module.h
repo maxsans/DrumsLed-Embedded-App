@@ -7,7 +7,7 @@
 /**
  * @brief Class to represent a module.
  */
-class module
+class Module
 {
     private:
 
@@ -19,7 +19,7 @@ class module
         void checkTime();
 
     public:
-        module(Client client);
+        Module(Client client);
         /**
          * @brief Check if the module is connected.
          *
@@ -40,7 +40,7 @@ class module
          *
          * @param ip The new sIP of the module
          */
-        void setIp(IPv4 ip);
+        void setIp(Ipv4 ip);
         /**
          * @brief Get the client of the module.
          *
