@@ -8,13 +8,13 @@
  * @brief A record is a slot of all micros values at a time
  *
  */
-class record
+class Record
 {
     private:
         std::vector<uint8_t> m_record;
 
     public:
-        record(uint32_t nbMicros);
+        Record(uint32_t nbMicros);
 
         /**
          * @brief Set a value to the record

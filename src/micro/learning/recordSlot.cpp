@@ -3,16 +3,16 @@
 
 #include <assert.h>
 
-recordSlot::recordSlot(uint32_t nbMicros)
+RecordSlot::RecordSlot(uint32_t nbMicros)
 {
     m_records.resize(nbMicros);
     for (uint32_t i = 0; i < nbMicros; i++)
     {
-        m_records[i] = new record(nbMicros);
+        m_records[i] = new Record(nbMicros);
     }
 }
 
-recordSlot::~recordSlot()
+RecordSlot::~RecordSlot()
 {
     for (uint32_t i = 0; i < m_records.size(); i++)
     {
@@ -21,7 +21,7 @@ recordSlot::~recordSlot()
     m_records.clear();
 }
 
-void recordSlot::addRecord(record newRecord)
+void RecordSlot::addRecord(Record newRecord)
 {
     // Control that the record has a good size
     // (all records must have the same size = number of micros)
@@ -29,21 +29,21 @@ void recordSlot::addRecord(record newRecord)
     {
         assert(newRecord.getSize() == m_records[0]->getSize());
     }
-    m_records.push_back(new record(newRecord));
+    m_records.push_back(new Record(newRecord));
 }
 
-record recordSlot::getRecord(uint32_t index)
+Record RecordSlot::getRecord(uint32_t index)
 {
     assert(index < m_records.size());
     return *m_records[index];
 }
 
-uint32_t recordSlot::getSize()
+uint32_t RecordSlot::getSize()
 {
     return m_records.size();
 }
 
-void recordSlot::calculateImpacts(impactsManager *impactsManager, uint32_t mainMicroIndex)
+void RecordSlot::calculateImpacts(ImpactsManager *impactsManager, uint32_t mainMicroIndex)
 {
     // Calculate the real impacts of the main micro of this record on all others micros
     // Method :
@@ -69,7 +69,7 @@ void recordSlot::calculateImpacts(impactsManager *impactsManager, uint32_t mainM
             uint32_t l_nbRecords = m_records.size();
             for (uint32_t l_recordIndex = 0; l_recordIndex < l_nbRecords; l_recordIndex++)
             {
-                record *l_record = m_records[l_recordIndex];
+                Record *l_record = m_records[l_recordIndex];
                 uint8_t l_ImpactorMicroValue = l_record->getValue(mainMicroIndex);
                 uint8_t l_ImpactedMicroValue = l_record->getValue(l_ImpactedMicroIndex);
                 if (l_ImpactorMicroValue != 0)

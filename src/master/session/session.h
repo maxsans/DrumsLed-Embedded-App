@@ -9,7 +9,7 @@ class Session
 {
     private:
         ModuleManager m_moduleManager;
-        learning m_learning;
+        Learning m_learning;
         AnimationManager m_animationManager;
 
     public:
@@ -17,7 +17,7 @@ class Session
         ~Session();
         void process();
         ModuleManager *getModuleManager();
-        learning *getLearning();
+        Learning *getLearning();
         AnimationManager *getAnimationManager();
 };
 

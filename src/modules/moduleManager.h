@@ -20,7 +20,7 @@ class ModuleManager
         bool m_enableNewModules;
         periodicCallsMs m_ringPeriodicCalls;
         static void ringCallback(void *object);
-        impactsManager m_impactsManager;
+        ImpactsManager m_impactsManager;
 
     public:
         ModuleManager();
@@ -124,7 +124,7 @@ class ModuleManager
          *
          * @return impactsManager* The impacts manager.
          */
-        impactsManager *getImpactsManager();
+        ImpactsManager *getImpactsManager();
 };
 
 #endif

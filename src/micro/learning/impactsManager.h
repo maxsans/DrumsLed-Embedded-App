@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class impactsManager
+class ImpactsManager
 {
     private:
         /**
@@ -21,7 +21,7 @@ class impactsManager
          * The index of the second vector is the index of the micro that is impacted
          * Diagonal is the impact of the micro on itself so it is always 1
          */
-        std::vector<std::vector<impact *>*> m_impacts;
+        std::vector<std::vector<Impact *>*> m_impacts;
 
         /**
          * @brief Return the matrix rank of an link between two micros
@@ -33,7 +33,7 @@ class impactsManager
         uint32_t impactRank(uint32_t impactorMicro, uint32_t impactedMicro);
 
     public:
-        impactsManager();
+        ImpactsManager();
 
         /**
          * @brief Get a micro from it index
@@ -92,7 +92,7 @@ class impactsManager
          * @param impactedMicro The micro that is impacted
          * @param impact The impact of the micro
          */
-        void setImpact(Micro *impactorMicro, Micro *impactedMicro, impact impact);
+        void setImpact(Micro *impactorMicro, Micro *impactedMicro, Impact impact);
 
         /**
          * @brief Function that calculates the artificial impacts

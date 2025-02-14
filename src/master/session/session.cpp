@@ -19,7 +19,7 @@ ModuleManager *Session::getModuleManager()
     return &m_moduleManager;
 }
 
-learning *Session::getLearning()
+Learning *Session::getLearning()
 {
     return &m_learning;
 }

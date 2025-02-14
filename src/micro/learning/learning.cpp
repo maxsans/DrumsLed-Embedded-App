@@ -17,7 +17,7 @@
 #define LEARNING_COLOR RgbColor(255, 255, 255)
 #define NOT_LEARNING_COLOR RgbColor(0, 0, 0)
 
-learning::learning(ModuleManager *moduleManager) : m_recordPeriodicCall(TIME_BETWEEN_MEASURES, recordCallback, this)
+Learning::Learning(ModuleManager *moduleManager) : m_recordPeriodicCall(TIME_BETWEEN_MEASURES, recordCallback, this)
 {
     // Constructor
     m_moduleManager = moduleManager;
@@ -25,18 +25,18 @@ learning::learning(ModuleManager *moduleManager) : m_recordPeriodicCall(TIME_BET
     m_recordPeriodicCall.enable(false); // At start, learning isn't started
 }
 
-learning::~learning()
+Learning::~Learning()
 {
     // Destructor
 }
 
-bool learning::isLearning()
+bool Learning::isLearning()
 {
     // Check if a learning process is running
     return m_recordPeriodicCall.isEnabled();
 }
 
-void learning::startLearning()
+void Learning::startLearning()
 {
     // Disable the addition of new modules
     m_moduleManager->enableNewModules(false);
@@ -49,7 +49,7 @@ void learning::startLearning()
         // Add as much of micros as microsManager has in the vector of records
         for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
         {
-            m_microRecordSlots.push_back(new recordSlot(l_nbMicros));
+            m_microRecordSlots.push_back(new RecordSlot(l_nbMicros));
         }
         // Start the learning on the first micro
         startLearning(0);
@@ -60,7 +60,7 @@ void learning::startLearning()
     }
 }
 
-void learning::startLearning(int32_t microIndex)
+void Learning::startLearning(int32_t microIndex)
 {
     // Start the learning process on a specific micro
     assert(microIndex >= 0 && microIndex < m_microRecordSlots.size());
@@ -102,16 +102,16 @@ void learning::startLearning(int32_t microIndex)
     m_recordPeriodicCall.enable(true);
 }
 
-void learning::recordCallback(void* object)
+void Learning::recordCallback(void* object)
 {
-    ((learning*)object)->recordAllMic();
+    ((Learning*)object)->recordAllMic();
 }
 
-void learning::recordAllMic()
+void Learning::recordAllMic()
 {
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
-    impactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -131,7 +131,7 @@ void learning::recordAllMic()
     {
         // At least one micro has recorded something
         // Record all the micros
-        record l_record(l_nbMicros);
+        Record l_record(l_nbMicros);
         for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
         {
 
@@ -159,7 +159,7 @@ void learning::recordAllMic()
     }
 }
 
-void learning::stopLearning()
+void Learning::stopLearning()
 {
 
     // If there are still micros to learn
@@ -205,14 +205,14 @@ void learning::stopLearning()
     }
 }
 
-void learning::calculateCorrection()
+void Learning::calculateCorrection()
 {
     // Shearch the maximum of each micro on his learning for normalize the values
     // So that the maximum of this micro must be normalizet at CORRECTION_NORMALIZATION
     // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
 
 
-    impactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
 
     for (uint32_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
@@ -250,10 +250,10 @@ void learning::calculateCorrection()
     }
 }
 
-void learning::calculateRealImpacts()
+void Learning::calculateRealImpacts()
 {
     // Calculate the real impact of each micro for all the records
-    impactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -262,7 +262,7 @@ void learning::calculateRealImpacts()
     }
 }
 
-void learning::calculateThreshold()
+void Learning::calculateThreshold()
 {
     // Calculate the threshold of each micro
     // Method :
@@ -270,7 +270,7 @@ void learning::calculateThreshold()
     // Then shearch the maximum positive error
     // The threshold is the maximum positive error
     // First, reset all the thresholds to 0
-    impactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -293,7 +293,7 @@ void learning::calculateThreshold()
                 for (uint32_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_learningIndex]->getSize(); l_recordIndex++)
                 {
                     // Get the record
-                    record l_record = m_microRecordSlots[l_learningIndex]->getRecord(l_recordIndex);
+                    Record l_record = m_microRecordSlots[l_learningIndex]->getRecord(l_recordIndex);
 
                     // Get the value of the micro
                     int32_t l_value = l_record.getValue(l_impactedMicro);
@@ -328,10 +328,10 @@ void learning::calculateThreshold()
     }
 }
 
-void learning::printResults()
+void Learning::printResults()
 {
     // Display the corrections calculated
-    impactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     LogStream() << "\nCorrections :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)

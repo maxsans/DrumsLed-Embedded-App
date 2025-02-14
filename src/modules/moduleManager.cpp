@@ -164,7 +164,7 @@ void ModuleManager::setMicro(Client client, uint8_t microValue)
     m_impactsManager.setMicroValue(l_micro, microValue);
 }
 
-impactsManager *ModuleManager::getImpactsManager()
+ImpactsManager *ModuleManager::getImpactsManager()
 {
     return &m_impactsManager;
 }

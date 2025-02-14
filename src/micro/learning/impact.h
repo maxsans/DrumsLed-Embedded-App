@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 
-class impact
+class Impact
 {
     private:
 
     public:
-        impact();
+        Impact();
         float m_realImpact;
         float m_ArtImpact;
 };

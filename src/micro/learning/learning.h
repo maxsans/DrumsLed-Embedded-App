@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <vector>
 
-class learning
+class Learning
 {
     private:
         ModuleManager *m_moduleManager;
@@ -22,7 +22,7 @@ class learning
          * @brief Vector of record slot for each micro
          *
          */
-        std::vector<recordSlot *> m_microRecordSlots;
+        std::vector<RecordSlot *> m_microRecordSlots;
 
         /**
          * @brief Callback to periodically call recordAllMic()
@@ -57,8 +57,8 @@ class learning
 
 
     public:
-        learning(ModuleManager *moduleManager);
-        ~learning();
+        Learning(ModuleManager *moduleManager);
+        ~Learning();
 
         /**
          * @brief Check if a learning process is running
