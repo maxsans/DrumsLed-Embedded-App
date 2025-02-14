@@ -1,8 +1,7 @@
 #include "session.h"
 
-Session::Session()
+Session::Session() : m_learning(&m_moduleManager)
 {
-    m_learning.setSession(&m_moduleManager, &m_microManager, &m_ledManager);
 }
 
 Session::~Session()
@@ -11,18 +10,8 @@ Session::~Session()
 
 void Session::process()
 {
-    m_microManager.process();
+    m_moduleManager.process();
     m_animationManager.process();
-}
-
-MicroManager *Session::getMicroManager()
-{
-    return &m_microManager;
-}
-
-LedManager *Session::getLedManager()
-{
-    return &m_ledManager;
 }
 
 ModuleManager *Session::getModuleManager()

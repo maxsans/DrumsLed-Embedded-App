@@ -3,22 +3,8 @@
 #include <cmath>
 #include <assert.h>
 
-#define GAMMA 2.314
-
-RgbLed::RgbLed(Module *m)
+RgbLed::RgbLed()
 {
-    // Constructor
-    m_module = m;
-    // Initialize gamma correction
-    for (uint16_t i = 0; i < 256; i++)
-    {
-        m_gamma8[i] = (uint8_t)(pow((float)i / 255.0, GAMMA) * 255.0 + 0.5);
-    }
-}
-
-Module *RgbLed::getModule()
-{
-    return m_module;
 }
 
 RgbColor RgbLed::getColor()
@@ -38,14 +24,6 @@ RgbColor RgbLed::getColor()
 
 void RgbLed::setColor(colorPriority_t priority, RgbColor color)
 {
-    // Apply gamma correction
-    uint8_t redValue, greenValue, blueValue;
-    color.getColor(&redValue, &greenValue, &blueValue);
-    redValue = m_gamma8[redValue];
-    greenValue = m_gamma8[greenValue];
-    blueValue = m_gamma8[blueValue];
-    color.setColor(redValue, greenValue, blueValue);
-
     // Set the color
     assert(priority < COLOR_PRIORITY_COUNT);
     m_colorOrders[priority].setColor(color);

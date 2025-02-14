@@ -4,17 +4,38 @@
 #define MODULE_TIMEOUT 10000 // ms
 #define MODULE_CHECK_TIME_PERIODIC_CALLS 1000 // ms
 
-Module::Module(Client client)
+Module::Module(moduleType_t moduleType, Client client)
 {
+    m_moduleType = moduleType;
     m_client = client;
     m_connected = false;
     m_lastSyncTime = 0;
     m_checkTimePeriodicCalls = periodicCallsMs(MODULE_CHECK_TIME_PERIODIC_CALLS, checkTimeCallBack, this);
 }
 
+void Module::process()
+{
+    // Nothing to do here
+}
+
+Micro *Module::getMicro()
+{
+    return nullptr;
+}
+
+RgbLed *Module::getRgbLed()
+{
+    return nullptr;
+}
+
 bool Module::isConnected()
 {
     return m_connected;
+}
+
+moduleType_t Module::getType()
+{
+    return m_moduleType;
 }
 
 void Module::checkTime()

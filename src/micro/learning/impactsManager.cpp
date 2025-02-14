@@ -8,13 +8,29 @@ impactsManager::impactsManager()
 
 }
 
-uint32_t impactsManager::getMicroCount()
+Micro *impactsManager::getMicro(uint32_t index)
 {
-    return m_impacts.size();
+    assert(index < m_micros_table.size());
+    return m_micros_table[index];
 }
 
-void impactsManager::addMicro()
+uint32_t impactsManager::getMicroIndex(Micro *micro)
 {
+    for (uint32_t i = 0 ; i < m_micros_table.size() ; i++)
+    {
+        if (m_micros_table[i] == micro)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void impactsManager::addMicro(Micro *micro)
+{
+    // Add a new micro in the micros table
+    m_micros_table.push_back(micro);
+
     // Add a new micro on the two dimensions of the vector
     // x x x          x x x x
     // x x x    ->    x x x x
@@ -39,40 +55,49 @@ void impactsManager::addMicro()
     }
 }
 
-float impactsManager::getRealImpact(uint32_t impactorMicro, uint32_t impactedMicro)
+float impactsManager::getRealImpact(Micro *impactorMicro, Micro *impactedMicro)
 {
-    assert(impactorMicro < m_impacts.size()
-        && impactedMicro < m_impacts.at(impactorMicro)->size()
-        && impactorMicro >= 0
-        && impactedMicro >= 0);
-    return m_impacts[impactorMicro]->at(impactedMicro)->m_realImpact;
+    uint32_t l_impactorIndex = getMicroIndex(impactorMicro);
+    uint32_t l_impactedIndex = getMicroIndex(impactedMicro);
+    assert(l_impactorIndex < m_impacts.size()
+        && l_impactedIndex < m_impacts.size()
+        && l_impactorIndex >= 0
+        && l_impactedIndex >= 0);
+    return m_impacts[l_impactorIndex]->at(l_impactedIndex)->m_realImpact;
 }
 
-float impactsManager::getArtImpact(uint32_t impactorMicro, uint32_t impactedMicro)
+float impactsManager::getArtImpact(Micro *impactorMicro, Micro *impactedMicro)
 {
-    assert(impactorMicro < m_impacts.size()
-        && impactedMicro < m_impacts.size()
-        && impactorMicro >= 0
-        && impactedMicro >= 0);
-    return m_impacts[impactorMicro]->at(impactedMicro)->m_ArtImpact;
+    uint32_t l_impactorIndex = getMicroIndex(impactorMicro);
+    uint32_t l_impactedIndex = getMicroIndex(impactedMicro);
+    assert(l_impactorIndex < m_impacts.size()
+        && l_impactedIndex < m_impacts.size()
+        && l_impactorIndex >= 0
+        && l_impactedIndex >= 0);
+    return m_impacts[l_impactorIndex]->at(l_impactedIndex)->m_ArtImpact;
 }
 
-void impactsManager::setRealImpact(uint32_t impactorMicro, uint32_t impactedMicro, float impact)
+void impactsManager::setRealImpact(Micro *impactorMicro, Micro *impactedMicro, float impact)
 {
-    assert(impactorMicro < m_impacts.size()
-        && impactedMicro < m_impacts.size()
-        && impactorMicro >= 0
-        && impactedMicro >= 0);
-    m_impacts[impactorMicro]->at(impactedMicro)->m_realImpact = impact;
+    uint32_t l_impactorIndex = getMicroIndex(impactorMicro);
+    uint32_t l_impactedIndex = getMicroIndex(impactedMicro);
+    assert(l_impactorIndex < m_impacts.size()
+        && l_impactedIndex < m_impacts.size()
+        && l_impactorIndex >= 0
+        && l_impactedIndex >= 0);
+    m_impacts[l_impactorIndex]->at(l_impactedIndex)->m_realImpact = impact;
 }
 
-void impactsManager::setImpact(uint32_t impactorMicro, uint32_t impactedMicro, impact impact)
+void impactsManager::setImpact(Micro *impactorMicro, Micro *impactedMicro, impact impact)
 {
-    assert(impactorMicro < m_impacts.size()
-        && impactedMicro < m_impacts.size()
-        && impactorMicro >= 0
-        && impactedMicro >= 0);
-    *m_impacts[impactorMicro]->at(impactedMicro) = impact;
+    uint32_t l_impactorIndex = getMicroIndex(impactorMicro);
+    uint32_t l_impactedIndex = getMicroIndex(impactedMicro);
+    assert(l_impactorIndex < m_impacts.size()
+        && l_impactedIndex < m_impacts.size()
+        && l_impactorIndex >= 0
+        && l_impactedIndex >= 0);
+    m_impacts[l_impactorIndex]->at(l_impactedIndex)->m_realImpact = impact.m_realImpact;
+    m_impacts[l_impactorIndex]->at(l_impactedIndex)->m_ArtImpact = impact.m_ArtImpact;
 }
 
 uint32_t impactsManager::impactRank(uint32_t impactorMicro, uint32_t impactedMicro)
@@ -204,7 +229,8 @@ void impactsManager::calculateArtImpacts()
                         // Fill the matrix
                         uint32_t l_line = impactRank(l_impactorMicro, l_impactedMicro);
                         uint32_t l_column = impactRank(l_otherMicro, l_impactedMicro);
-                        l_matrix.set(l_line, l_column, getRealImpact(l_impactorMicro, l_otherMicro));
+                        float l_impact = m_impacts[l_impactorMicro]->at(l_otherMicro)->m_realImpact;
+                        l_matrix.set(l_line, l_column, l_impact);
                     }
                 }
             }
@@ -236,4 +262,31 @@ void impactsManager::calculateArtImpacts()
             }
         }
     }
+}
+
+void impactsManager::setMicroValue(Micro *micro, uint8_t microValue)
+{
+    // Get the index of the micro
+    uint32_t l_impactedMicroIndex = getMicroIndex(micro);
+    // Remove the impact of all other micros one this one
+    int32_t l_microValueCorrected = microValue;
+    for (uint32_t l_ImpactorMicroIndex = 0; l_ImpactorMicroIndex < m_micros_table.size(); l_ImpactorMicroIndex++)
+    {
+        if (l_ImpactorMicroIndex != l_impactedMicroIndex)
+        {
+            float l_impact = m_impacts[l_ImpactorMicroIndex]->at(l_impactedMicroIndex)->m_ArtImpact;
+            uint8_t l_impactorMicroValue = m_micros_table[l_ImpactorMicroIndex]->getMicroValue();
+            l_microValueCorrected -= l_impactorMicroValue * l_impact;
+        }
+    }
+    if (l_microValueCorrected < 0)
+    {
+        l_microValueCorrected = 0;
+    }
+    micro->setMicroValue(l_microValueCorrected);
+}
+
+uint32_t impactsManager::getMicroCount()
+{
+    return m_micros_table.size();
 }

@@ -27,34 +27,11 @@ void UdpPacketInitModule::parse()
         return;
     }
     // Add the module to the list
-    if (g_session.getModuleManager()->addModule(new Module(m_client)))
-    {
-        Module *newModule = g_session.getModuleManager()->getModule(m_client);
-        if (newModule == NULL)
-        {
-            printf("Error while adding new module !\n");
-            return;
-        }
-        switch(m_moduleType) // type of module
-        {
-            case TYPE_DRUM_MODULE:
-                g_session.getMicroManager()->addMicro(newModule);
-                g_session.getLedManager()->addLed(newModule);
-                LogStream() << "New drum module ! ip : "
-                    << m_client.getIP().getIpString()
-                    << ", mac : " << m_client.getMAC().getMacString()
-                    << LogStream::endl;
-                break;
-
-            default:
-                // Unknowed module, ignore
-                LogStream() << "Unknown module detected ! ip : "
-                    << m_client.getIP().getIpString()
-                    << ", mac : " << m_client.getMAC().getMacString()
-                    << LogStream::endl;
-                break;
-        }
-    }
+    Module *l_module = g_session.getModuleManager()->addModule(m_moduleType, m_client);
+    moduleType_t l_moduleType = l_module->getType();
+    LogStream::cout << "New module added (type " << l_moduleType
+        << " ip " << m_client.getIP().getIpString()
+        << " mac " << m_client.getMAC().getMacString() << ")" << LogStream::endl;
 #endif
 }
 

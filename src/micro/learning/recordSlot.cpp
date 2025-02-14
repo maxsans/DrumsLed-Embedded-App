@@ -49,16 +49,19 @@ void recordSlot::calculateImpacts(impactsManager *impactsManager, uint32_t mainM
     // Method :
     // Calculate the average ratio of this micro on all others micros
 
+    Micro *l_mainMicro = impactsManager->getMicro(mainMicroIndex);
+
     assert(m_records.size() > 0);
     assert( (mainMicroIndex < m_records.size()) && (mainMicroIndex >= 0) );
 
     uint32_t l_nbMicros = m_records[mainMicroIndex]->getSize();
 
-    for (uint32_t l_ImpactedMicro = 0; l_ImpactedMicro < l_nbMicros; l_ImpactedMicro++)
+    for (uint32_t l_ImpactedMicroIndex = 0; l_ImpactedMicroIndex < l_nbMicros; l_ImpactedMicroIndex++)
     {
-        if (l_ImpactedMicro == mainMicroIndex)
+        Micro *l_ImpactedMicro = impactsManager->getMicro(l_ImpactedMicroIndex);
+        if (l_ImpactedMicroIndex == mainMicroIndex)
         {
-            impactsManager->setRealImpact(mainMicroIndex, l_ImpactedMicro, 1.0f);
+            impactsManager->setRealImpact(l_mainMicro, l_ImpactedMicro, 1.0f);
         }
         else
         {
@@ -68,14 +71,14 @@ void recordSlot::calculateImpacts(impactsManager *impactsManager, uint32_t mainM
             {
                 record *l_record = m_records[l_recordIndex];
                 uint8_t l_ImpactorMicroValue = l_record->getValue(mainMicroIndex);
-                uint8_t l_ImpactedMicroValue = l_record->getValue(l_ImpactedMicro);
+                uint8_t l_ImpactedMicroValue = l_record->getValue(l_ImpactedMicroIndex);
                 if (l_ImpactorMicroValue != 0)
                 {
                     l_sum += (float)l_ImpactedMicroValue / (float)l_ImpactorMicroValue;
                 }
             }
             float l_impact = l_sum / l_nbRecords;
-            impactsManager->setRealImpact(mainMicroIndex, l_ImpactedMicro, l_impact);
+            impactsManager->setRealImpact(l_mainMicro, l_ImpactedMicro, l_impact);
         }
     }
 }

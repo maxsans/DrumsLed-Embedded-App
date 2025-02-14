@@ -2,7 +2,6 @@
 #define __RGB_LED_H__
 
 #include "colorOrder.h"
-#include "modules/module.h"
 
 #include <stdint.h>
 
@@ -34,20 +33,12 @@ class RgbLed
 {
     private:
         ColorOrder m_colorOrders[COLOR_PRIORITY_COUNT];
-        Module *m_module;
-        uint8_t m_gamma8[256];
         colorPriority_t m_priority;
         uint64_t m_lastSetTime;
         bool m_permColorSet;
 
     public:
-        RgbLed(Module *m);
-        /**
-         * @brief Get the Module object
-         *
-         * @return module* The module.
-         */
-        Module *getModule();
+        RgbLed();
         /**
          * @brief Set the color.
          *

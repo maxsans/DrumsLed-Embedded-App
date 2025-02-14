@@ -6,11 +6,10 @@
 #define DEFAULT_CORRECTION 1.00
 #define DEFAULT_THRESHOLD 5
 
-Micro::Micro(Module *m)
+Micro::Micro()
 {
     // Constructor
     m_connected = true;
-    m_module = m;
     m_microValue = 0;
     m_microValueCorrected = 0;
     m_correction = DEFAULT_CORRECTION;
@@ -30,7 +29,6 @@ void Micro::sync()
     // Sync the micro
     if (!m_connected)
     {
-        // LogStream() << "Micro reconnected, ip: "<< m_module->getIp() << LogStream::endl;
         m_connected = true;
     }
     m_lastSyncTime = timeMs();
@@ -43,7 +41,6 @@ void Micro::checkTime()
     {
         if (m_connected)
         {
-            // LogStream() << "Micro disconnected, ip: " << m_module->getIp() << LogStream::endl;
             m_connected = false;
             // Reset values to 0
             m_microValue = 0;
@@ -56,12 +53,6 @@ bool Micro::isConnected()
 {
     // Check if the micro is connected
     return m_connected;
-}
-
-Module *Micro::getModule()
-{
-    // Get the module of the micro
-    return m_module;
 }
 
 void Micro::setCorrection(float correction)
@@ -86,8 +77,8 @@ void Micro::setMicroValue(uint8_t microValue)
 
 void Micro::setMicroValueCorrected(uint8_t microValueCorrected)
 {
-    // Set the corrected value of the micro
-    m_microValueCorrected = microValueCorrected;
+    // Apply the correction to the micro value
+    m_microValueCorrected = microValueCorrected * m_correction;
 }
 
 void Micro::setThreshold(uint8_t threshold)

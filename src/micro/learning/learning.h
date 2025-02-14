@@ -1,8 +1,10 @@
+/*
+    TODO: A lot of things must be refactored in this file !!!
+*/
+
 #ifndef __LEARNING_H__
 #define __LEARNING_H__
 
-#include "micro/microManager.h"
-#include "led/ledManager.h"
 #include "modules/moduleManager.h"
 #include "recordSlot.h"
 
@@ -12,45 +14,50 @@
 class learning
 {
     private:
-        MicroManager *m_microManager;
-        LedManager *m_ledManager;
         ModuleManager *m_moduleManager;
         int32_t m_MicroInRecord;
         periodicCallsMs m_recordPeriodicCall;
+
         /**
          * @brief Vector of record slot for each micro
          *
          */
         std::vector<recordSlot *> m_microRecordSlots;
+
         /**
          * @brief Callback to periodically call recordAllMic()
          *
          * @param object learning object (this)
          */
         static void recordCallback(void *object);
+
         /**
          * @brief Record all the micros
          *
          */
         void recordAllMic();
+
         /**
          * @brief Calculate the correction all the records
          *
          */
         void calculateCorrection();
+
         /**
          * @brief Calculate the real impact of each micro for all the records
          *
          */
         void calculateRealImpacts();
+
         /**
          * @brief Calculate the threshold of each micro
          *
          */
         void calculateThreshold();
 
+
     public:
-        learning();
+        learning(ModuleManager *moduleManager);
         ~learning();
 
         /**
@@ -59,13 +66,6 @@ class learning
          * @return true if a learning process is running
          */
         bool isLearning();
-
-        /**
-         * @brief Set the session to learn
-         *
-         * @param sessionToLearn The session to learn
-         */
-        void setSession(ModuleManager *moduleManager, MicroManager *microManager, LedManager *ledManager);
 
         /**
          * @brief Start the learning process on all the micros

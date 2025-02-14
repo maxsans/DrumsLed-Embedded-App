@@ -23,7 +23,7 @@ void UdpPacketAdc::parse()
     if (l_module != NULL)
     {
         // Set the micro value of this module
-        g_session.getMicroManager()->setMicro(l_module, m_adcValue);
+        g_session.getModuleManager()->setMicro(m_client, m_adcValue);
     }
 #endif
 }

@@ -4,6 +4,7 @@
 #include "modules/module.h"
 #include "tools/timeTools/periodicCallsMs.h"
 #include "network/client/client.h"
+#include "micro/learning/impactsManager.h"
 
 #include <vector>
 #include <stdint.h>
@@ -19,29 +20,42 @@ class ModuleManager
         bool m_enableNewModules;
         periodicCallsMs m_ringPeriodicCalls;
         static void ringCallback(void *object);
+        impactsManager m_impactsManager;
 
     public:
         ModuleManager();
         ~ModuleManager();
+
+        /**
+         * @brief Process the modules.
+         * @note This function must be called in the main loop.
+         */
+        void process();
+
         /**
          * @brief Enable or disable the addition of new modules.
          *
          * @param enable True to enable, false to disable.
          */
         void enableNewModules(bool enable);
+
         /**
          * @brief Check if the addition of new modules is enabled.
          *
          * @return True if enabled.
          */
         bool NewModulesEnabled();
+
         /**
          * @brief Add a module.
          *
-         * @param m The module to add.
-         * @return True if the module was added.
+         * @param type The type of the module.
+         * @param client The client of the module.
+         *
+         * @return module* The module added.
          */
-        bool addModule(Module *m);
+        Module *addModule(moduleType_t type, Client client);
+
         /**
          * @brief Get a module.
          *
@@ -49,6 +63,7 @@ class ModuleManager
          * @return module* The module.
          */
         Module *getModule(int32_t index);
+
         /**
          * @brief Get a module.
          *
@@ -56,6 +71,7 @@ class ModuleManager
          * @return module* The module.
          */
         Module *getModule(Client client);
+
         /**
          * @brief Get a module.
          *
@@ -63,6 +79,7 @@ class ModuleManager
          * @return module* The module.
          */
         Module *getModule(Ipv4 ip);
+
         /**
          * @brief Get a module.
          *
@@ -70,17 +87,44 @@ class ModuleManager
          * @return module* The module.
          */
         Module *getModule(MacAddr mac);
+
+        /**
+         * @brief Get the Module of a micro.
+         *
+         * @param micro The micro.
+         * @return module* The module.
+         */
+        Module *getModule(Micro *micro);
+
         /**
          * @brief Get the number of modules.
          *
          * @return uint32_t The number of modules.
          */
         uint32_t getModuleCount();
+
         /**
          * @brief Ping all the modules to check if they are still connected.
          * @note This function must be called periodically.
          */
         void ringModules();
+
+        /**
+         * @brief Set the micro value.
+         * @note This function will calculate the corrected micro value.
+         * @note Then it will call the setMicro function of the module.
+         *
+         * @param client The client of the module.
+         * @param microValue The new micro value.
+         */
+        void setMicro(Client client, uint8_t microValue);
+
+        /**
+         * @brief Get the impacts manager.
+         *
+         * @return impactsManager* The impacts manager.
+         */
+        impactsManager *getImpactsManager();
 };
 
 #endif
