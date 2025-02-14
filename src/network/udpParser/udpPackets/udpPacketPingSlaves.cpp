@@ -10,7 +10,7 @@ UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)
 void UdpPacketPingSlaves::parse()
 {
     // Implement parsing logic
-    LogStream() << "Ping slaves packet received. Master : " << m_client.getIP().getIpString() << LogStream::endl;
+    LogStream::cout << "Ping slaves packet received. Master : " << m_client.getIP().getIpString() << LogStream::endl;
 }
 
 void UdpPacketPingSlaves::send()

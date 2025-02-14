@@ -7,7 +7,7 @@
 
 void launch()
 {
-    LogStream() << "Master started" << LogStream::endl;
+    LogStream::cout << "Master started" << LogStream::endl;
 
     /* Initialization */
     // Initialize the udp api
@@ -16,10 +16,10 @@ void launch()
     // Print the host IP address and MAC address
     char l_ip[16];
     udp_get_host_ip(l_ip);
-    LogStream() << "Host IP: " << l_ip << LogStream::endl;
+    LogStream::cout << "Host IP: " << l_ip << LogStream::endl;
     char l_mac[18];
     udp_get_host_mac(l_mac);
-    LogStream() << "Host MAC: " << l_mac << LogStream::endl;
+    LogStream::cout << "Host MAC: " << l_mac << LogStream::endl;
 
     // Create a session
     Session l_session;

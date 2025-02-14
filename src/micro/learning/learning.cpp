@@ -56,7 +56,7 @@ void Learning::startLearning()
     uint32_t l_nbMicros = ModuleManager::getImpactsManager()->getMicroCount();
     if (l_nbMicros > 0)
     {
-        LogStream() << "Start learning" << LogStream::endl;
+        LogStream::cout << "Start learning" << LogStream::endl;
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
         for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
@@ -68,7 +68,7 @@ void Learning::startLearning()
     }
     else
     {
-        LogStream() << "No micros to learn" << LogStream::endl;
+        LogStream::cout << "No micros to learn" << LogStream::endl;
     }
 }
 
@@ -78,7 +78,7 @@ void Learning::startLearning(int32_t microIndex)
     assert(microIndex >= 0 && microIndex < m_microRecordSlots.size());
     m_MicroInRecord = microIndex;
 
-    LogStream() << "Start learning on micro " << LogStream::endl;
+    LogStream::cout << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
     Micro *l_mainMicro = ModuleManager::getImpactsManager()->getMicro(microIndex);
@@ -156,9 +156,9 @@ void Learning::recordAllMic()
             // Add a record to the vector of records for each micro
             l_record.setValue(l_microIndex, l_value);
 
-            LogStream() << l_value << "  ";
+            LogStream::cout << l_value << "  ";
         }
-        LogStream() << LogStream::endl;
+        LogStream::cout << LogStream::endl;
         // Add the record to the record slot
         m_microRecordSlots[m_MicroInRecord]->addRecord(l_record);
 
@@ -195,7 +195,7 @@ void Learning::stopLearning()
         // All the micros have been learned
         // Stop the learning process
         m_recordPeriodicCall.enable(false);
-        LogStream() << LogStream::endl << "End of learning" << LogStream::endl;
+        LogStream::cout << LogStream::endl << "End of learning" << LogStream::endl;
 
         // Interpret the records
         calculateCorrection();      // Calculate the correction of each micro
@@ -255,7 +255,7 @@ void Learning::calculateCorrection()
             // The maximum is 0
             // It seems to be an error but let's admit that the correction is 1
             l_correction = 1;
-            LogStream() << "Error : The maximum of the micro " << l_microIndex << " is 0, seems to be impossible. Correction applied is 1.00" << LogStream::endl;
+            LogStream::cout << "Error : The maximum of the micro " << l_microIndex << " is 0, seems to be impossible. Correction applied is 1.00" << LogStream::endl;
         }
         // Set the correction
         l_micro->setCorrection(l_correction);
@@ -345,15 +345,15 @@ void Learning::printResults()
     // Display the corrections calculated
     ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
-    LogStream() << "\nCorrections :" << LogStream::endl;
+    LogStream::cout << "\nCorrections :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the correction
         float l_correction = l_impactsManager->getMicro(l_microIndex)->getCorrection();
-        LogStream() << l_correction << "    ";
+        LogStream::cout << l_correction << "    ";
     }
     // Display the impacts calculated as 2 matrix (real and artificial)
-    LogStream() << "\n\nReal impacts :" << LogStream::endl;
+    LogStream::cout << "\n\nReal impacts :" << LogStream::endl;
     for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
     {
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
@@ -362,11 +362,11 @@ void Learning::printResults()
             float l_realImpact = l_impactsManager->getRealImpact(
                     l_impactsManager->getMicro(l_impactorMicro),
                     l_impactsManager->getMicro(l_impactedMicro));
-            LogStream() << l_realImpact << "    ";
+            LogStream::cout << l_realImpact << "    ";
         }
-        LogStream() << LogStream::endl;
+        LogStream::cout << LogStream::endl;
     }
-    LogStream() << "\nArtificial impacts :" << LogStream::endl;
+    LogStream::cout << "\nArtificial impacts :" << LogStream::endl;
     for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
     {
         for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
@@ -375,16 +375,16 @@ void Learning::printResults()
             float l_artImpact = l_impactsManager->getArtImpact(
                     l_impactsManager->getMicro(l_impactorMicro),
                     l_impactsManager->getMicro(l_impactedMicro));
-            LogStream() << l_artImpact << "    ";
+            LogStream::cout << l_artImpact << "    ";
         }
-        LogStream() << "" << LogStream::endl;
+        LogStream::cout << "" << LogStream::endl;
     }
-    LogStream() << "\nThresholds :" << LogStream::endl;
+    LogStream::cout << "\nThresholds :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the threshold
         uint8_t l_threshold = l_impactsManager->getMicro(l_microIndex)->getThreshold();
-        LogStream() << l_threshold << "    ";
+        LogStream::cout << l_threshold << "    ";
     }
-    LogStream() << LogStream::endl;
+    LogStream::cout << LogStream::endl;
 }
