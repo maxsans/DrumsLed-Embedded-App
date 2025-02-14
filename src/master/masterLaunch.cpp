@@ -21,6 +21,10 @@ void launch()
     udp_get_host_mac(l_mac);
     LogStream::cout << "Host MAC: " << l_mac << LogStream::endl;
 
+    // Initialize some stuff
+    ModuleManager::init();
+    Learning::init();
+
     // Create a session
     Session l_session;
 

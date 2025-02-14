@@ -11,8 +11,14 @@
 
 std::vector<Module *> ModuleManager::m_modules;
 bool ModuleManager::m_enableNewModules = true;
-periodicCallsMs ModuleManager::m_ringPeriodicCalls(RING_INTERVAL, ringCallback, NULL);
+periodicCallsMs *ModuleManager::m_ringPeriodicCalls;
 ImpactsManager ModuleManager::m_impactsManager;
+
+void ModuleManager::init()
+{
+    // Initialize the periodic calls
+    m_ringPeriodicCalls = new periodicCallsMs(RING_INTERVAL, ringCallback, NULL);
+}
 
 void ModuleManager::process()
 {

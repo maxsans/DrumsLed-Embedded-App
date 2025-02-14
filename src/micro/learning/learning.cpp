@@ -39,13 +39,21 @@
 #define NOT_LEARNING_COLOR RgbColor(0, 0, 0)
 
 int32_t Learning::m_MicroInRecord = -1;
-periodicCallsMs Learning::m_recordPeriodicCall(TIME_BETWEEN_MEASURES, recordCallback, NULL);
+periodicCallsMs *Learning::m_recordPeriodicCall;
 std::vector<RecordSlot *> Learning::m_microRecordSlots;
+
+void Learning::init()
+{
+    // Initialize the periodic call
+    m_recordPeriodicCall = new periodicCallsMs(TIME_BETWEEN_MEASURES, recordCallback, NULL);
+    // At start, no micro is in record
+    m_recordPeriodicCall->enable(false);
+}
 
 bool Learning::isLearning()
 {
     // Check if a learning process is running
-    return m_recordPeriodicCall.isEnabled();
+    return m_recordPeriodicCall->isEnabled();
 }
 
 void Learning::startLearning()
@@ -111,7 +119,7 @@ void Learning::startLearning(int32_t microIndex)
     }
 
     // Start the learning process
-    m_recordPeriodicCall.enable(true);
+    m_recordPeriodicCall->enable(true);
 }
 
 void Learning::recordCallback(void* object)
@@ -194,7 +202,7 @@ void Learning::stopLearning()
         }
         // All the micros have been learned
         // Stop the learning process
-        m_recordPeriodicCall.enable(false);
+        m_recordPeriodicCall->enable(false);
         LogStream::cout << LogStream::endl << "End of learning" << LogStream::endl;
 
         // Interpret the records

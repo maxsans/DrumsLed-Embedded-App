@@ -11,7 +11,7 @@ class Learning
 {
     private:
         static int32_t m_MicroInRecord;
-        static periodicCallsMs m_recordPeriodicCall;
+        static periodicCallsMs *m_recordPeriodicCall;
 
         /**
          * @brief Vector of record slot for each micro
@@ -52,6 +52,8 @@ class Learning
 
     public:
         Learning() = delete;
+
+        static void init();
 
         /**
          * @brief Check if a learning process is running

@@ -18,12 +18,17 @@ class ModuleManager
     private:
         static std::vector<Module *> m_modules;
         static bool m_enableNewModules;
-        static periodicCallsMs m_ringPeriodicCalls;
+        static periodicCallsMs *m_ringPeriodicCalls;
         static void ringCallback(void *object);
         static ImpactsManager m_impactsManager;
 
     public:
         ModuleManager() = delete;
+
+        /**
+         * @brief Initialize the module manager.
+         */
+        static void init();
 
         /**
          * @brief Process the modules.
