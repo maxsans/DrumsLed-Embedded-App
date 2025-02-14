@@ -8,19 +8,13 @@
 class Session
 {
     private:
-        ModuleManager m_moduleManager;
-        Learning m_learning;
         AnimationManager m_animationManager;
 
     public:
         Session();
         ~Session();
         void process();
-        ModuleManager *getModuleManager();
-        Learning *getLearning();
         AnimationManager *getAnimationManager();
 };
-
-extern Session g_session;
 
 #endif

@@ -9,23 +9,10 @@
 
 #define RING_INTERVAL 500 // ms
 
-ModuleManager::ModuleManager()
-{
-    m_enableNewModules = true;
-    // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
-    m_ringPeriodicCalls.setPeriod(RING_INTERVAL);
-    m_ringPeriodicCalls.setCallback(ringCallback, this);
-}
-
-ModuleManager::~ModuleManager()
-{
-    // Delete the modules
-    for (int32_t i = 0; i < m_modules.size(); i++)
-    {
-        delete m_modules[i];
-    }
-    m_modules.clear();
-}
+std::vector<Module *> ModuleManager::m_modules;
+bool ModuleManager::m_enableNewModules = true;
+periodicCallsMs ModuleManager::m_ringPeriodicCalls(RING_INTERVAL, ringCallback, NULL);
+ImpactsManager ModuleManager::m_impactsManager;
 
 void ModuleManager::process()
 {

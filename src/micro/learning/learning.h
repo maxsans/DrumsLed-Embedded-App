@@ -1,7 +1,3 @@
-/*
-    TODO: A lot of things must be refactored in this file !!!
-*/
-
 #ifndef __LEARNING_H__
 #define __LEARNING_H__
 
@@ -14,15 +10,14 @@
 class Learning
 {
     private:
-        ModuleManager *m_moduleManager;
-        int32_t m_MicroInRecord;
-        periodicCallsMs m_recordPeriodicCall;
+        static int32_t m_MicroInRecord;
+        static periodicCallsMs m_recordPeriodicCall;
 
         /**
          * @brief Vector of record slot for each micro
          *
          */
-        std::vector<RecordSlot *> m_microRecordSlots;
+        static std::vector<RecordSlot *> m_microRecordSlots;
 
         /**
          * @brief Callback to periodically call recordAllMic()
@@ -35,62 +30,60 @@ class Learning
          * @brief Record all the micros
          *
          */
-        void recordAllMic();
+        static void recordAllMic();
 
         /**
          * @brief Calculate the correction all the records
          *
          */
-        void calculateCorrection();
+        static void calculateCorrection();
 
         /**
          * @brief Calculate the real impact of each micro for all the records
          *
          */
-        void calculateRealImpacts();
+        static void calculateRealImpacts();
 
         /**
          * @brief Calculate the threshold of each micro
          *
          */
-        void calculateThreshold();
-
+        static void calculateThreshold();
 
     public:
-        Learning(ModuleManager *moduleManager);
-        ~Learning();
+        Learning() = delete;
 
         /**
          * @brief Check if a learning process is running
          *
          * @return true if a learning process is running
          */
-        bool isLearning();
+        static bool isLearning();
 
         /**
          * @brief Start the learning process on all the micros
          *
          */
-        void startLearning();
+        static void startLearning();
 
         /**
          * @brief Start the learning process on a specific micro
          *
          * @param microIndex The index of the micro to start learning
          */
-        void startLearning(int32_t microIndex);
+        static void startLearning(int32_t microIndex);
 
         /**
          * @brief Stop the learning process
          *
          */
-        void stopLearning();
+        static void stopLearning();
 
         /**
          * @brief Print the results of the learning
          *
          */
-        void printResults();
+        static void printResults();
 };
 
 #endif

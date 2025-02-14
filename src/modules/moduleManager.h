@@ -16,35 +16,34 @@
 class ModuleManager
 {
     private:
-        std::vector<Module *> m_modules;
-        bool m_enableNewModules;
-        periodicCallsMs m_ringPeriodicCalls;
+        static std::vector<Module *> m_modules;
+        static bool m_enableNewModules;
+        static periodicCallsMs m_ringPeriodicCalls;
         static void ringCallback(void *object);
-        ImpactsManager m_impactsManager;
+        static ImpactsManager m_impactsManager;
 
     public:
-        ModuleManager();
-        ~ModuleManager();
+        ModuleManager() = delete;
 
         /**
          * @brief Process the modules.
          * @note This function must be called in the main loop.
          */
-        void process();
+        static void process();
 
         /**
          * @brief Enable or disable the addition of new modules.
          *
          * @param enable True to enable, false to disable.
          */
-        void enableNewModules(bool enable);
+        static void enableNewModules(bool enable);
 
         /**
          * @brief Check if the addition of new modules is enabled.
          *
          * @return True if enabled.
          */
-        bool NewModulesEnabled();
+        static bool NewModulesEnabled();
 
         /**
          * @brief Add a module.
@@ -54,7 +53,7 @@ class ModuleManager
          *
          * @return module* The module added.
          */
-        Module *addModule(moduleType_t type, Client client);
+        static Module *addModule(moduleType_t type, Client client);
 
         /**
          * @brief Get a module.
@@ -62,7 +61,7 @@ class ModuleManager
          * @param index The index of the module.
          * @return module* The module.
          */
-        Module *getModule(int32_t index);
+        static Module *getModule(int32_t index);
 
         /**
          * @brief Get a module.
@@ -70,7 +69,7 @@ class ModuleManager
          * @param client The client of the module.
          * @return module* The module.
          */
-        Module *getModule(Client client);
+        static Module *getModule(Client client);
 
         /**
          * @brief Get a module.
@@ -78,7 +77,7 @@ class ModuleManager
          * @param ip The IP of the module.
          * @return module* The module.
          */
-        Module *getModule(Ipv4 ip);
+        static Module *getModule(Ipv4 ip);
 
         /**
          * @brief Get a module.
@@ -86,7 +85,7 @@ class ModuleManager
          * @param mac The MAC address of the module.
          * @return module* The module.
          */
-        Module *getModule(MacAddr mac);
+        static Module *getModule(MacAddr mac);
 
         /**
          * @brief Get the Module of a micro.
@@ -94,20 +93,20 @@ class ModuleManager
          * @param micro The micro.
          * @return module* The module.
          */
-        Module *getModule(Micro *micro);
+        static Module *getModule(Micro *micro);
 
         /**
          * @brief Get the number of modules.
          *
          * @return uint32_t The number of modules.
          */
-        uint32_t getModuleCount();
+        static uint32_t getModuleCount();
 
         /**
          * @brief Ping all the modules to check if they are still connected.
          * @note This function must be called periodically.
          */
-        void ringModules();
+        static void ringModules();
 
         /**
          * @brief Set the micro value.
@@ -117,14 +116,14 @@ class ModuleManager
          * @param client The client of the module.
          * @param microValue The new micro value.
          */
-        void setMicro(Client client, uint8_t microValue);
+        static void setMicro(Client client, uint8_t microValue);
 
         /**
          * @brief Get the impacts manager.
          *
          * @return impactsManager* The impacts manager.
          */
-        ImpactsManager *getImpactsManager();
+        static ImpactsManager *getImpactsManager();
 };
 
 #endif

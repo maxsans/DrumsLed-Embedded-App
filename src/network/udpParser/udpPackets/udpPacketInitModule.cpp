@@ -21,13 +21,13 @@ void UdpPacketInitModule::parse()
 #ifdef __TARGET_MASTER
     // A new module is found, add it to the list of modules
     // Check if the module is already in the list
-    if (g_session.getModuleManager()->getModule(m_client) != NULL)
+    if (ModuleManager::getModule(m_client) != NULL)
     {
         // Module already in the list, ignore
         return;
     }
     // Add the module to the list
-    Module *l_module = g_session.getModuleManager()->addModule(m_moduleType, m_client);
+    Module *l_module = ModuleManager::addModule(m_moduleType, m_client);
     moduleType_t l_moduleType = l_module->getType();
     LogStream::cout << "New module added (type " << l_moduleType
         << " ip " << m_client.getIP().getIpString()

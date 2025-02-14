@@ -5,30 +5,42 @@
 
 #include <assert.h>
 
+/**
+ * @brief Maximum number of measures to record
+ */
 #define NB_MESURES_MAX 200
-#define TIME_BETWEEN_MEASURES 20 // ms
 
+/**
+ * @brief Time between each measure
+ * @note Unit : ms
+ */
+#define TIME_BETWEEN_MEASURES 20
+
+/**
+ * @brief Threshold to consider that a micro has recorded something
+ */
 #define RECORD_LIMIT 10
 
+/**
+ * @brief Normalization value for the correction
+ * @note The maximum of each micro on his learning must be normalized at this value
+ */
 #define CORRECTION_NORMALIZATION 180
 
+/**
+ * @brief Margin to add to the threshold
+ */
 #define THRESHOLD_MARGIN 0
 
+/**
+ * @brief Colors of the leds when a module is in learning or not
+ */
 #define LEARNING_COLOR RgbColor(255, 255, 255)
 #define NOT_LEARNING_COLOR RgbColor(0, 0, 0)
 
-Learning::Learning(ModuleManager *moduleManager) : m_recordPeriodicCall(TIME_BETWEEN_MEASURES, recordCallback, this)
-{
-    // Constructor
-    m_moduleManager = moduleManager;
-    m_MicroInRecord = -1;
-    m_recordPeriodicCall.enable(false); // At start, learning isn't started
-}
-
-Learning::~Learning()
-{
-    // Destructor
-}
+int32_t Learning::m_MicroInRecord = -1;
+periodicCallsMs Learning::m_recordPeriodicCall(TIME_BETWEEN_MEASURES, recordCallback, NULL);
+std::vector<RecordSlot *> Learning::m_microRecordSlots;
 
 bool Learning::isLearning()
 {
@@ -39,9 +51,9 @@ bool Learning::isLearning()
 void Learning::startLearning()
 {
     // Disable the addition of new modules
-    m_moduleManager->enableNewModules(false);
+    ModuleManager::enableNewModules(false);
 
-    uint32_t l_nbMicros = m_moduleManager->getImpactsManager()->getMicroCount();
+    uint32_t l_nbMicros = ModuleManager::getImpactsManager()->getMicroCount();
     if (l_nbMicros > 0)
     {
         LogStream() << "Start learning" << LogStream::endl;
@@ -69,13 +81,13 @@ void Learning::startLearning(int32_t microIndex)
     LogStream() << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
-    Micro *l_mainMicro = m_moduleManager->getImpactsManager()->getMicro(microIndex);
+    Micro *l_mainMicro = ModuleManager::getImpactsManager()->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
     // and put black the others
-    for(uint32_t l_moduleIndex = 0; l_moduleIndex < m_moduleManager->getModuleCount(); l_moduleIndex++)
+    for(uint32_t l_moduleIndex = 0; l_moduleIndex < ModuleManager::getModuleCount(); l_moduleIndex++)
     {
-        Module *l_module = m_moduleManager->getModule(l_moduleIndex);
+        Module *l_module = ModuleManager::getModule(l_moduleIndex);
         if (l_module->getMicro() == l_mainMicro)
         {
             // The module is associated with the micro
@@ -111,7 +123,7 @@ void Learning::recordAllMic()
 {
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
-    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -171,9 +183,9 @@ void Learning::stopLearning()
     else
     {
         // Turn off all the leds
-        for(uint32_t l_moduleIndex = 0; l_moduleIndex < m_moduleManager->getModuleCount(); l_moduleIndex++)
+        for(uint32_t l_moduleIndex = 0; l_moduleIndex < ModuleManager::getModuleCount(); l_moduleIndex++)
         {
-            Module *l_module = m_moduleManager->getModule(l_moduleIndex);
+            Module *l_module = ModuleManager::getModule(l_moduleIndex);
             RgbLed *l_led = l_module->getRgbLed();
             if(l_led != nullptr)
             {
@@ -188,7 +200,7 @@ void Learning::stopLearning()
         // Interpret the records
         calculateCorrection();      // Calculate the correction of each micro
         calculateRealImpacts();     // Calculate the real impacts of each micro
-        m_moduleManager->getImpactsManager()->calculateArtImpacts();         // Calculate the artificial impacts
+        ModuleManager::getImpactsManager()->calculateArtImpacts();         // Calculate the artificial impacts
         calculateThreshold();        // Calculate the threshold of each micro
 
         // Print the results
@@ -201,7 +213,7 @@ void Learning::stopLearning()
         }
 
         // Enable back the addition of new modules
-        m_moduleManager->enableNewModules(true);
+        ModuleManager::enableNewModules(true);
     }
 }
 
@@ -212,7 +224,7 @@ void Learning::calculateCorrection()
     // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
 
 
-    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
 
     for (uint32_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
@@ -253,7 +265,7 @@ void Learning::calculateCorrection()
 void Learning::calculateRealImpacts()
 {
     // Calculate the real impact of each micro for all the records
-    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -270,7 +282,7 @@ void Learning::calculateThreshold()
     // Then shearch the maximum positive error
     // The threshold is the maximum positive error
     // First, reset all the thresholds to 0
-    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -318,7 +330,7 @@ void Learning::calculateThreshold()
                     }
 
                     // Set the threshold if the value is greater
-                    if (l_value > l_micro->getThreshold())
+                    if (l_value + THRESHOLD_MARGIN > l_micro->getThreshold())
                     {
                         l_micro->setThreshold(l_value + THRESHOLD_MARGIN);
                     }
@@ -331,7 +343,7 @@ void Learning::calculateThreshold()
 void Learning::printResults()
 {
     // Display the corrections calculated
-    ImpactsManager *l_impactsManager = m_moduleManager->getImpactsManager();
+    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
     uint32_t l_nbMicros = l_impactsManager->getMicroCount();
     LogStream() << "\nCorrections :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
