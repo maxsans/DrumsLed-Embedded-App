@@ -1,96 +1,91 @@
 #ifndef __LEARNING_H__
 #define __LEARNING_H__
 
-#include "micro/microManager.h"
-#include "led/ledManager.h"
 #include "modules/moduleManager.h"
 #include "recordSlot.h"
 
 #include <stdint.h>
 #include <vector>
 
-class learning
+class Learning
 {
     private:
-        microManager *m_microManager;
-        ledManager *m_ledManager;
-        moduleManager *m_moduleManager;
-        int32_t m_MicroInRecord;
-        periodicCallsMs m_recordPeriodicCall;
+        static int32_t m_MicroInRecord;
+        static periodicCallsMs *m_recordPeriodicCall;
+
         /**
          * @brief Vector of record slot for each micro
          *
          */
-        std::vector<recordSlot *> m_microRecordSlots;
+        static std::vector<RecordSlot *> m_microRecordSlots;
+
         /**
          * @brief Callback to periodically call recordAllMic()
          *
          * @param object learning object (this)
          */
         static void recordCallback(void *object);
+
         /**
          * @brief Record all the micros
          *
          */
-        void recordAllMic();
+        static void recordAllMic();
+
         /**
          * @brief Calculate the correction all the records
          *
          */
-        void calculateCorrection();
+        static void calculateCorrection();
+
         /**
          * @brief Calculate the real impact of each micro for all the records
          *
          */
-        void calculateRealImpacts();
+        static void calculateRealImpacts();
+
         /**
          * @brief Calculate the threshold of each micro
          *
          */
-        void calculateThreshold();
+        static void calculateThreshold();
 
     public:
-        learning();
-        ~learning();
+        Learning() = delete;
+
+        static void init();
 
         /**
          * @brief Check if a learning process is running
          *
          * @return true if a learning process is running
          */
-        bool isLearning();
-
-        /**
-         * @brief Set the session to learn
-         *
-         * @param sessionToLearn The session to learn
-         */
-        void setSession(moduleManager *moduleManager, microManager *microManager, ledManager *ledManager);
+        static bool isLearning();
 
         /**
          * @brief Start the learning process on all the micros
          *
          */
-        void startLearning();
+        static void startLearning();
 
         /**
          * @brief Start the learning process on a specific micro
          *
          * @param microIndex The index of the micro to start learning
          */
-        void startLearning(int32_t microIndex);
+        static void startLearning(int32_t microIndex);
 
         /**
          * @brief Stop the learning process
          *
          */
-        void stopLearning();
+        static void stopLearning();
 
         /**
          * @brief Print the results of the learning
          *
          */
-        void printResults();
+        static void printResults();
 };
 
 #endif

@@ -1,16 +1,15 @@
 #include "micro.h"
 #include "api/time/time.h"
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 
 #define MICRO_TIMEOUT 100 // ms
 #define DEFAULT_CORRECTION 1.00
 #define DEFAULT_THRESHOLD 5
 
-micro::micro(module *m)
+Micro::Micro()
 {
     // Constructor
     m_connected = true;
-    m_module = m;
     m_microValue = 0;
     m_microValueCorrected = 0;
     m_correction = DEFAULT_CORRECTION;
@@ -18,32 +17,30 @@ micro::micro(module *m)
     m_lastSyncTime = timeMs();
 }
 
-void micro::process()
+void Micro::process()
 {
     // Process the micro
     // Check if the micro is still connected
     checkTime();
 }
 
-void micro::sync()
+void Micro::sync()
 {
     // Sync the micro
     if (!m_connected)
     {
-        // LogStream() << "Micro reconnected, ip: "<< m_module->getIp() << LogStream::endl;
         m_connected = true;
     }
     m_lastSyncTime = timeMs();
 }
 
-void micro::checkTime()
+void Micro::checkTime()
 {
     // Check if the micro is still connected
     if (timeMs() - m_lastSyncTime > MICRO_TIMEOUT)
     {
         if (m_connected)
         {
-            // LogStream() << "Micro disconnected, ip: " << m_module->getIp() << LogStream::endl;
             m_connected = false;
             // Reset values to 0
             m_microValue = 0;
@@ -52,31 +49,25 @@ void micro::checkTime()
     }
 }
 
-bool micro::isConnected()
+bool Micro::isConnected()
 {
     // Check if the micro is connected
     return m_connected;
 }
 
-module *micro::getModule()
-{
-    // Get the module of the micro
-    return m_module;
-}
-
-void micro::setCorrection(float correction)
+void Micro::setCorrection(float correction)
 {
     // Set the correction of the micro
     m_correction = correction;
 }
 
-float micro::getCorrection()
+float Micro::getCorrection()
 {
     // Get the correction of the micro
     return m_correction;
 }
 
-void micro::setMicroValue(uint8_t microValue)
+void Micro::setMicroValue(uint8_t microValue)
 {
     // Sync the micro
     sync();
@@ -84,37 +75,37 @@ void micro::setMicroValue(uint8_t microValue)
     m_microValue = microValue;
 }
 
-void micro::setMicroValueCorrected(uint8_t microValueCorrected)
+void Micro::setMicroValueCorrected(uint8_t microValueCorrected)
 {
-    // Set the corrected value of the micro
-    m_microValueCorrected = microValueCorrected;
+    // Apply the correction to the micro value
+    m_microValueCorrected = microValueCorrected * m_correction;
 }
 
-void micro::setThreshold(uint8_t threshold)
+void Micro::setThreshold(uint8_t threshold)
 {
     // Set the threshold of the micro
     m_threshold = threshold;
 }
 
-uint8_t micro::getMicroValue()
+uint8_t Micro::getMicroValue()
 {
     // Get the value of the micro
     return m_microValue;
 }
 
-uint8_t micro::getMicroValueCorrected()
+uint8_t Micro::getMicroValueCorrected()
 {
     // Get the corrected value of the micro
     return m_microValueCorrected;
 }
 
-uint8_t micro::getThreshold()
+uint8_t Micro::getThreshold()
 {
     // Get the threshold of the micro
     return m_threshold;
 }
 
-bool micro::isHit()
+bool Micro::isHit()
 {
     // Check if the micro is hit
     return (m_microValueCorrected > (m_threshold*m_correction));

@@ -2,7 +2,6 @@
 #define __RGB_LED_H__
 
 #include "colorOrder.h"
-#include "modules/module.h"
 
 #include <stdint.h>
 
@@ -30,36 +29,28 @@ typedef enum
 /**
  * @brief Class to represent an RGB LED.
  */
-class rgbLed
+class RgbLed
 {
     private:
-        colorOrder m_colorOrders[COLOR_PRIORITY_COUNT];
-        module *m_module;
-        uint8_t m_gamma8[256];
+        ColorOrder m_colorOrders[COLOR_PRIORITY_COUNT];
         colorPriority_t m_priority;
         uint64_t m_lastSetTime;
         bool m_permColorSet;
 
     public:
-        rgbLed(module *m);
-        /**
-         * @brief Get the Module object
-         *
-         * @return module* The module.
-         */
-        module *getModule();
+        RgbLed();
         /**
          * @brief Set the color.
          *
          * @param color The color.
          */
-        rgbColor getColor();
+        RgbColor getColor();
         /**
          * @brief Set the color.
          *
          * @param color The color.
          */
-        void setColor(colorPriority_t priority, rgbColor color);
+        void setColor(colorPriority_t priority, RgbColor color);
         /**
          * @brief Release the color.
          * @warning Don't forget to release the color when you don't need it anymore.

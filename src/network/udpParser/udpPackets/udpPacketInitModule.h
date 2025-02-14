@@ -2,11 +2,7 @@
 #define __UDP_PACKET_INIT_H__
 
 #include "udpPacket.h"
-
-typedef enum
-{
-    TYPE_DRUM_MODULE
-} moduleType_t;
+#include "modules/module.h"
 
 class UdpPacketInitModule : public UdpPacket
 {

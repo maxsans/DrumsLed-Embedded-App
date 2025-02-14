@@ -10,16 +10,16 @@
  * @brief Fades the LED to a color.
  * @see animation.h for more information.
  */
-class fade : public animation
+class Fade : public Animation
 {
     private:
-        rgbColor m_color;
+        RgbColor m_color;
         uint32_t m_duration;
         time_ms_t m_hitTime;
 
     public:
-        fade(micro *m, rgbLed *rgbLed, rgbColor color, uint32_t duration);
-        ~fade();
+        Fade(Micro *m, RgbLed *rgbLed, RgbColor color, uint32_t duration);
+        ~Fade();
         void start();
         void process();
         void stop();

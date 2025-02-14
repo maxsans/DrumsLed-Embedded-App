@@ -1,6 +1,6 @@
 #include "udpPacketPingSlaves.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
 
 UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)
@@ -9,8 +9,10 @@ UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)
 
 void UdpPacketPingSlaves::parse()
 {
+#ifdef __TARGET_SLAVES
     // Implement parsing logic
-    LogStream() << "Ping slaves packet received. Master : " << m_client.getIP().getIpString() << LogStream::endl;
+    LogStream::cout << "Ping slaves packet received. Master : " << m_client.getIP().getIpString() << LogStream::endl;
+#endif
 }
 
 void UdpPacketPingSlaves::send()

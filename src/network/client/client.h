@@ -9,19 +9,19 @@
 class Client
 {
     private:
-        IPv4 m_ip;
+        Ipv4 m_ip;
         MacAddr m_mac;
 
     public:
         Client();
-        Client(IPv4 ip, MacAddr mac);
+        Client(Ipv4 ip, MacAddr mac);
         Client(Client &client);
         ~Client();
 
-        IPv4 getIP();
+        Ipv4 getIP();
         MacAddr getMAC();
 
-        void setIP(IPv4 ip);
+        void setIP(Ipv4 ip);
         void setMAC(MacAddr mac);
 
         void send (char *data, uint32_t size);
