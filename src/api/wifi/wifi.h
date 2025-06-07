@@ -15,4 +15,9 @@ void wifi_init();
  */
 void wifi_set_sta(const char *ssid, const char *password);
 
+/**
+ * @return true if the wifi is connected
+ */
+bool is_wifi_connected();
+
 #endif // __WIFI_H__

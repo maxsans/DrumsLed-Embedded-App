@@ -39,8 +39,11 @@ static EventGroupHandle_t s_wifi_event_group;
 #define SSID_MAX_LENGTH 32
 #define PASSWORD_MAX_LENGTH 64
 
+#define RECONNECT_DELAY_MS 5000
+
 static char g_ssid[SSID_MAX_LENGTH];
 static char g_password[PASSWORD_MAX_LENGTH];
+static bool g_connected = false;
 
 static void event_handler(void *arg, esp_event_base_t event_base,
                           int32_t event_id, void *event_data)
@@ -65,66 +68,68 @@ static void event_handler(void *arg, esp_event_base_t event_base,
 
 static void wifi_connect_task(void *pvParameters)
 {
-    s_wifi_event_group = xEventGroupCreate();
-
-    tcpip_adapter_init();
-
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
-
-    wifi_config_t wifi_config;
-    memset(&wifi_config, 0, sizeof(wifi_config));
-    strcpy((char *)wifi_config.sta.ssid, g_ssid);
-    strcpy((char *)wifi_config.sta.password, g_password);
-
-    /* Setting a password implies station will connect to all security modes including WEP/WPA.
-     * However these modes are deprecated and not advisable to be used. Incase your Access point
-     * doesn't support WPA2, these mode can be enabled by commenting below line */
-
-    if (strlen((char *)wifi_config.sta.password))
+    while (1)
     {
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+        s_wifi_event_group = xEventGroupCreate();
+
+        tcpip_adapter_init();
+
+        ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+        wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+        ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+        ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+        ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
+
+        wifi_config_t wifi_config;
+        memset(&wifi_config, 0, sizeof(wifi_config));
+        strcpy((char *)wifi_config.sta.ssid, g_ssid);
+        strcpy((char *)wifi_config.sta.password, g_password);
+
+        if (strlen((char *)wifi_config.sta.password))
+        {
+            wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+        }
+
+        ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+        ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+        ESP_ERROR_CHECK(esp_wifi_start());
+
+        log("wifi_init_sta finished. Trying to connect to AP (ssid : %s, password : %s)\n", wifi_config.sta.ssid, wifi_config.sta.password);
+
+        EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
+                                               WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+                                               pdFALSE,
+                                               pdFALSE,
+                                               portMAX_DELAY);
+
+        if (bits & WIFI_CONNECTED_BIT)
+        {
+            log("connected to ap SSID: %s password: %s\n", g_ssid, g_password);
+            // Attendre la déconnexion
+            xEventGroupClearBits(s_wifi_event_group, WIFI_FAIL_BIT);
+            xEventGroupWaitBits(s_wifi_event_group, WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+            log("WiFi disconnected, will try to reconnect...\n");
+            g_connected = true;
+        }
+        else if (bits & WIFI_FAIL_BIT)
+        {
+            g_connected = false;
+            log("Failed to connect to SSID: %s, password: %s\n", g_ssid, g_password);
+            vTaskDelay(RECONNECT_DELAY_MS / portTICK_PERIOD_MS);
+        }
+        else
+        {
+            g_connected = false;
+            log("UNEXPECTED EVENT\n");
+        }
+
+        ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
+        ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
+        vEventGroupDelete(s_wifi_event_group);
     }
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    log("wifi_init_sta finished. Trying to connect to AP (ssid : %s, password : %s)\n", wifi_config.sta.ssid, wifi_config.sta.password);
-
-    /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
-     * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
-    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                           WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                           pdFALSE,
-                                           pdFALSE,
-                                           portMAX_DELAY);
-
-    /* xEventGroupWaitBits() returns the bits before the call returned, hence we can test which event actually
-     * happened. */
-    if (bits & WIFI_CONNECTED_BIT)
-    {
-        log("connected to ap SSID: %s password: %s\n", g_ssid, g_password);
-    }
-    else if (bits & WIFI_FAIL_BIT)
-    {
-        log("Failed to connect to SSID: %s, password: %s\n", g_ssid, g_password);
-    }
-    else
-    {
-        log("UNEXPECTED EVENT\n");
-    }
-
-    ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
-    ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
-    vEventGroupDelete(s_wifi_event_group);
-
-    vTaskDelete(NULL); // Supprime la tâche à la fin
+    vTaskDelete(NULL);
 }
 
 void wifi_init_sta(void)
@@ -144,4 +149,9 @@ void wifi_set_sta(const char *ssid, const char *password)
     strcpy(g_ssid, ssid);
     strcpy(g_password, password);
     log("Set wifi ssid: %s, password: %s\n", g_ssid, g_password);
+}
+
+bool is_wifi_connected()
+{
+    return g_connected;
 }

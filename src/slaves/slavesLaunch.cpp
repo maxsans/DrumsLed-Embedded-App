@@ -4,6 +4,7 @@
 #include "api/wifi/wifi.h"
 #include "api/adc/adc.h"
 #include "api/addrLed/addrLed.h"
+#include "api/udp/udp.h"
 #include "network/networkConfig.h"
 #include "tools/timeTools/timeMs.h"
 
@@ -21,6 +22,18 @@ static void init()
 static void process()
 {
     target_process();
+    // Init the udp on each wifi reconnexion
+    static bool l_lastWifiStatus = false;
+    bool l_newState = is_wifi_connected();
+    if(l_lastWifiStatus != l_newState)
+    {
+        l_lastWifiStatus = l_newState;
+        udp_init();
+    }
+    if (l_newState)
+    {
+        udp_send_broadcast("eheh\n", 10, UDP_DEFAULT_PORT);
+    }
 }
 
 void launch()

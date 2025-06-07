@@ -12,7 +12,8 @@ struct sockaddr_in udp_addr;
 void udp_init()
 {
     udp_socket = socket(AF_INET, SOCK_DGRAM, 0);
-    if (udp_socket < 0) {
+    if (udp_socket < 0)
+    {
         // Handle error
     }
     memset(&udp_addr, 0, sizeof(udp_addr));
@@ -40,23 +41,26 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
     struct sockaddr_in source_addr;
     socklen_t socklen = sizeof(source_addr);
     int ret = recvfrom(udp_socket, data, len, 0, (struct sockaddr *)&source_addr, &socklen);
-    if (ret > 0) {
+    if (ret > 0)
+    {
         inet_ntop(AF_INET, &source_addr.sin_addr, ip, INET_ADDRSTRLEN);
         *port = ntohs(source_addr.sin_port);
 
         // Find MAC address using ARP table
-        for(int i=0;i<ARP_TABLE_SIZE;i++)
+        for (int i = 0; i < ARP_TABLE_SIZE; i++)
         {
             ip4_addr_t *ret_ip;
             struct netif *ret_netif;
             struct eth_addr *ret_eth;
-            if(etharp_get_entry(i, &ret_ip, &ret_netif, &ret_eth) == 1)
+            if (etharp_get_entry(i, &ret_ip, &ret_netif, &ret_eth) == 1)
             {
                 sprintf(mac, "%02x:%02x:%02x:%02x:%02x:%02x",
                         ret_eth->addr[0], ret_eth->addr[1], ret_eth->addr[2],
                         ret_eth->addr[3], ret_eth->addr[4], ret_eth->addr[5]);
             }
         }
+
+        printf("Received %d bytes from %s:%d, MAC: %s\n", ret, ip, *port, mac);
     }
     return ret;
 }
