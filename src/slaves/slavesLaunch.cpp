@@ -3,20 +3,21 @@
 #include "tools/logStream/logStream.h"
 #include "api/wifi/wifi.h"
 #include "api/adc/adc.h"
+#include "api/addrLed/addrLed.h"
 #include "network/networkConfig.h"
-
-static bool initialized = false;
+#include "tools/timeTools/timeMs.h"
 
 static void init()
 {
     target_common_init();
-    LogStream::cout << "Slaves start !" << LogStream::endl;
-
-    target_common_init();
+    LogStream::cout << "Slaves start .." << LogStream::endl;
 
     adc_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
+    g_led_bot.init();
+    g_led_top.init();
+    LogStream::cout << "Slaves started" << LogStream::endl;
 }
 
 static void process()
@@ -26,10 +27,9 @@ static void process()
 
 void launch()
 {
-    if (!initialized)
+    init();
+    while (1)
     {
-        initialized = true;
-        init();
+        process();
     }
-    process();
 }
