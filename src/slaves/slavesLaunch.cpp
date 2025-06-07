@@ -15,8 +15,6 @@ static void init()
     adc_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
-    g_led_bot.init();
-    g_led_top.init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 }
 
