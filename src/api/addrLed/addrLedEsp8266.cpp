@@ -6,47 +6,82 @@
 
 #include <assert.h>
 
-#define WS2812_T0H_NS 350
-#define WS2812_T1H_NS 700
-#define WS2812_T0L_NS 800
-#define WS2812_T1L_NS 600
-#define WS2812_RESET_NS 50000
+#define F_CPU 160000000
 
-#define CPU_FREQ_MHZ 80
+#define CYCLES_800_T0H (F_CPU / 2500000) // 0.4us
+#define CYCLES_800_T1H (F_CPU / 1250000) // 0.8us
+#define CYCLES_800 (F_CPU / 800000)      // 1.25us per bit
+#define WS2812_RESET_US 60
+
+#define WS2812_MAX_PIXELS 1024 // Maximum number of pixels supported by this implementation
 
 #define NB_GAMMA_CORRECTION 256
 
-const uint8_t GAMMA_CORRECTION[NB_GAMMA_CORRECTION] =
-{
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2,
-    2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5,
-    5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10,
-    10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
-    17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
-    25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
-    37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
-    51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
-    69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
-    90, 92, 93, 95, 96, 98, 99, 101, 102, 104, 105, 107, 109, 110, 112, 114,
-    115, 117, 119, 120, 122, 124, 126, 127, 129, 131, 133, 135, 137, 138, 140, 142,
-    144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 167, 169, 171, 173, 175,
-    177, 180, 182, 184, 186, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213,
-    215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255
-};
+#define _BV(i) (1U << (i))
 
-static inline void delay_ns(uint32_t ns)
+const uint8_t GAMMA_CORRECTION[NB_GAMMA_CORRECTION] =
+    {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2,
+        2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5,
+        5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10,
+        10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
+        17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
+        25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
+        37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
+        51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
+        69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
+        90, 92, 93, 95, 96, 98, 99, 101, 102, 104, 105, 107, 109, 110, 112, 114,
+        115, 117, 119, 120, 122, 124, 126, 127, 129, 131, 133, 135, 137, 138, 140, 142,
+        144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 167, 169, 171, 173, 175,
+        177, 180, 182, 184, 186, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213,
+        215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255};
+
+void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pin)
 {
-    uint32_t start = xthal_get_ccount();
-    uint32_t cycles = ns * (CPU_FREQ_MHZ / 1000) / 1000;
-    while (xthal_get_ccount() - start < cycles)
-        ;
+    const uint32_t pinRegister = _BV(pin);
+    uint8_t mask;
+    uint8_t subpix;
+    uint32_t cyclesStart;
+
+    // trigger emediately
+    cyclesStart = xthal_get_ccount() - CYCLES_800;
+    do
+    {
+        subpix = *pixels++;
+        for (mask = 0x80; mask != 0; mask >>= 1)
+        {
+            // do the checks here while we are waiting on time to pass
+            uint32_t cyclesBit = ((subpix & mask)) ? CYCLES_800_T1H : CYCLES_800_T0H;
+            uint32_t cyclesNext = cyclesStart;
+
+            // after we have done as much work as needed for this next bit
+            // now wait for the HIGH
+            do
+            {
+                // cache and use this count so we don't incur another
+                // instruction before we turn the bit high
+                cyclesStart = xthal_get_ccount();
+            } while ((cyclesStart - cyclesNext) < CYCLES_800);
+
+            // set high
+            GPIO_REG_WRITE(GPIO_OUT_W1TS_ADDRESS, pinRegister);
+
+            // wait for the LOW
+            do
+            {
+                cyclesNext = xthal_get_ccount();
+            } while ((cyclesNext - cyclesStart) < cyclesBit);
+
+            // set low
+            GPIO_REG_WRITE(GPIO_OUT_W1TC_ADDRESS, pinRegister);
+        }
+    } while (pixels < end);
 }
 
 AddrLed::AddrLed(uint32_t num_leds, uint8_t pin) : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
 {
-
 }
 
 AddrLed::~AddrLed()
@@ -81,54 +116,34 @@ void AddrLed::fill(addrLedColor_t color)
     }
 }
 
-void AddrLed::fill(addrLedColor_t color, uint32_t start, uint32_t end)
+void AddrLed::fill(uint8_t r, uint8_t g, uint8_t b)
 {
-    if (end == 0)
-    {
-        end = m_num_leds;
-    }
-
-    for (uint32_t i = start; i < end; i++)
-    {
-        m_pixels[i] = color;
-    }
+    addrLedColor_t color;
+    color.r = r;
+    color.g = g;
+    color.b = b;
+    fill(color);
 }
 
 void AddrLed::show()
 {
-    uint32_t num_bytes = m_num_leds * 3;
-    uint8_t *data = new uint8_t[num_bytes];
-    assert(data != NULL);
-
-    for (uint32_t i = 0; i < m_num_leds; i++)
+    // Prepare buffer for WS2812: GRB order, gamma corrected
+    uint8_t ws_buf[3 * WS2812_MAX_PIXELS];
+    uint8_t *p = ws_buf;
+    for (uint32_t i = 0; i < m_num_leds; ++i)
     {
-        data[i * 3 + 0] = GAMMA_CORRECTION[m_pixels[i].g];
-        data[i * 3 + 1] = GAMMA_CORRECTION[m_pixels[i].r];
-        data[i * 3 + 2] = GAMMA_CORRECTION[m_pixels[i].b];
+        const addrLedColor_t &c = m_pixels[i];
+        *p++ = GAMMA_CORRECTION[c.g];
+        *p++ = GAMMA_CORRECTION[c.r];
+        *p++ = GAMMA_CORRECTION[c.b];
     }
-
-    for (uint32_t i = 0; i < num_bytes; i++)
-    {
-        uint8_t byte = data[i];
-        for (uint8_t bit = 0; bit < 8; bit++)
-        {
-            if (byte & (1 << (7 - bit)))
-            {
-                gpio_set_level((gpio_num_t)m_pin, 1);
-                delay_ns(WS2812_T1H_NS);
-                gpio_set_level((gpio_num_t)m_pin, 0);
-                delay_ns(WS2812_T1L_NS);
-            }
-            else
-            {
-                gpio_set_level((gpio_num_t)m_pin, 1);
-                delay_ns(WS2812_T0H_NS);
-                gpio_set_level((gpio_num_t)m_pin, 0);
-                delay_ns(WS2812_T0L_NS);
-            }
-        }
-    }
-
-    delay_ns(WS2812_RESET_NS);
-    delete[] data;
+    // Disable interrupts !
+    // This is important to ensure that the timing of the WS2812 signal is not disrupted
+    taskENTER_CRITICAL();
+    // Send the pixels
+    bitbang_send_pixels_800(ws_buf, ws_buf + 3 * m_num_leds, m_pin);
+    // Re-enable interrupts
+    taskEXIT_CRITICAL();
+    // WS2812 reset time:
+    ets_delay_us(WS2812_RESET_US);
 }

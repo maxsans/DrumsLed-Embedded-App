@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <vector>
 
-typedef union addrLedColor_t
+typedef union
 {
     uint32_t color;
     struct
@@ -29,7 +29,7 @@ class AddrLed
         void init();
         void setPixelColor(uint32_t index, addrLedColor_t color);
         void fill(addrLedColor_t color);
-        void fill(addrLedColor_t color, uint32_t start = 0, uint32_t end = 0);
+        void fill(uint8_t r, uint8_t g, uint8_t b);
         void show();
 };
 

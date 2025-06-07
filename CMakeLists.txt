@@ -49,6 +49,8 @@ add_sources(
     network/udpParser/udpPackets/udpPacketInitModule.cpp
     network/udpParser/udpPackets/udpPacketPingSlaves.cpp
     network/udpParser/udpPackets/udpPacketRgb.cpp
+
+    led/rgbColor.cpp
     )
 
 ####################################################################################################

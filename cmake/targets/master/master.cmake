@@ -17,7 +17,6 @@ add_sources(
     animation/simpleColor.cpp
 
     led/colorOrder.cpp
-    led/rgbColor.cpp
     led/rgbLed.cpp
 
     micro/learning/impact.cpp
