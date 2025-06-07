@@ -35,14 +35,12 @@ static EventGroupHandle_t s_wifi_event_group;
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1
-#define ESP_MAXIMUM_RETRY 5
 
 #define SSID_MAX_LENGTH 32
 #define PASSWORD_MAX_LENGTH 64
 
 static char g_ssid[SSID_MAX_LENGTH];
 static char g_password[PASSWORD_MAX_LENGTH];
-static int s_retry_num = 0;
 
 static void event_handler(void *arg, esp_event_base_t event_base,
                           int32_t event_id, void *event_data)
@@ -53,29 +51,19 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
-        if (s_retry_num < ESP_MAXIMUM_RETRY)
-        {
-            esp_wifi_connect();
-            s_retry_num++;
-            log("retry to connect to the AP\n");
-        }
-        else
-        {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-        }
-        log("connect to the AP fail\n");
+        esp_wifi_connect();
+        log("retry to connect to the AP\n");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         log("got ip: %s \n",
             ip4addr_ntoa(&event->ip_info.ip));
-        s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
 
-void wifi_init_sta(void)
+static void wifi_connect_task(void *pvParameters)
 {
     s_wifi_event_group = xEventGroupCreate();
 
@@ -135,6 +123,14 @@ void wifi_init_sta(void)
     ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
     ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
     vEventGroupDelete(s_wifi_event_group);
+
+    vTaskDelete(NULL); // Supprime la tâche à la fin
+}
+
+void wifi_init_sta(void)
+{
+    // Lance la connexion wifi dans une tâche indépendante
+    xTaskCreate(&wifi_connect_task, "wifi_connect_task", 4096, NULL, 5, NULL);
 }
 
 void wifi_init()
