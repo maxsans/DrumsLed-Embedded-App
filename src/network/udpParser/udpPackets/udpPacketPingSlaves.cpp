@@ -5,6 +5,10 @@
 #include "api/udp/udp.h"
 #include "slaves/kit/kit.h"
 
+UdpPacketPingSlaves::UdpPacketPingSlaves() : UdpPacket(PACKET_TYPE_PING_SLAVES)
+{
+}
+
 UdpPacketPingSlaves::UdpPacketPingSlaves(Client client) : UdpPacket(client, PACKET_TYPE_PING_SLAVES)
 {
 }
