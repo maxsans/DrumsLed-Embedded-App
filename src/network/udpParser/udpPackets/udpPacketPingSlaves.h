@@ -6,6 +6,7 @@
 class UdpPacketPingSlaves : public UdpPacket
 {
     public:
+        UdpPacketPingSlaves();
         UdpPacketPingSlaves(Client client);
         void parse() override;
         void send() override;
