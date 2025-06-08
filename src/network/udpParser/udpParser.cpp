@@ -18,22 +18,22 @@ UdpPacket *UdpParser::identify(char *data, Client client)
 
     switch (type)
     {
-        case PACKET_TYPE_PING_SLAVES:
-            packet = new UdpPacketPingSlaves();
-            break;
-        case PACKET_TYPE_INIT_MODULE:
-            packet = new UdpPacketInitModule(client, dataWithoutType);
-            break;
-        case PACKET_TYPE_ADC:
-            packet = new UdpPacketAdc(client, dataWithoutType);
-            break;
-        case PACKET_TYPE_RGB:
-            packet = new UdpPacketRgb(client, dataWithoutType);
-            break;
+    case PACKET_TYPE_PING_SLAVES:
+        packet = new UdpPacketPingSlaves(client);
+        break;
+    case PACKET_TYPE_INIT_MODULE:
+        packet = new UdpPacketInitModule(client, dataWithoutType);
+        break;
+    case PACKET_TYPE_ADC:
+        packet = new UdpPacketAdc(client, dataWithoutType);
+        break;
+    case PACKET_TYPE_RGB:
+        packet = new UdpPacketRgb(client, dataWithoutType);
+        break;
         // Add new packet types here
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return packet;
@@ -62,7 +62,7 @@ void UdpParser::process()
 void UdpParser::parseUdp(char *data, Client client)
 {
     UdpPacket *packet = identify(data, client);
-    if(packet != nullptr)
+    if (packet != nullptr)
     {
         packet->parse();
         delete packet;

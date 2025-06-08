@@ -93,11 +93,19 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         printf("Received %d bytes from %s:%d\n", recv_len, inet_ntoa(src_addr.sin_addr), ntohs(src_addr.sin_port));
         if (ip)
         {
-            strcpy(ip, inet_ntoa(src_addr.sin_addr));
+            inet_ntop(AF_INET, &src_addr.sin_addr, ip, INET_ADDRSTRLEN);
+        }
+        else
+        {
+            printf("IP address buffer is NULL\n");
         }
         if (port)
         {
             *port = ntohs(src_addr.sin_port);
+        }
+        else
+        {
+            printf("Port buffer is NULL\n");
         }
         // MAC address is not available from UDP packet, so leave as is
         return recv_len;

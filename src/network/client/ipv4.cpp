@@ -1,4 +1,5 @@
 #include "ipv4.h"
+#include "tools/logStream/logStream.h"
 
 Ipv4::Ipv4()
 {
@@ -109,7 +110,22 @@ void Ipv4::setIp(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
 
 void Ipv4::setIp(char *ip)
 {
-    sscanf(ip, "%hhu.%hhu.%hhu.%hhu", &m_ip[0], &m_ip[1], &m_ip[2], &m_ip[3]);
+    if (ip == nullptr)
+    {
+        LogStream::cout << "Error: IP address is null" << LogStream::endl;
+        return;
+    }
+    unsigned int ip1, ip2, ip3, ip4;
+    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 ||
+        ip1 > 255 || ip2 > 255 || ip3 > 255 || ip4 > 255)
+    {
+        LogStream::cout << "Error: Invalid IP address format: " << ip << LogStream::endl;
+        return;
+    }
+    m_ip[0] = static_cast<uint8_t>(ip1);
+    m_ip[1] = static_cast<uint8_t>(ip2);
+    m_ip[2] = static_cast<uint8_t>(ip3);
+    m_ip[3] = static_cast<uint8_t>(ip4);
 }
 
 void Ipv4::setIp(Ipv4 &ip)
