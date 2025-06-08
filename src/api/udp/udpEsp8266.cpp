@@ -83,7 +83,8 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 
     // Set non-blocking mode using fcntl (correct for ESP-IDF)
     int flags = fcntl(udp_sock, F_GETFL, 0);
-    if (!(flags & O_NONBLOCK)) {
+    if (!(flags & O_NONBLOCK))
+    {
         fcntl(udp_sock, F_SETFL, flags | O_NONBLOCK);
     }
 
@@ -107,7 +108,12 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         {
             printf("Port buffer is NULL\n");
         }
-        // MAC address is not available from UDP packet, so leave as is
+        // The MAC address is not needed on esp8266 module
+        if (mac)
+        {
+            // So set it to a default value
+            strcpy(mac, "00:00:00:00:00:00");
+        }
         return recv_len;
     }
     else if (recv_len < 0)
