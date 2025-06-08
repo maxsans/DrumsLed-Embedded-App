@@ -107,11 +107,12 @@ static void wifi_connect_task(void *pvParameters)
         if (bits & WIFI_CONNECTED_BIT)
         {
             log("connected to ap SSID: %s password: %s\n", g_ssid, g_password);
+            g_connected = true;
             // Attendre la déconnexion
             xEventGroupClearBits(s_wifi_event_group, WIFI_FAIL_BIT);
             xEventGroupWaitBits(s_wifi_event_group, WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
             log("WiFi disconnected, will try to reconnect...\n");
-            g_connected = true;
+            g_connected = false;
         }
         else if (bits & WIFI_FAIL_BIT)
         {
