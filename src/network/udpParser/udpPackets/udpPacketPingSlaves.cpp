@@ -2,6 +2,7 @@
 
 #include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
+#include "slaves/kit/kit.h"
 
 UdpPacketPingSlaves::UdpPacketPingSlaves(Client client) : UdpPacket(client, PACKET_TYPE_PING_SLAVES)
 {
@@ -10,8 +11,8 @@ UdpPacketPingSlaves::UdpPacketPingSlaves(Client client) : UdpPacket(client, PACK
 void UdpPacketPingSlaves::parse()
 {
 #ifdef __TARGET_SLAVES
-    // Implement parsing logic
-    LogStream::cout << "Ping slaves packet received. Master : " << m_client.getIP().getIpString() << LogStream::endl;
+    // Set the master client in the Kit
+    Kit::setMasterClient(m_client);
 #endif
 }
 
