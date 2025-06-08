@@ -1,4 +1,5 @@
 #include "udpPacketPingSlaves.h"
+#include "udpPacketInitModule.h"
 
 #include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
@@ -13,6 +14,9 @@ void UdpPacketPingSlaves::parse()
 #ifdef __TARGET_SLAVES
     // Set the master client in the Kit
     Kit::setMasterClient(m_client);
+    // Respond to the master
+    UdpPacketInitModule l_packetInitModule(m_client, TYPE_DRUM_MODULE);
+    l_packetInitModule.send();
 #endif
 }
 

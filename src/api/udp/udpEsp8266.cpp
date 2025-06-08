@@ -91,7 +91,7 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
     int recv_len = recvfrom(udp_sock, data, len, 0, (struct sockaddr *)&src_addr, &addr_len);
     if (recv_len > 0)
     {
-        printf("Received %d bytes from %s:%d\n", recv_len, inet_ntoa(src_addr.sin_addr), ntohs(src_addr.sin_port));
+        // printf("Received %d bytes from %s:%d\n", recv_len, inet_ntoa(src_addr.sin_addr), ntohs(src_addr.sin_port));
         if (ip)
         {
             inet_ntop(AF_INET, &src_addr.sin_addr, ip, INET_ADDRSTRLEN);

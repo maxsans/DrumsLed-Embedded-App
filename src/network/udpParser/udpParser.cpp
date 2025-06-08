@@ -14,7 +14,7 @@ UdpPacket *UdpParser::identify(char *data, Client client)
 {
     UdpPacketType type = (UdpPacketType)data[0];
     UdpPacket *packet = nullptr;
-    char *dataWithoutType = data + sizeof(UdpPacketType);
+    char *dataWithoutType = data + 1; // Skip the first byte which is the type
 
     switch (type)
     {
