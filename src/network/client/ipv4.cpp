@@ -1,6 +1,7 @@
 #include "ipv4.h"
+#include "tools/logStream/logStream.h"
 
-IPv4::IPv4()
+Ipv4::Ipv4()
 {
     m_ip[0] = 0;
     m_ip[1] = 0;
@@ -8,7 +9,7 @@ IPv4::IPv4()
     m_ip[3] = 0;
 }
 
-IPv4::IPv4(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
+Ipv4::Ipv4(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
 {
     m_ip[0] = ip1;
     m_ip[1] = ip2;
@@ -16,7 +17,7 @@ IPv4::IPv4(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
     m_ip[3] = ip4;
 }
 
-IPv4::IPv4(uint32_t ip)
+Ipv4::Ipv4(uint32_t ip)
 {
     m_ip[0] = (ip >> 24) & 0xFF;
     m_ip[1] = (ip >> 16) & 0xFF;
@@ -24,7 +25,7 @@ IPv4::IPv4(uint32_t ip)
     m_ip[3] = ip & 0xFF;
 }
 
-IPv4::IPv4(IPv4 &ip)
+Ipv4::Ipv4(Ipv4 &ip)
 {
     m_ip[0] = ip.m_ip[0];
     m_ip[1] = ip.m_ip[1];
@@ -32,66 +33,66 @@ IPv4::IPv4(IPv4 &ip)
     m_ip[3] = ip.m_ip[3];
 }
 
-IPv4::IPv4(char *ip)
+Ipv4::Ipv4(char *ip)
 {
     setIp(ip);
 }
 
-IPv4::~IPv4()
+Ipv4::~Ipv4()
 {
 }
 
-uint8_t IPv4::getIp1()
+uint8_t Ipv4::getIp1()
 {
     return m_ip[0];
 }
 
-uint8_t IPv4::getIp2()
+uint8_t Ipv4::getIp2()
 {
     return m_ip[1];
 }
 
-uint8_t IPv4::getIp3()
+uint8_t Ipv4::getIp3()
 {
     return m_ip[2];
 }
 
-uint8_t IPv4::getIp4()
+uint8_t Ipv4::getIp4()
 {
     return m_ip[3];
 }
 
-uint32_t IPv4::getIp()
+uint32_t Ipv4::getIp()
 {
     return (m_ip[0] << 24) | (m_ip[1] << 16) | (m_ip[2] << 8) | m_ip[3];
 }
 
-std::string IPv4::getIpString()
+std::string Ipv4::getIpString()
 {
     return std::to_string(m_ip[0]) + "." + std::to_string(m_ip[1]) + "." + std::to_string(m_ip[2]) + "." + std::to_string(m_ip[3]);
 }
 
-void IPv4::setIp1(uint8_t ip1)
+void Ipv4::setIp1(uint8_t ip1)
 {
     m_ip[0] = ip1;
 }
 
-void IPv4::setIp2(uint8_t ip2)
+void Ipv4::setIp2(uint8_t ip2)
 {
     m_ip[1] = ip2;
 }
 
-void IPv4::setIp3(uint8_t ip3)
+void Ipv4::setIp3(uint8_t ip3)
 {
     m_ip[2] = ip3;
 }
 
-void IPv4::setIp4(uint8_t ip4)
+void Ipv4::setIp4(uint8_t ip4)
 {
     m_ip[3] = ip4;
 }
 
-void IPv4::setIp(uint32_t ip)
+void Ipv4::setIp(uint32_t ip)
 {
     m_ip[0] = (ip >> 24) & 0xFF;
     m_ip[1] = (ip >> 16) & 0xFF;
@@ -99,7 +100,7 @@ void IPv4::setIp(uint32_t ip)
     m_ip[3] = ip & 0xFF;
 }
 
-void IPv4::setIp(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
+void Ipv4::setIp(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
 {
     m_ip[0] = ip1;
     m_ip[1] = ip2;
@@ -107,12 +108,27 @@ void IPv4::setIp(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4)
     m_ip[3] = ip4;
 }
 
-void IPv4::setIp(char *ip)
+void Ipv4::setIp(char *ip)
 {
-    sscanf(ip, "%hhu.%hhu.%hhu.%hhu", &m_ip[0], &m_ip[1], &m_ip[2], &m_ip[3]);
+    if (ip == nullptr)
+    {
+        LogStream::cout << "Error: IP address is null" << LogStream::endl;
+        return;
+    }
+    unsigned int ip1, ip2, ip3, ip4;
+    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 ||
+        ip1 > 255 || ip2 > 255 || ip3 > 255 || ip4 > 255)
+    {
+        LogStream::cout << "Error: Invalid IP address format: " << ip << LogStream::endl;
+        return;
+    }
+    m_ip[0] = static_cast<uint8_t>(ip1);
+    m_ip[1] = static_cast<uint8_t>(ip2);
+    m_ip[2] = static_cast<uint8_t>(ip3);
+    m_ip[3] = static_cast<uint8_t>(ip4);
 }
 
-void IPv4::setIp(IPv4 &ip)
+void Ipv4::setIp(Ipv4 &ip)
 {
     m_ip[0] = ip.m_ip[0];
     m_ip[1] = ip.m_ip[1];
@@ -120,17 +136,17 @@ void IPv4::setIp(IPv4 &ip)
     m_ip[3] = ip.m_ip[3];
 }
 
-void IPv4::setIp(std::string &ip)
+void Ipv4::setIp(std::string &ip)
 {
     setIp(ip);
 }
 
-bool IPv4::operator==(const IPv4 &ip)
+bool Ipv4::operator==(const Ipv4 &ip)
 {
     return m_ip[0] == ip.m_ip[0] && m_ip[1] == ip.m_ip[1] && m_ip[2] == ip.m_ip[2] && m_ip[3] == ip.m_ip[3];
 }
 
-bool IPv4::operator!=(const IPv4 &ip)
+bool Ipv4::operator!=(const Ipv4 &ip)
 {
     return m_ip[0] != ip.m_ip[0] || m_ip[1] != ip.m_ip[1] || m_ip[2] != ip.m_ip[2] || m_ip[3] != ip.m_ip[3];
 }

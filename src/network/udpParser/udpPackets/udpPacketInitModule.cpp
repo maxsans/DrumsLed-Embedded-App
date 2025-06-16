@@ -1,6 +1,6 @@
 #include "udpPacketInitModule.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 #include "api/udp/udp.h"
 #ifdef __TARGET_MASTER
     #include "session/session.h"
@@ -21,40 +21,17 @@ void UdpPacketInitModule::parse()
 #ifdef __TARGET_MASTER
     // A new module is found, add it to the list of modules
     // Check if the module is already in the list
-    if (g_session.getModuleManager()->getModule(m_client) != NULL)
+    if (ModuleManager::getModule(m_client) != NULL)
     {
         // Module already in the list, ignore
         return;
     }
     // Add the module to the list
-    if (g_session.getModuleManager()->addModule(new module(m_client)))
-    {
-        module *newModule = g_session.getModuleManager()->getModule(m_client);
-        if (newModule == NULL)
-        {
-            printf("Error while adding new module !\n");
-            return;
-        }
-        switch(m_moduleType) // type of module
-        {
-            case TYPE_DRUM_MODULE:
-                g_session.getMicroManager()->addMicro(newModule);
-                g_session.getLedManager()->addLed(newModule);
-                LogStream() << "New drum module ! ip : "
-                    << m_client.getIP().getIpString()
-                    << ", mac : " << m_client.getMAC().getMacString()
-                    << LogStream::endl;
-                break;
-
-            default:
-                // Unknowed module, ignore
-                LogStream() << "Unknown module detected ! ip : "
-                    << m_client.getIP().getIpString()
-                    << ", mac : " << m_client.getMAC().getMacString()
-                    << LogStream::endl;
-                break;
-        }
-    }
+    Module *l_module = ModuleManager::addModule(m_moduleType, m_client);
+    moduleType_t l_moduleType = l_module->getType();
+    LogStream::cout << "New module added (type " << l_moduleType
+        << " ip " << m_client.getIP().getIpString()
+        << " mac " << m_client.getMAC().getMacString() << ")" << LogStream::endl;
 #endif
 }
 

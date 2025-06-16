@@ -8,14 +8,14 @@
 /**
  * @brief Class to manage the color order.
  */
-class colorOrder
+class ColorOrder
 {
     private:
-        rgbColor m_color;
+        RgbColor m_color;
         bool m_enable;
 
     public:
-        colorOrder();
+        ColorOrder();
         /**
          * @brief Push an order of color.
          * @note If an order is already pushed with higher priority, it will be ignored.
@@ -23,13 +23,13 @@ class colorOrder
          *
          * @param color The color to set.
          */
-        void setColor(rgbColor color);
+        void setColor(RgbColor color);
         /**
          * @brief Get the Color object
          *
          * @return rgbColor The color.
          */
-        rgbColor getColor();
+        RgbColor getColor();
         /**
          * @brief Enable or disable the color.
          *

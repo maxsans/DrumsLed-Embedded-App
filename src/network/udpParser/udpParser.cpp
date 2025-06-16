@@ -14,26 +14,26 @@ UdpPacket *UdpParser::identify(char *data, Client client)
 {
     UdpPacketType type = (UdpPacketType)data[0];
     UdpPacket *packet = nullptr;
-    char *dataWithoutType = data + sizeof(UdpPacketType);
+    char *dataWithoutType = data + 1; // Skip the first byte which is the type
 
     switch (type)
     {
-        case PACKET_TYPE_PING_SLAVES:
-            packet = new UdpPacketPingSlaves();
-            break;
-        case PACKET_TYPE_INIT_MODULE:
-            packet = new UdpPacketInitModule(client, dataWithoutType);
-            break;
-        case PACKET_TYPE_ADC:
-            packet = new UdpPacketAdc(client, dataWithoutType);
-            break;
-        case PACKET_TYPE_RGB:
-            packet = new UdpPacketRgb(client, dataWithoutType);
-            break;
+    case PACKET_TYPE_PING_SLAVES:
+        packet = new UdpPacketPingSlaves(client);
+        break;
+    case PACKET_TYPE_INIT_MODULE:
+        packet = new UdpPacketInitModule(client, dataWithoutType);
+        break;
+    case PACKET_TYPE_ADC:
+        packet = new UdpPacketAdc(client, dataWithoutType);
+        break;
+    case PACKET_TYPE_RGB:
+        packet = new UdpPacketRgb(client, dataWithoutType);
+        break;
         // Add new packet types here
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return packet;
@@ -49,7 +49,7 @@ void UdpParser::process()
     if (l_len)
     {
         // Get the IP address of the packet
-        IPv4 l_packetIp(l_IP);
+        Ipv4 l_packetIp(l_IP);
         // Get the MAC address of the packet
         MacAddr l_packetMac(l_Mac);
         // Get the client from the IP address and MAC address
@@ -62,7 +62,7 @@ void UdpParser::process()
 void UdpParser::parseUdp(char *data, Client client)
 {
     UdpPacket *packet = identify(data, client);
-    if(packet != nullptr)
+    if (packet != nullptr)
     {
         packet->parse();
         delete packet;

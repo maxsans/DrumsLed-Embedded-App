@@ -1,24 +1,24 @@
 #include "simpleColor.h"
 
-simpleColor::simpleColor(rgbLed *rgbLed, rgbColor color) : animation(ANIMATION_TYPE_SIMPLE_COLOR, NULL, rgbLed)
+SimpleColor::SimpleColor(RgbLed *rgbLed, RgbColor color) : Animation(ANIMATION_TYPE_SIMPLE_COLOR, NULL, rgbLed)
 {
     m_color = color;
 }
 
-simpleColor::~simpleColor()
+SimpleColor::~SimpleColor()
 {
 }
 
-void simpleColor::start()
+void SimpleColor::start()
 {
     m_rgbLed->setColor(COLOR_PRIORITY_SIMPLE_COLOR, m_color);
 }
 
-void simpleColor::process()
+void SimpleColor::process()
 {
 }
 
-void simpleColor::stop()
+void SimpleColor::stop()
 {
     m_rgbLed->releaseColor(COLOR_PRIORITY_SIMPLE_COLOR);
 }

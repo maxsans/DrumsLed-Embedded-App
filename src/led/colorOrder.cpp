@@ -1,28 +1,28 @@
 #include "colorOrder.h"
 
-colorOrder::colorOrder()
+ColorOrder::ColorOrder()
 {
     // Constructor
     m_enable = false;
 }
 
-void colorOrder::setColor(rgbColor color)
+void ColorOrder::setColor(RgbColor color)
 {
     m_color = color;
     m_enable = true;
 }
 
-rgbColor colorOrder::getColor()
+RgbColor ColorOrder::getColor()
 {
     return m_color;
 }
 
-bool colorOrder::isEnabled()
+bool ColorOrder::isEnabled()
 {
     return m_enable;
 }
 
-void colorOrder::releaseColor()
+void ColorOrder::releaseColor()
 {
     m_enable = false;
 }

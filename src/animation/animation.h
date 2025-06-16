@@ -13,41 +13,41 @@ typedef enum
     ANIMATION_TYPE_SIMPLE_COLOR,
     ANIMATION_TYPE_FADE,
     ANIMATION_TYPE_COUNT
-} animationType;
+} animationType_t;
 
 /**
  * @brief Base class for animations.
  */
-class animation
+class Animation
 {
     private:
-        animationType m_type;
+        animationType_t m_type;
 
     protected:
-        micro *m_micro;
-        rgbLed *m_rgbLed;
+        Micro *m_micro;
+        RgbLed *m_rgbLed;
 
     public:
-        animation(animationType type, micro *m, rgbLed *rgbLed);
-        ~animation();
+        Animation(animationType_t type, Micro *m, RgbLed *rgbLed);
+        ~Animation();
         /**
          * @brief Get the type of the animation.
          *
          * @return animationType
          */
-        animationType getType();
+        animationType_t getType();
         /**
          * @brief Get the micro object.
          *
          * @return micro* A pointer to the micro object.
          */
-        micro *getMicro();
+        Micro *getMicro();
         /**
          * @brief Get the rgbLed object.
          *
          * @return rgbLed* A pointer to the rgbLed object.
          */
-        rgbLed *getRgbLed();
+        RgbLed *getRgbLed();
         /**
          * @brief Start the animation.
          * @note This function is pure virtual and must be implemented by the derived class.

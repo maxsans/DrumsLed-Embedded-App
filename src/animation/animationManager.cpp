@@ -2,33 +2,33 @@
 
 #include <assert.h>
 
-animationManager::animationManager()
+AnimationManager::AnimationManager()
 {
 }
 
-animationManager::~animationManager()
+AnimationManager::~AnimationManager()
 {
-    for (std::vector<animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+    for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
     {
         delete *it;
     }
 }
 
-void animationManager::process()
+void AnimationManager::process()
 {
-    for (std::vector<animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+    for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
     {
         (*it)->process();
     }
 }
 
-void animationManager::addAnimation(animation* anim)
+void AnimationManager::addAnimation(Animation* anim)
 {
     m_animations.push_back(anim);
     anim->start();
 }
 
-void animationManager::removeAnimation(uint32_t index)
+void AnimationManager::removeAnimation(uint32_t index)
 {
     assert(index < m_animations.size());
     m_animations[index]->stop();
@@ -36,7 +36,7 @@ void animationManager::removeAnimation(uint32_t index)
     m_animations.erase(m_animations.begin() + index);
 }
 
-void animationManager::removeAnimation(animation* anim)
+void AnimationManager::removeAnimation(Animation* anim)
 {
     for(uint32_t l_index = 0; l_index < m_animations.size(); ++l_index)
     {

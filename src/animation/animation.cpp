@@ -1,27 +1,27 @@
 #include "animation.h"
 
-animation::animation(animationType type, micro *m, rgbLed *rgbLed)
+Animation::Animation(animationType_t type, Micro *m, RgbLed *rgbLed)
 {
     m_type = type;
     m_micro = m;
     m_rgbLed = rgbLed;
 }
 
-animation::~animation()
+Animation::~Animation()
 {
 }
 
-animationType animation::getType()
+animationType_t Animation::getType()
 {
     return m_type;
 }
 
-micro *animation::getMicro()
+Micro *Animation::getMicro()
 {
     return m_micro;
 }
 
-rgbLed *animation::getRgbLed()
+RgbLed *Animation::getRgbLed()
 {
     return m_rgbLed;
 }

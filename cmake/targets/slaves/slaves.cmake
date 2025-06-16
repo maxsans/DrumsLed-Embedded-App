@@ -9,9 +9,12 @@ add_compile_options(-D__TARGET_SLAVES)
 ####################################################################################################
 add_sources(
     slaves/slavesLaunch.cpp
+    slaves/kit/kit.cpp
+    api/target/esp8266.cpp
     api/logs/logsEsp8266.cpp
     api/udp/udpEsp8266.cpp
     api/time/timeEsp8266.cpp
+    api/wifi/wifiEsp8266.cpp
     )
 
 ####################################################################################################

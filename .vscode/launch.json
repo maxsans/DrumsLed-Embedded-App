@@ -26,14 +26,16 @@
             "name": "Debug DrumKit",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${command:cmake.launchTargetPath}",
-            "args": [],
+            "program": "/bin/bash",
+            "args": [
+                "-c",
+                "~/esp/ESP8266_RTOS_SDK/tools/idf.py flash -DTARGET=DrumKit"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "~/esp/ESP8266_RTOS_SDK/components/toolchain/xtensa-lx106-elf/bin/xtensa-lx106-elf-gdb",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -48,14 +50,16 @@
             "name": "Debug CymbalKit",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${command:cmake.launchTargetPath}",
-            "args": [],
+            "program": "/bin/bash",
+            "args": [
+                "-c",
+                "~/esp/ESP8266_RTOS_SDK/tools/idf.py flash -DTARGET=CymbalKit"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "~/esp/ESP8266_RTOS_SDK/components/toolchain/xtensa-lx106-elf/bin/xtensa-lx106-elf-gdb",,
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

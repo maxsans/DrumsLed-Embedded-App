@@ -19,11 +19,11 @@ void UdpPacketAdc::parse()
 {
 #ifdef __TARGET_MASTER
     // New value on the adc of this module, uptate it micro value
-    module *l_module = g_session.getModuleManager()->getModule(m_client);
+    Module *l_module = ModuleManager::getModule(m_client);
     if (l_module != NULL)
     {
         // Set the micro value of this module
-        g_session.getMicroManager()->setMicro(l_module, m_adcValue);
+        ModuleManager::setMicro(m_client, m_adcValue);
     }
 #endif
 }

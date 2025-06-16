@@ -12,21 +12,21 @@
  * (a list of records so)
  *
  */
-class recordSlot
+class RecordSlot
 {
     private:
-        std::vector<record *> m_records;
+        std::vector<Record *> m_records;
 
     public:
-        recordSlot(uint32_t nbMicros);
-        ~recordSlot();
+        RecordSlot(uint32_t nbMicros);
+        ~RecordSlot();
 
         /**
          * @brief Add a record
          *
          * @param record The record to add
          */
-        void addRecord(record newRecord);
+        void addRecord(Record newRecord);
 
         /**
          * @brief Get a record
@@ -34,7 +34,7 @@ class recordSlot
          * @param index The index of the record
          * @return record The record
          */
-        record getRecord(uint32_t index);
+        Record getRecord(uint32_t index);
 
         /**
          * @brief Get the number of records
@@ -49,7 +49,7 @@ class recordSlot
          * @param impactsManager The impacts manager to fill
          * @param mainMicroIndex The index of the main micro
          */
-        void calculateImpacts(impactsManager *impactsManager, uint32_t mainMicroIndex);
+        void calculateImpacts(ImpactsManager *impactsManager, uint32_t mainMicroIndex);
 };
 
 #endif

@@ -34,12 +34,11 @@ endif()
 add_sources(
     main.cpp
 
-    api/logs/logStream.cpp
-
     tools/maths/matrix/matrix.cpp
     tools/timeTools/timeMs.cpp
     tools/timeTools/chronoMs.cpp
     tools/timeTools/periodicCallsMs.cpp
+    tools/logStream/logStream.cpp
 
     network/client/client.cpp
     network/client/ipv4.cpp
@@ -50,6 +49,8 @@ add_sources(
     network/udpParser/udpPackets/udpPacketInitModule.cpp
     network/udpParser/udpPackets/udpPacketPingSlaves.cpp
     network/udpParser/udpPackets/udpPacketRgb.cpp
+
+    led/rgbColor.cpp
     )
 
 ####################################################################################################

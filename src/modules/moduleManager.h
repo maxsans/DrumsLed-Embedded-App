@@ -4,6 +4,7 @@
 #include "modules/module.h"
 #include "tools/timeTools/periodicCallsMs.h"
 #include "network/client/client.h"
+#include "micro/learning/impactsManager.h"
 
 #include <vector>
 #include <stdint.h>
@@ -12,75 +13,122 @@
 /**
  * @brief Class to manage the modules.
  */
-class moduleManager
+class ModuleManager
 {
     private:
-        std::vector<module *> m_modules;
-        bool m_enableNewModules;
-        periodicCallsMs m_ringPeriodicCalls;
+        static std::vector<Module *> m_modules;
+        static bool m_enableNewModules;
+        static periodicCallsMs *m_ringPeriodicCalls;
         static void ringCallback(void *object);
+        static ImpactsManager m_impactsManager;
 
     public:
-        moduleManager();
-        ~moduleManager();
+        ModuleManager() = delete;
+
+        /**
+         * @brief Initialize the module manager.
+         */
+        static void init();
+
+        /**
+         * @brief Process the modules.
+         * @note This function must be called in the main loop.
+         */
+        static void process();
+
         /**
          * @brief Enable or disable the addition of new modules.
          *
          * @param enable True to enable, false to disable.
          */
-        void enableNewModules(bool enable);
+        static void enableNewModules(bool enable);
+
         /**
          * @brief Check if the addition of new modules is enabled.
          *
          * @return True if enabled.
          */
-        bool NewModulesEnabled();
+        static bool NewModulesEnabled();
+
         /**
          * @brief Add a module.
          *
-         * @param m The module to add.
-         * @return True if the module was added.
+         * @param type The type of the module.
+         * @param client The client of the module.
+         *
+         * @return module* The module added.
          */
-        bool addModule(module *m);
+        static Module *addModule(moduleType_t type, Client client);
+
         /**
          * @brief Get a module.
          *
          * @param index The index of the module.
          * @return module* The module.
          */
-        module *getModule(int32_t index);
+        static Module *getModule(int32_t index);
+
         /**
          * @brief Get a module.
          *
          * @param client The client of the module.
          * @return module* The module.
          */
-        module *getModule(Client client);
+        static Module *getModule(Client client);
+
         /**
          * @brief Get a module.
          *
          * @param ip The IP of the module.
          * @return module* The module.
          */
-        module *getModule(IPv4 ip);
+        static Module *getModule(Ipv4 ip);
+
         /**
          * @brief Get a module.
          *
          * @param mac The MAC address of the module.
          * @return module* The module.
          */
-        module *getModule(MacAddr mac);
+        static Module *getModule(MacAddr mac);
+
+        /**
+         * @brief Get the Module of a micro.
+         *
+         * @param micro The micro.
+         * @return module* The module.
+         */
+        static Module *getModule(Micro *micro);
+
         /**
          * @brief Get the number of modules.
          *
          * @return uint32_t The number of modules.
          */
-        uint32_t getModuleCount();
+        static uint32_t getModuleCount();
+
         /**
          * @brief Ping all the modules to check if they are still connected.
          * @note This function must be called periodically.
          */
-        void ringModules();
+        static void ringModules();
+
+        /**
+         * @brief Set the micro value.
+         * @note This function will calculate the corrected micro value.
+         * @note Then it will call the setMicro function of the module.
+         *
+         * @param client The client of the module.
+         * @param microValue The new micro value.
+         */
+        static void setMicro(Client client, uint8_t microValue);
+
+        /**
+         * @brief Get the impacts manager.
+         *
+         * @return impactsManager* The impacts manager.
+         */
+        static ImpactsManager *getImpactsManager();
 };
 
 #endif

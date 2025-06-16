@@ -1,6 +1,6 @@
 #include "udp.h"
 
-#include "api/logs/logStream.h"
+#include "tools/logStream/logStream.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -20,14 +20,27 @@ struct sockaddr_in udp_addr;
 void udp_init()
 {
     WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
-    udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    assert(udp_socket != INVALID_SOCKET);
-    memset(&udp_addr, 0, sizeof(udp_addr));
+    if(WSAStartup(MAKEWORD(2, 2), &wsaData))
+    {
+        LogStream::cout << "Failed to initialize Winsock with error code : " << WSAGetLastError() << LogStream::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    if((udp_socket = socket(AF_INET , SOCK_DGRAM , 0 )) == INVALID_SOCKET)
+    {
+        LogStream::cout << "Could not create socket : " << WSAGetLastError() << LogStream::endl;
+        exit(EXIT_FAILURE);
+    }
+
     udp_addr.sin_family = AF_INET;
     udp_addr.sin_addr.s_addr = INADDR_ANY;
     udp_addr.sin_port = htons(UDP_DEFAULT_PORT);
-    bind(udp_socket, (struct sockaddr *)&udp_addr, sizeof(udp_addr));
+
+    if( bind(udp_socket, (struct sockaddr *)&udp_addr, sizeof(udp_addr)))
+    {
+        LogStream::cout << "Bind failed with error code : " << WSAGetLastError() << LogStream::endl;
+        exit(EXIT_FAILURE);
+    }
 }
 
 void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
@@ -36,22 +49,27 @@ void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
     memset(&dest_addr, 0, sizeof(dest_addr));
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
-    inet_pton(AF_INET, ip, &dest_addr.sin_addr);
-    LogStream() << "Sending data to IP: "<< ip << ", Port: " << port << LogStream::endl;
+    dest_addr.sin_addr.S_un.S_addr = inet_addr(ip);
     int result = sendto(udp_socket, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
     if (result == SOCKET_ERROR) {
-        LogStream() << "sendto() failed with error code : " << WSAGetLastError() << LogStream::endl;
-        exit(EXIT_FAILURE);
+        LogStream::cout << "sendto() failed with error code : " << WSAGetLastError() << LogStream::endl;
     }
 }
 
 void udp_send_broadcast(const char *data, int16_t len, int16_t port)
 {
-    BOOL broadcastEnable = TRUE;
-    setsockopt(udp_socket, SOL_SOCKET, SO_BROADCAST, (char *)&broadcastEnable, sizeof(broadcastEnable));
-    udp_addr.sin_port = htons(port);
-    udp_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-    sendto(udp_socket, data, len, 0, (struct sockaddr *)&udp_addr, sizeof(udp_addr));
+    // Get the host IP address
+    char broadcastIp[INET_ADDRSTRLEN];
+    udp_get_host_ip(broadcastIp);
+
+    // Get the broadcast IP address
+    uint8_t ipParts[4];
+    sscanf(broadcastIp, "%hhu.%hhu.%hhu.%hhu", &ipParts[0], &ipParts[1], &ipParts[2], &ipParts[3]);
+    ipParts[3] = 255;
+    sprintf(broadcastIp, "%hhu.%hhu.%hhu.%hhu", ipParts[0], ipParts[1], ipParts[2], ipParts[3]);
+
+    // Send the data to the broadcast IP
+    udp_send(data, len, broadcastIp, port);
 }
 
 uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
@@ -67,8 +85,8 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         if (error == WSAEWOULDBLOCK) {
             return 0; // No data received
         } else {
-            LogStream() << "recvfrom() failed with error code : " << error << LogStream::endl;
-            exit(EXIT_FAILURE);
+            LogStream::cout << "recvfrom() failed with error code : " << error << LogStream::endl;
+            return 0;
         }
     }
 

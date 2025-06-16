@@ -1,46 +1,69 @@
 #include "moduleManager.h"
+#include "modules/drumModule.h"
+#include "modules/cymbalModule.h"
 #include "network/udpParser/udpPackets/udpPacketPingSlaves.h"
+#include "tools/logStream/logStream.h"
 
 #include <stdint.h>
 #include <sys/time.h>
 
 #define RING_INTERVAL 500 // ms
 
+std::vector<Module *> ModuleManager::m_modules;
+bool ModuleManager::m_enableNewModules = true;
+periodicCallsMs *ModuleManager::m_ringPeriodicCalls;
+ImpactsManager ModuleManager::m_impactsManager;
 
-moduleManager::moduleManager()
+void ModuleManager::init()
 {
-    m_enableNewModules = true;
-    // Send a broadcast UDP packet to ring new modules every RING_INTERVAl ms
-    m_ringPeriodicCalls.setPeriod(RING_INTERVAL);
-    m_ringPeriodicCalls.setCallback(ringCallback, this);
+    // Initialize the periodic calls
+    m_ringPeriodicCalls = new periodicCallsMs(RING_INTERVAL, ringCallback, NULL);
 }
 
-moduleManager::~moduleManager()
+void ModuleManager::process()
 {
-
+    // Process the modules
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        m_modules[i]->process();
+    }
 }
 
-void moduleManager::enableNewModules(bool enable)
+void ModuleManager::enableNewModules(bool enable)
 {
     m_enableNewModules = enable;
 }
 
-bool moduleManager::NewModulesEnabled()
+bool ModuleManager::NewModulesEnabled()
 {
     return m_enableNewModules;
 }
 
-bool moduleManager::addModule(module *m)
+Module *ModuleManager::addModule(moduleType_t type, Client client)
 {
     if (m_enableNewModules)
     {
-        m_modules.push_back(m);
-        return true;
+        switch (type)
+        {
+        case TYPE_DRUM_MODULE:
+            m_modules.push_back(new DrumModule(client));
+            return m_modules[m_modules.size() - 1];
+            break;
+
+        case TYPE_CYMBAL_MODULE:
+            m_modules.push_back(new CymbalModule(client));
+            return m_modules[m_modules.size() - 1];
+            break;
+
+        default:
+            LogStream::cout << "Module type not supported" << LogStream::endl;
+            break;
+        }
     }
-    return false;
+    return NULL;
 }
 
-module *moduleManager::getModule(int32_t index)
+Module *ModuleManager::getModule(int32_t index)
 {
     if (index < m_modules.size())
     {
@@ -49,7 +72,7 @@ module *moduleManager::getModule(int32_t index)
     return NULL;
 }
 
-module *moduleManager::getModule(Client client)
+Module *ModuleManager::getModule(Client client)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -61,7 +84,7 @@ module *moduleManager::getModule(Client client)
     return NULL;
 }
 
-module *moduleManager::getModule(IPv4 ip)
+Module *ModuleManager::getModule(Ipv4 ip)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -73,7 +96,7 @@ module *moduleManager::getModule(IPv4 ip)
     return NULL;
 }
 
-module *moduleManager::getModule(MacAddr mac)
+Module *ModuleManager::getModule(MacAddr mac)
 {
     for (int32_t i = 0; i < m_modules.size(); i++)
     {
@@ -85,20 +108,56 @@ module *moduleManager::getModule(MacAddr mac)
     return NULL;
 }
 
-uint32_t moduleManager::getModuleCount()
+Module *ModuleManager::getModule(Micro *micro)
+{
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        if (m_modules[i]->getMicro() == micro)
+        {
+            return m_modules[i];
+        }
+    }
+    return NULL;
+}
+
+uint32_t ModuleManager::getModuleCount()
 {
     return m_modules.size();
 }
 
-void moduleManager::ringCallback(void *object)
+void ModuleManager::ringCallback(void *object)
 {
-    ((moduleManager *)object)->ringModules();
+    ((ModuleManager *)object)->ringModules();
 }
 
-
-void moduleManager::ringModules()
+void ModuleManager::ringModules()
 {
     // Send a broadcast UDP packet to ring new modules
     // The modules detected will respond
     UdpPacketPingSlaves().send();
+}
+
+void ModuleManager::setMicro(Client client, uint8_t microValue)
+{
+    // Find the module of the client
+    Module *l_module = getModule(client);
+
+    // Get the micro of the module
+    Micro *l_micro = l_module->getMicro();
+    if(l_micro == nullptr)
+    {
+        LogStream::cout << "No micro found for this module" << LogStream::endl;
+        return;
+    }
+
+    // Set the micro value (not corrected)
+    l_micro->setMicroValue(microValue);
+
+    // Set the corrected value of the micro
+    m_impactsManager.setMicroValue(l_micro, microValue);
+}
+
+ImpactsManager *ModuleManager::getImpactsManager()
+{
+    return &m_impactsManager;
 }

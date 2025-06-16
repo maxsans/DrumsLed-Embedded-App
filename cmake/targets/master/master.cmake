@@ -9,18 +9,14 @@ add_compile_options(-D__TARGET_MASTER)
 ####################################################################################################
 add_sources(
     master/masterLaunch.cpp
+    master/session/session.cpp
 
     animation/animation.cpp
     animation/animationManager.cpp
     animation/fade.cpp
     animation/simpleColor.cpp
 
-    modules/module.cpp
-    modules/moduleManager.cpp
-
     led/colorOrder.cpp
-    led/ledManager.cpp
-    led/rgbColor.cpp
     led/rgbLed.cpp
 
     micro/learning/impact.cpp
@@ -29,9 +25,11 @@ add_sources(
     micro/learning/record.cpp
     micro/learning/recordSlot.cpp
     micro/micro.cpp
-    micro/microManager.cpp
 
-    master/session/session.cpp
+    modules/module.cpp
+    modules/drumModule.cpp
+    modules/cymbalModule.cpp
+    modules/moduleManager.cpp
 
     network/udpParser/udpParser.cpp
     )
