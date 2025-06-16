@@ -40,6 +40,7 @@ if(WIN32)
         api/logs/logsWindows.cpp
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
+        api/tcp/tcpWindows.cpp
         )
 endif()
 
