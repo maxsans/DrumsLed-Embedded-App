@@ -32,6 +32,7 @@ static void process()
     {
         l_lastWifiStatus = l_newWifiState;
         udp_init();
+        tcp_init();
         LogStream::cout << "Udp Initialized" << LogStream::endl;
     }
     if (l_newWifiState)

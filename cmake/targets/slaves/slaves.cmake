@@ -13,6 +13,7 @@ add_sources(
     api/target/esp8266.cpp
     api/logs/logsEsp8266.cpp
     api/udp/udpEsp8266.cpp
+    api/tcp/tcpEsp8266.cpp
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
     )
