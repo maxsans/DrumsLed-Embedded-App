@@ -4,6 +4,7 @@
 #include "network/udpParser/udpParser.h"
 #include "session/session.h"
 #include "tools/timeTools/periodicCallsMs.h"
+#include "api/tcp/tcp.h"
 
 void launch()
 {
@@ -30,6 +31,8 @@ void launch()
 
     // TODO: Move terminal from old project and enable this line
     // terminal::setCurrentSession(&l_session);
+
+    tcp_init();
 
     while(1)
     {
