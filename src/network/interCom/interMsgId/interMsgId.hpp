@@ -46,6 +46,7 @@ class InterMsgId
 
     bool operator==(const InterMsgId& other) const;
     bool operator!=(const InterMsgId& other) const;
+    bool operator<(const InterMsgId& other) const;
 };
 
 #endif // __INTER_MSG_ID_HPP__

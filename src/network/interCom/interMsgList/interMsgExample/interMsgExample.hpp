@@ -6,14 +6,6 @@
 
 class InterMsgExample : public InterMsg
 {
-    public:
-        /**
-         * @brief Type of callback to call when the message is received.
-         * @param client The client that sent the message.
-         * @param msg The message received.
-         */
-        using Callback = std::function<void(const Client &, InterMsgExample &)>;
-
     private:
         static constexpr const SendType m_sendType = SendType::UnicastWithControl;
 
@@ -21,11 +13,6 @@ class InterMsgExample : public InterMsg
         {
             int exampleData;
         } m_data;
-
-        /**
-         * @brief Callback to be called when the message is received.
-         */
-        static Callback m_callback;
 
     public:
         /**
@@ -40,17 +27,6 @@ class InterMsgExample : public InterMsg
          * @param size The size of the raw data.
          */
         InterMsgExample(Client client, char *rawData, size_t size);
-
-        /**
-         * @brief Register a callback to be called when the message is received.
-         * @param callback The callback to be registered.
-         */
-        static void registerCallback(Callback callback);
-
-        /**
-         * @brief Parse the message by calling the registered callback.
-         */
-        void parse();
 
         /**
          * @brief Get the example data from the message.

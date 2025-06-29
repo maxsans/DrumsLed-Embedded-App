@@ -42,6 +42,11 @@ const Client& InterMsg::getClient() const
     return m_client;
 }
 
+InterMsgId InterMsg::getId() const
+{
+    return m_data.getHeader().getId();
+}
+
 bool InterMsg::operator==(const InterMsg *other) const
 {
     return (m_client == other->m_client &&

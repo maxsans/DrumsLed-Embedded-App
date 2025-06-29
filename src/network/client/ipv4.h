@@ -17,6 +17,7 @@ class Ipv4
         Ipv4(uint32_t ip);
         Ipv4(Ipv4 &ip);
         Ipv4(char *ip);
+        Ipv4(const char *ip);
         ~Ipv4();
 
         uint8_t getIp1() const;
@@ -33,6 +34,7 @@ class Ipv4
         void setIp(uint32_t ip);
         void setIp(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4);
         void setIp(char *ip);
+        void setIp(const char *ip);
         void setIp(Ipv4 &ip);
         void setIp(std::string &ip);
 

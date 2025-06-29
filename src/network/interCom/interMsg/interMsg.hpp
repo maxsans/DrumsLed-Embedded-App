@@ -15,9 +15,10 @@ class InterMsg
          */
         enum class SendType
         {
-            UnicastWithControl,   /** < Unicast with control, used for messages that require acknowledgment or specific handling. */
+            None,                  /** < No send type, used for messages that do not require sending. */
+            UnicastWithControl,    /** < Unicast with control, used for messages that require acknowledgment or specific handling. */
             UnicastWithoutControl, /** < Unicast without control, used for messages that do not require acknowledgment or specific handling. */
-            Broadcast,            /** < Broadcast, used for messages that should be sent to all clients without specific handling. */
+            Broadcast,             /** < Broadcast, used for messages that should be sent to all clients without specific handling. */
         };
 
     private:
@@ -71,13 +72,12 @@ class InterMsg
         const Client& getClient() const;
 
         /**
-         * @brief Parse the message.
-         * @note This method should be implemented by derived classes to handle the specific parsing logic.
-         * @see InterMsgExample::parse()
-         * @see InterMsgExample::registerCallback()
-         * @see InterMsgExample::getExampleData()
+         * @brief Get Id of the message.
+         * @return The message ID.
+         * @note The message ID is used to identify the type of message being sent.
+         * @see InterMsgId
          */
-        virtual void parse() = 0;
+        InterMsgId getId() const;
 
         /**
          * @brief Equal operator for InterMsg.

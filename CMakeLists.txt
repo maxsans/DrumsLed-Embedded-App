@@ -50,10 +50,12 @@ add_sources(
     network/udpParser/udpPackets/udpPacketPingSlaves.cpp
     network/udpParser/udpPackets/udpPacketRgb.cpp
 
+    network/interCom/interComParser/interComParser.cpp
     network/interCom/interMsg/interMsg.cpp
     network/interCom/interMsgData/interMsgHeader/interMsgHeader.cpp
     network/interCom/interMsgData/interMsgData.cpp
     network/interCom/interMsgId/interMsgId.cpp
+    network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.cpp
     network/interCom/interMsgList/interMsgExample/interMsgExample.cpp
 
     led/rgbColor.cpp
