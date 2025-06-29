@@ -24,6 +24,17 @@ class InterMsgId
     {
         None = 0,
         Example,
+        InitModule,
+        PingSlaves,
+        Rgb,
+        Adc,
+        // Add new message IDs here
+
+        /**
+         * @brief Last message ID.
+         * This should always be the last element to indicate the end of the enumeration.
+         */
+        Last
     };
 
     private:

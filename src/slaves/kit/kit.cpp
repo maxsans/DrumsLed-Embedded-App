@@ -4,7 +4,6 @@
 #include "network/client/client.h"
 #include "api/addrLed/addrLed.h"
 #include "api/adc/adc.h"
-#include "network/udpParser/udpPackets/udpPacketAdc.h"
 
 Client Kit::m_masterClient;
 AddrLed Kit::m_leds(Kit::m_numLeds, Kit::m_ledPin);
