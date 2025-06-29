@@ -1,0 +1,95 @@
+#ifndef __INTER_MSG_HPP__
+#define __INTER_MSG_HPP__
+
+#include <cstdint>
+#include <string>
+
+#include "network/interCom/interMsgData/interMsgData.hpp"
+#include "network/client/client.h"
+
+class InterMsg
+{
+    protected:
+        /**
+         * @brief Message send types.
+         */
+        enum class SendType
+        {
+            UnicastWithControl,   /** < Unicast with control, used for messages that require acknowledgment or specific handling. */
+            UnicastWithoutControl, /** < Unicast without control, used for messages that do not require acknowledgment or specific handling. */
+            Broadcast,            /** < Broadcast, used for messages that should be sent to all clients without specific handling. */
+        };
+
+    private:
+        /**
+         * @brief The client that sent the message or the client to which the message is directed.
+         */
+        Client m_client;
+
+        /**
+         * @brief The data of the message, including the message header and private data.
+         */
+        InterMsgData m_data;
+
+        /**
+         * @brief The type of send for the message.
+         */
+        SendType m_sendType;
+
+        /**
+         * @brief Get the raw data of the message.
+         * @param data Pointer to a buffer where the message data will be stored.
+         * @note The buffer should be large enough to hold the message data.
+         * @return The size of the data written to the buffer.
+         */
+        size_t getData(char *data) const;
+
+    protected:
+        /**
+         * @brief Get the raw specific data of the message.
+         */
+        virtual const char* getPrivData() const = 0;
+
+        /**
+         * @brief Constructor for InterMsg.
+         * @note This constructor is protected to ensure that only derived classes can instantiate it.
+         */
+        InterMsg(Client client,
+                 InterMsgData data,
+                 SendType sendType = SendType::UnicastWithControl);
+
+    public:
+        /**
+         * @brief Send the message.
+         */
+        void send();
+
+        /**
+         * @brief Get the client associated with the message.
+         * @return The client that sent the message or the client to which the message is directed.
+         */
+        const Client& getClient() const;
+
+        /**
+         * @brief Parse the message.
+         * @note This method should be implemented by derived classes to handle the specific parsing logic.
+         * @see InterMsgExemple::parse()
+         * @see InterMsgExemple::registerCallback()
+         * @see InterMsgExemple::getExampleData()
+         */
+        virtual void parse() = 0;
+
+        /**
+         * @brief Equal operator for InterMsg.
+         * @param other The other InterMsg to compare with.
+         * @return true if the two messages are equal, false otherwise.
+         */
+        virtual bool operator==(const InterMsg *other) const;
+
+        /**
+         * @brief Get a description of the message.
+         */
+        virtual std::string toString() const;
+};
+
+#endif // __INTER_MSG_HPP__

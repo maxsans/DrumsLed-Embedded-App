@@ -42,32 +42,32 @@ Ipv4::~Ipv4()
 {
 }
 
-uint8_t Ipv4::getIp1()
+uint8_t Ipv4::getIp1() const
 {
     return m_ip[0];
 }
 
-uint8_t Ipv4::getIp2()
+uint8_t Ipv4::getIp2() const
 {
     return m_ip[1];
 }
 
-uint8_t Ipv4::getIp3()
+uint8_t Ipv4::getIp3() const
 {
     return m_ip[2];
 }
 
-uint8_t Ipv4::getIp4()
+uint8_t Ipv4::getIp4() const
 {
     return m_ip[3];
 }
 
-uint32_t Ipv4::getIp()
+uint32_t Ipv4::getIp() const
 {
     return (m_ip[0] << 24) | (m_ip[1] << 16) | (m_ip[2] << 8) | m_ip[3];
 }
 
-std::string Ipv4::getIpString()
+std::string Ipv4::getIpString() const
 {
     return std::to_string(m_ip[0]) + "." + std::to_string(m_ip[1]) + "." + std::to_string(m_ip[2]) + "." + std::to_string(m_ip[3]);
 }
@@ -141,12 +141,12 @@ void Ipv4::setIp(std::string &ip)
     setIp(ip);
 }
 
-bool Ipv4::operator==(const Ipv4 &ip)
+bool Ipv4::operator==(const Ipv4 &ip) const
 {
     return m_ip[0] == ip.m_ip[0] && m_ip[1] == ip.m_ip[1] && m_ip[2] == ip.m_ip[2] && m_ip[3] == ip.m_ip[3];
 }
 
-bool Ipv4::operator!=(const Ipv4 &ip)
+bool Ipv4::operator!=(const Ipv4 &ip) const
 {
-    return m_ip[0] != ip.m_ip[0] || m_ip[1] != ip.m_ip[1] || m_ip[2] != ip.m_ip[2] || m_ip[3] != ip.m_ip[3];
+    return !(*this == ip);
 }

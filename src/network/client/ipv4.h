@@ -19,12 +19,12 @@ class Ipv4
         Ipv4(char *ip);
         ~Ipv4();
 
-        uint8_t getIp1();
-        uint8_t getIp2();
-        uint8_t getIp3();
-        uint8_t getIp4();
-        uint32_t getIp();
-        std::string getIpString();
+        uint8_t getIp1() const;
+        uint8_t getIp2() const;
+        uint8_t getIp3() const;
+        uint8_t getIp4() const;
+        uint32_t getIp() const;
+        std::string getIpString() const;
 
         void setIp1(uint8_t ip1);
         void setIp2(uint8_t ip2);
@@ -36,8 +36,8 @@ class Ipv4
         void setIp(Ipv4 &ip);
         void setIp(std::string &ip);
 
-        bool operator==(const Ipv4 &ip);
-        bool operator!=(const Ipv4 &ip);
+        bool operator==(const Ipv4 &ip) const;
+        bool operator!=(const Ipv4 &ip) const;
 };
 
 #endif

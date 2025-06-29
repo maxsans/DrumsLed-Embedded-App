@@ -38,5 +38,5 @@ void UdpPacketRgb::send()
             (char)m_color.getRed(),
             (char)m_color.getGreen(),
             (char)m_color.getBlue()};
-    udp_send(l_packet, sizeof(l_packet), m_client.getIP().getIpString().c_str(), UDP_DEFAULT_PORT);
+//     udp_send(l_packet, sizeof(l_packet), m_client.getIP().getIpString().c_str(), UDP_DEFAULT_PORT);
 }

@@ -29,9 +29,9 @@ void UdpPacketInitModule::parse()
     // Add the module to the list
     Module *l_module = ModuleManager::addModule(m_moduleType, m_client);
     moduleType_t l_moduleType = l_module->getType();
-    LogStream::cout << "New module added (type " << l_moduleType
-        << " ip " << m_client.getIP().getIpString()
-        << " mac " << m_client.getMAC().getMacString() << ")" << LogStream::endl;
+//     LogStream::cout << "New module added (type " << l_moduleType
+//         << " ip " << m_client.getIP().getIpString()
+//         << " mac " << m_client.getMAC().getMacString() << ")" << LogStream::endl;
 #endif
 }
 
@@ -42,5 +42,5 @@ void UdpPacketInitModule::send()
         PACKET_TYPE_INIT_MODULE,
         (char)m_moduleType
     };
-    udp_send(l_packet, sizeof(l_packet), m_client.getIP().getIpString().c_str(), UDP_DEFAULT_PORT);
+    // udp_send(l_packet, sizeof(l_packet), m_client.getIP().getIpString().c_str(), UDP_DEFAULT_PORT);
 }
