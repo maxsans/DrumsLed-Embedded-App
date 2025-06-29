@@ -3,6 +3,7 @@
 
 #include "network/interCom/interMsg/interMsg.hpp"
 #include <functional>
+#include "api/adc/adc.h"
 
 class InterMsgAdc : public InterMsg
 {
@@ -11,7 +12,7 @@ class InterMsgAdc : public InterMsg
 
         struct Data
         {
-            uint8_t m_adcValue;
+            adc_measure_t m_adcValue;
         } m_data;
 
     public:
@@ -19,7 +20,7 @@ class InterMsgAdc : public InterMsg
          * @brief Create an InterMsgAdc with ADC channel data.
          * @param adcValues Array of ADC values.
          */
-        InterMsgAdc(Client client, uint8_t adcValue);
+        InterMsgAdc(Client client, adc_measure_t adcValue);
 
         /**
          * @brief Create an InterMsgAdc from raw data.
@@ -32,7 +33,7 @@ class InterMsgAdc : public InterMsg
          * @brief Get ADC value for a specific channel.
          * @return The ADC value.
          */
-        uint8_t getAdcValue() const;
+        adc_measure_t getAdcValue() const;
 
         /**
          * @brief Get a description of the message.

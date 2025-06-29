@@ -3,7 +3,7 @@
 #include "tools/logStream/logStream.h"
 #include <cstring>
 
-InterMsgAdc::InterMsgAdc(Client client, uint8_t adcValue)
+InterMsgAdc::InterMsgAdc(Client client, adc_measure_t adcValue)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Adc, sizeof(m_data)), (char *)&m_data), m_sendType)
 {
     m_data.m_adcValue = adcValue;
@@ -14,7 +14,7 @@ InterMsgAdc::InterMsgAdc(Client client, char *rawData, uint32_t size)
 {
 }
 
-uint8_t InterMsgAdc::getAdcValue() const
+adc_measure_t InterMsgAdc::getAdcValue() const
 {
     return m_data.m_adcValue;
 }
