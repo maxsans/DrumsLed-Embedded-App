@@ -54,7 +54,7 @@ add_sources(
     network/interCom/interMsgData/interMsgHeader/interMsgHeader.cpp
     network/interCom/interMsgData/interMsgData.cpp
     network/interCom/interMsgId/interMsgId.cpp
-    network/interCom/interMsgList/interMsgExemple/interMsgExemple.cpp
+    network/interCom/interMsgList/interMsgExample/interMsgExample.cpp
 
     led/rgbColor.cpp
     )

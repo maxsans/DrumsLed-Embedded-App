@@ -23,7 +23,7 @@ class InterMsgId
     enum MsgId
     {
         None = 0,
-        Exemple,
+        Example,
     };
 
     private:

@@ -73,9 +73,9 @@ class InterMsg
         /**
          * @brief Parse the message.
          * @note This method should be implemented by derived classes to handle the specific parsing logic.
-         * @see InterMsgExemple::parse()
-         * @see InterMsgExemple::registerCallback()
-         * @see InterMsgExemple::getExampleData()
+         * @see InterMsgExample::parse()
+         * @see InterMsgExample::registerCallback()
+         * @see InterMsgExample::getExampleData()
          */
         virtual void parse() = 0;
 
