@@ -2,6 +2,8 @@
 #include "api/udp/udp.h"
 #include "tools/logStream/logStream.h"
 #include "network/udpParser/udpParser.h"
+#include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.h"
 #include "tools/timeTools/periodicCallsMs.h"
 #include "api/tcp/tcp.h"
@@ -34,10 +36,19 @@ void launch()
 
     tcp_init();
 
+    // Initialize the interComParser
+    InterComParser l_interComParser;
+    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg) {
+        LogStream::cout << "Received Example message from " << client.getIP().getIpString()
+        << " with MAC: " << client.getMAC().getMacString()
+        << " and message data: " << ((InterMsgExample &)msg).getExampleData()
+        << LogStream::endl;
+    });
+
     while(1)
     {
         periodicCallsMs::processAll();
-        UdpParser::process();
+        // UdpParser::process();
         ModuleManager::process();
         // TODO: Move terminal from old project and enable this line
         // terminal::process();
