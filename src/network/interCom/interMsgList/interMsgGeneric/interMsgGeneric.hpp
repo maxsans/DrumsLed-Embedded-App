@@ -11,7 +11,7 @@
 class InterMsgGeneric : public InterMsg
 {
     private:
-        static constexpr const size_t MAX_PRIV_DATA_SIZE = 1024; // Maximum size of private data
+        static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 1024; // Maximum size of private data
 
         struct Data
         {
@@ -20,7 +20,7 @@ class InterMsgGeneric : public InterMsg
 
     public:
         InterMsgGeneric(Client client, InterMsgData data, SendType sendType);
-        InterMsgGeneric(Client client, char *rawData, size_t size);
+        InterMsgGeneric(Client client, char *rawData, uint32_t size);
 
         /**
          * @brief Get the raw specific data of the message.

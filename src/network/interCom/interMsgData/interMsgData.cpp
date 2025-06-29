@@ -8,31 +8,20 @@ InterMsgData::InterMsgData(InterMsgHeader header, char *privData)
 {
 }
 
-InterMsgData::InterMsgData(char *rawData, size_t rawSize)
-    : m_header(rawData)
+InterMsgData::InterMsgData(char *rawData, uint32_t rawSize, char *privData)
+    : m_header(rawData), m_privData(privData)
 {
     assert(rawData != nullptr && "Raw data pointer cannot be null.");
     assert(rawSize >= m_header.getHeaderSize() + m_header.getPrivSize() && "Raw data size is insufficient for header and private data.");
     // Find the header size and private data size
-    size_t headerSize = m_header.getHeaderSize();
-    size_t privSize = m_header.getPrivSize();
+    uint32_t headerSize = m_header.getHeaderSize();
+    uint32_t privSize = m_header.getPrivSize();
     assert(privSize <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
     // Copy the private data from the raw data buffer
-    m_privData = new char[privSize];
-    std::memcpy(m_privData, rawData + headerSize, privSize);
-    m_mustBeDeleted = true; // Indicate that the private data must be deleted
+    std::memcpy(privData, rawData + headerSize, privSize);
 }
 
-InterMsgData::~InterMsgData()
-{
-    if (m_mustBeDeleted && m_privData != nullptr)
-    {
-        delete[] m_privData; // Delete the private data if it was allocated
-        m_privData = nullptr; // Set pointer to null to avoid dangling pointer
-    }
-}
-
-size_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
+uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
 {
     assert(data != nullptr && "Data pointer cannot be null.");
     assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");

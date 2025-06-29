@@ -9,7 +9,7 @@ class InterMsgHeader
         /**
         * @brief The maximum size of the private data that can be handled by the InterMsgData class.
         */
-        static constexpr const size_t MAX_PRIV_DATA_SIZE = 1024;
+        static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 1024;
 
         typedef union
         {
@@ -23,7 +23,7 @@ class InterMsgHeader
                 /**
                 * @brief The size of the private message data.
                 */
-                size_t m_privSize;
+                uint32_t m_privSize;
             } m_header;
 
             char m_rawData[sizeof(m_header)];
@@ -37,7 +37,7 @@ class InterMsgHeader
          * @param id The message ID.
          * @param privSize The size of the private message data.
          */
-        InterMsgHeader(InterMsgId id, size_t privSize);
+        InterMsgHeader(InterMsgId id, uint32_t privSize);
 
         /**
          * @brief Construct a new Inter Msg Header from raw data.
@@ -50,7 +50,7 @@ class InterMsgHeader
          * @return The size of the header in bytes.
          * @note The header consists of the message ID and the size of the private message data.
          */
-        static constexpr const size_t getHeaderSize()
+        static constexpr const uint32_t getHeaderSize()
         {
             return sizeof(headerType);
         }
@@ -65,7 +65,7 @@ class InterMsgHeader
          * @brief Get the size of the private message data.
          * @return The size of the private message data.
          */
-        size_t getPrivSize() const;
+        uint32_t getPrivSize() const;
 
         /**
          * @brief Compare two InterMsgHeader objects for equality.

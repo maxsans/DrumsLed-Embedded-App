@@ -8,8 +8,8 @@ InterMsgExample::InterMsgExample(Client client, int exampleData)
     m_data.exampleData = exampleData;
 }
 
-InterMsgExample::InterMsgExample(Client client, char *rawData, size_t size)
-    : InterMsg(client, InterMsgData(rawData, size), m_sendType)
+InterMsgExample::InterMsgExample(Client client, char *rawData, uint32_t size)
+    : InterMsg(client, InterMsgData(rawData, size, (char *)&m_data), m_sendType)
 {
 }
 

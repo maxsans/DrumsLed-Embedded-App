@@ -9,16 +9,15 @@ InterMsgGeneric::InterMsgGeneric(Client client, InterMsgData data, SendType send
 {
     assert(data.getHeader().getPrivSize() <= MAX_PRIV_DATA_SIZE);
     char l_privData[MAX_PRIV_DATA_SIZE];
-    size_t l_size = data.getPrivData(l_privData);
+    uint32_t l_size = data.getPrivData(l_privData);
     assert(l_size <= MAX_PRIV_DATA_SIZE);
     std::memcpy(m_data.privData, l_privData, l_size);
 }
 
-InterMsgGeneric::InterMsgGeneric(Client client, char *rawData, size_t size)
-    : InterMsg(client, InterMsgData(rawData, size), InterMsg::SendType::None)
+InterMsgGeneric::InterMsgGeneric(Client client, char *rawData, uint32_t size)
+    : InterMsg(client, InterMsgData(rawData, size, m_data.privData), InterMsg::SendType::None)
 {
     assert(size <= MAX_PRIV_DATA_SIZE);
-    std::memcpy(m_data.privData, rawData, size);
 }
 
 const char* InterMsgGeneric::getPrivData() const

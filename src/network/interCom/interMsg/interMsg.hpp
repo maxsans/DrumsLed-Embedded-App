@@ -43,7 +43,7 @@ class InterMsg
          * @note The buffer should be large enough to hold the message data.
          * @return The size of the data written to the buffer.
          */
-        size_t getData(char *data) const;
+        uint32_t getData(char *data) const;
 
     protected:
         /**

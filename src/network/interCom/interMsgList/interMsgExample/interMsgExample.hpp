@@ -26,7 +26,7 @@ class InterMsgExample : public InterMsg
          * @param rawData The raw data to be used for the message.
          * @param size The size of the raw data.
          */
-        InterMsgExample(Client client, char *rawData, size_t size);
+        InterMsgExample(Client client, char *rawData, uint32_t size);
 
         /**
          * @brief Get the example data from the message.

@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cassert>
 
-InterMsgHeader::InterMsgHeader(InterMsgId id, size_t privSize)
+InterMsgHeader::InterMsgHeader(InterMsgId id, uint32_t privSize)
     : m_headerUnion{.m_header = {.m_id = id.rawValue(), .m_privSize = privSize}}
 {
     assert(privSize <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
@@ -22,7 +22,7 @@ InterMsgId InterMsgHeader::getId() const
     return InterMsgId(m_headerUnion.m_header.m_id);
 }
 
-size_t InterMsgHeader::getPrivSize() const
+uint32_t InterMsgHeader::getPrivSize() const
 {
     return m_headerUnion.m_header.m_privSize;
 }
