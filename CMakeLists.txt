@@ -43,12 +43,18 @@ add_sources(
     network/client/client.cpp
     network/client/ipv4.cpp
     network/client/macAddr.cpp
-    network/udpParser/udpParser.cpp
-    network/udpParser/udpPackets/udpPacket.cpp
-    network/udpParser/udpPackets/udpPacketAdc.cpp
-    network/udpParser/udpPackets/udpPacketInitModule.cpp
-    network/udpParser/udpPackets/udpPacketPingSlaves.cpp
-    network/udpParser/udpPackets/udpPacketRgb.cpp
+
+    network/interCom/interComParser/interComParser.cpp
+    network/interCom/interMsg/interMsg.cpp
+    network/interCom/interMsgData/interMsgHeader/interMsgHeader.cpp
+    network/interCom/interMsgData/interMsgData.cpp
+    network/interCom/interMsgId/interMsgId.cpp
+    network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.cpp
+    network/interCom/interMsgList/interMsgExample/interMsgExample.cpp
+    network/interCom/interMsgList/interMsgAdc/interMsgAdc.cpp
+    network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.cpp
+    network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.cpp
+    network/interCom/interMsgList/interMsgRgb/interMsgRgb.cpp
 
     led/rgbColor.cpp
     )

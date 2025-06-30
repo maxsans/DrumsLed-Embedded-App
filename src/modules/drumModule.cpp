@@ -1,6 +1,6 @@
 #include "drumModule.h"
 
-#include "network/udpParser/udpPackets/udpPacketRgb.h"
+#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 
 /**
  * @brief The update interval of the LEDs.
@@ -40,7 +40,7 @@ void DrumModule::update()
 {
     // Send the color to the module over UDP
     RgbColor l_color = m_led.getColor();
-    UdpPacketRgb(m_client, l_color).send();
+    InterMsgRgb(m_client, l_color.getRed(), l_color.getGreen(), l_color.getBlue()).send();
 }
 
 void DrumModule::setMicroValue(uint8_t microValue)

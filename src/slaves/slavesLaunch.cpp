@@ -7,7 +7,6 @@
 #include "api/addrLed/addrLed.h"
 #include "api/udp/udp.h"
 #include "network/networkConfig.h"
-#include "network/udpParser/udpParser.h"
 #include "tools/timeTools/timeMs.h"
 
 static void init()
@@ -34,10 +33,6 @@ static void process()
         udp_init();
         tcp_init();
         LogStream::cout << "Udp Initialized" << LogStream::endl;
-    }
-    if (l_newWifiState)
-    {
-        UdpParser::process();
     }
 }
 

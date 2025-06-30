@@ -1,7 +1,7 @@
 #include "moduleManager.h"
 #include "modules/drumModule.h"
 #include "modules/cymbalModule.h"
-#include "network/udpParser/udpPackets/udpPacketPingSlaves.h"
+#include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "tools/logStream/logStream.h"
 
 #include <stdint.h>
@@ -134,7 +134,7 @@ void ModuleManager::ringModules()
 {
     // Send a broadcast UDP packet to ring new modules
     // The modules detected will respond
-    UdpPacketPingSlaves().send();
+    InterMsgPingSlaves().send();
 }
 
 void ModuleManager::setMicro(Client client, uint8_t microValue)
