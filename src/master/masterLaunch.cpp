@@ -1,7 +1,6 @@
 #include "launch.h"
 #include "api/udp/udp.h"
 #include "tools/logStream/logStream.h"
-#include "network/udpParser/udpParser.h"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.h"
@@ -48,7 +47,6 @@ void launch()
     while(1)
     {
         periodicCallsMs::processAll();
-        // UdpParser::process();
         ModuleManager::process();
         // TODO: Move terminal from old project and enable this line
         // terminal::process();

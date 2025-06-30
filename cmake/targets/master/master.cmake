@@ -30,8 +30,6 @@ add_sources(
     modules/drumModule.cpp
     modules/cymbalModule.cpp
     modules/moduleManager.cpp
-
-    network/udpParser/udpParser.cpp
     )
 
 # Specific windows source files

@@ -36,8 +36,6 @@ set(SRCS_FILES
     network/client/ipv4.cpp
     network/client/macAddr.cpp
     network/udp/udp.cpp
-    network/udp/udpPacket.cpp
-    network/udpParser/udpParser.cpp
 
     session/session.cpp
     )
