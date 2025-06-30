@@ -16,6 +16,11 @@ class InterMsgRgb : public InterMsg
             uint8_t blue;
         } m_data;
 
+        /**
+         * @see InterMsg::getPrivData()
+         */
+        const char* getPrivData() const override;
+
     public:
         /**
          * @brief Create an InterMsgRgb with specific RGB values.
