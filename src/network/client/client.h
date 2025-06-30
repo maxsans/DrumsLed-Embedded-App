@@ -15,19 +15,18 @@ class Client
     public:
         Client();
         Client(Ipv4 ip, MacAddr mac);
-        Client(Client &client);
         ~Client();
 
-        Ipv4 getIP();
-        MacAddr getMAC();
+        const Ipv4& getIP() const;
+        const MacAddr& getMAC() const;
 
         void setIP(Ipv4 ip);
         void setMAC(MacAddr mac);
 
         void send (char *data, uint32_t size);
 
-        bool operator==(Client &client);
-        bool operator!=(Client &client);
+        bool operator==(const Client &client) const;
+        bool operator!=(const Client &client) const;
 };
 
 

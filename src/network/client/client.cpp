@@ -11,22 +11,16 @@ Client::Client(Ipv4 ip, MacAddr mac)
     m_mac = mac;
 }
 
-Client::Client(Client &client)
-{
-    m_ip = client.getIP();
-    m_mac = client.getMAC();
-}
-
 Client::~Client()
 {
 }
 
-Ipv4 Client::getIP()
+const Ipv4& Client::getIP() const
 {
     return m_ip;
 }
 
-MacAddr Client::getMAC()
+const MacAddr& Client::getMAC() const
 {
     return m_mac;
 }
@@ -46,12 +40,12 @@ void Client::send(char *data, uint32_t size)
     udp_send(data, size, m_ip.getIpString().c_str(), UDP_DEFAULT_PORT);
 }
 
-bool Client::operator==(Client &client)
+bool Client::operator==(const Client &client) const
 {
     return (m_ip == client.getIP() && m_mac == client.getMAC());
 }
 
-bool Client::operator!=(Client &client)
+bool Client::operator!=(const Client &client) const
 {
-    return (m_ip != client.getIP() || m_mac != client.getMAC());
+    return !(*this == client);
 }

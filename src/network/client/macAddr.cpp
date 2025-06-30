@@ -161,5 +161,5 @@ bool MacAddr::operator==(const MacAddr &mac) const
 
 bool MacAddr::operator!=(const MacAddr &mac) const
 {
-    return m_mac[0] != mac.m_mac[0] || m_mac[1] != mac.m_mac[1] || m_mac[2] != mac.m_mac[2] || m_mac[3] != mac.m_mac[3] || m_mac[4] != mac.m_mac[4] || m_mac[5] != mac.m_mac[5];
+    return !(*this == mac);
 }

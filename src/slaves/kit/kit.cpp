@@ -4,7 +4,7 @@
 #include "network/client/client.h"
 #include "api/addrLed/addrLed.h"
 #include "api/adc/adc.h"
-#include "network/udpParser/udpPackets/udpPacketAdc.h"
+#include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.h"
 
 Client Kit::m_masterClient;
 AddrLed Kit::m_leds(Kit::m_numLeds, Kit::m_ledPin);
@@ -22,7 +22,7 @@ void Kit::adc_send(void *object)
 {
     adc_measure_t l_adcValue = adc_read();
     LogStream::cout << "ADC value: " << (int)l_adcValue << LogStream::endl;
-    UdpPacketAdc l_packet(m_masterClient, l_adcValue);
+    InterMsgAdc l_packet(m_masterClient, l_adcValue);
     l_packet.send();
 }
 

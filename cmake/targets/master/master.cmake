@@ -30,8 +30,6 @@ add_sources(
     modules/drumModule.cpp
     modules/cymbalModule.cpp
     modules/moduleManager.cpp
-
-    network/udpParser/udpParser.cpp
     )
 
 # Specific windows source files
@@ -40,6 +38,7 @@ if(WIN32)
         api/logs/logsWindows.cpp
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
+        api/tcp/tcpWindows.cpp
         )
 endif()
 
