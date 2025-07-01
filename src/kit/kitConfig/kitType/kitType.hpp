@@ -8,6 +8,8 @@ class KitType
     public:
         enum Type
         {
+            None = 0,
+
             Drum,
             Cymbal,
             // Add new kit types here
@@ -31,12 +33,12 @@ class KitType
          */
         constexpr static const char* typeStrings[Type::Count] =
         {
-            [Type::Drum] = "Drum",
-            [Type::Cymbal] = "Cymbal",
+            "Drum",
+            "Cymbal",
         };
 
     public:
-        KitType(Type type);
+        KitType(Type type = Type::None);
 
         /**
          * @brief Convert KitType::Type to string representation.

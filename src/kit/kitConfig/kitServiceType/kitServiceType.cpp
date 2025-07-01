@@ -5,6 +5,11 @@ KitServiceType::KitServiceType(Type type)
 {
 }
 
+KitServiceType::Type KitServiceType::getType() const
+{
+    return m_type;
+}
+
 std::string KitServiceType::toString() const
 {
     if (m_type < Type::Count)

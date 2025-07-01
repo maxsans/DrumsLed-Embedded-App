@@ -6,6 +6,7 @@
 
 /**
  * @brief KitAttributeType class to represent different attribute types for a kit.
+ * @note An attribute type defines an hardware attribute that a kit have.
  */
 class KitAttributeType
 {
@@ -15,8 +16,11 @@ class KitAttributeType
          */
         enum Type
         {
+            None,
+
             Rgb,
             LevelAdc,
+            // Add more attribute types here as needed
 
             Count
         };
@@ -34,12 +38,12 @@ class KitAttributeType
 
             constexpr static const char* m_typeStrings[Type::Count] =
             {
-                [Rgb] = "Rgb",
-                [LevelAdc] = "LevelAdc"
+                "Rgb",
+                "LevelAdc"
             };
 
         public:
-            KitAttributeType(Type type, uint32_t nbAttributes);
+            KitAttributeType(Type type = Type::None, uint32_t nbAttributes = 0);
 
             /**
              * @brief Get the type of the attribute.

@@ -16,6 +16,7 @@ add_sources(
     api/tcp/tcpEsp8266.cpp
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
+    kit/kitConfig/kitConfigManager.cpp
     )
 
 ####################################################################################################

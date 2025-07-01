@@ -11,6 +11,8 @@ class KitServiceType
          */
         enum Type
         {
+            None = 0,
+
             // Here are input services :
             PeriodicLevelAdcSend,
 
@@ -29,8 +31,9 @@ class KitServiceType
 
             constexpr static const char* m_typeStrings[Type::Count] =
             {
-                [Type::PeriodicLevelAdcSend] = "PeriodicLevelAdcSend",
-                [Type::PeriodicRgbListen] = "PeriodicRgbListen"
+                "None",
+                "PeriodicLevelAdcSend",
+                "PeriodicRgbListen"
             };
 
         public:
@@ -38,7 +41,13 @@ class KitServiceType
              * @brief Constructor for KitServiceType.
              * @param type The type of the service.
              */
-            KitServiceType(Type type);
+            KitServiceType(Type type = Type::None);
+
+            /**
+             * @brief Get the type of the service.
+             * @return The type of the service.
+             */
+            Type getType() const;
 
             /**
             * @brief Get the string representation of the service type.
