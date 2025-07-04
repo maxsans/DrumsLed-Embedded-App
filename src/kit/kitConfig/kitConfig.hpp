@@ -5,8 +5,12 @@
 #include "kitAttributeType/kitAttributeType.hpp"
 #include "kitServiceType/kitServiceType.hpp"
 
+#include <string>
+
 /**
  * @brief KitConfig class to manage the configuration of a kit.
+ * @note This class should be sended with raw data in InterMsgInitModule.
+ *       So it should not contain any virtual methods, dynamic memory allocation, pointers, or references.
  */
 class KitConfig
 {
@@ -71,6 +75,12 @@ class KitConfig
          * @return KitServiceType object representing the service type, or KitServiceType::None if not found.
          */
         KitServiceType getServiceType(KitServiceType::Type serviceType) const;
+
+        /**
+         * @brief Get a string representation of the kit configuration.
+         * @return A string describing the kit configuration.
+         */
+        std::string toString() const;
 };
 
 #endif // __KIT_CONFIG_HPP__

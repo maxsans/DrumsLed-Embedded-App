@@ -2,6 +2,7 @@
 #define __INTER_MSG_INIT_MODULE_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
+#include "kit/kitConfig/kitConfig.hpp"
 
 class InterMsgInitModule : public InterMsg
 {
@@ -10,15 +11,18 @@ class InterMsgInitModule : public InterMsg
 
         struct Data
         {
-            uint8_t moduleType; // TODO : use real module type enum
+            /**
+             * @brief Kit configuration for the module.
+             */
+            KitConfig m_kitConfig;
         } m_data;
 
     public:
         /**
          * @brief Create an InterMsgInitModule with initialization parameters.
-         * @param moduleType The type of module being initialized.
+         * @param kitConfig The configuration of the kit to be initialized.
          */
-        InterMsgInitModule(Client client, uint8_t moduleType);
+        InterMsgInitModule(Client client, KitConfig kitConfig);
 
         /**
          * @brief Create an InterMsgInitModule from raw data.
@@ -28,10 +32,10 @@ class InterMsgInitModule : public InterMsg
         InterMsgInitModule(Client client, char *rawData, uint32_t size);
 
         /**
-         * @brief Get the module type.
-         * @return The module type.
+         * @brief Get the module configuration.
+         * @return The kit configuration.
          */
-        uint8_t getModuleType() const;
+        KitConfig getKitConfig() const;
 
         /**
          * @brief Get a description of the message.

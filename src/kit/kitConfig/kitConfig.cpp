@@ -59,3 +59,28 @@ KitServiceType KitConfig::getServiceType(KitServiceType::Type serviceType) const
     }
     return KitServiceType(KitServiceType::Type::None);
 }
+
+std::string KitConfig::toString() const
+{
+    std::string result = "KitConfig: type = " + m_type.toString() + "\n";
+
+    result += "Attributes:\n";
+    for (const auto &attributeType : m_attributeTypes)
+    {
+        if (attributeType.getType() != KitAttributeType::Type::None)
+        {
+            result += "  - " + attributeType.toString() + "\n";
+        }
+    }
+
+    result += "Services:\n";
+    for (const auto &serviceType : m_serviceTypes)
+    {
+        if (serviceType.getType() != KitServiceType::Type::None)
+        {
+            result += "  - " + serviceType.toString() + "\n";
+        }
+    }
+
+    return result;
+}
