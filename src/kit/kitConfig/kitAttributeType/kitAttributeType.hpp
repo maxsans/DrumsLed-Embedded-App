@@ -18,11 +18,15 @@ class KitAttributeType
         {
             None,
 
+            // Here are output attribute types :
             Rgb,          /** < Simple RGB output with no particular geometry. */
             RoundRgb,     /** < RGB output with a round shape. */
 
+            // Here are input attribute types :
             LevelAdc,     /** < Level ADC input. */
+
             // Add more attribute types here as needed
+            // Don't forget to update KitAttributeType::m_typeStrings
 
             Count
         };
@@ -41,6 +45,7 @@ class KitAttributeType
             constexpr static const char* m_typeStrings[Type::Count] =
             {
                 "Rgb",
+                "RoundRgb",
                 "LevelAdc"
             };
 

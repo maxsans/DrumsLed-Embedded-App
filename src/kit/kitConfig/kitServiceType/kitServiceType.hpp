@@ -14,10 +14,13 @@ class KitServiceType
             None = 0,
 
             // Here are input services :
-            PeriodicLevelAdcSend,
+            PeriodicLevelAdcSend,   /** < Service to periodically send ADC level data. */
 
             // Here are output services :
-            PeriodicRgbListen,
+            PeriodicRgbListen,      /** < Service to periodically listen for RGB data. */
+
+            // Add more service types here as needed
+            // Don't forget to update KitServiceType::m_typeStrings
 
             // Count of service types
             Count

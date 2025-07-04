@@ -13,6 +13,7 @@ class KitType
             Drum,
             Cymbal,
             // Add new kit types here
+            // Don't forget to update KitType::typeStrings
 
             /**
              * @brief Total number of kit types.
