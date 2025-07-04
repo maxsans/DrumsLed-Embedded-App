@@ -2,7 +2,6 @@
 #define __INTER_MSG_INIT_MODULE_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include <functional>
 
 class InterMsgInitModule : public InterMsg
 {

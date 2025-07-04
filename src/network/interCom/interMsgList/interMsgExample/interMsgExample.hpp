@@ -2,7 +2,6 @@
 #define __INTER_MSG_EXAMPLE_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include <functional>
 
 class InterMsgExample : public InterMsg
 {

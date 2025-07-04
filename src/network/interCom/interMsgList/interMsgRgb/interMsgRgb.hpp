@@ -2,7 +2,6 @@
 #define __INTER_MSG_RGB_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include <functional>
 
 class InterMsgRgb : public InterMsg
 {

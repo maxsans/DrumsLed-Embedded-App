@@ -2,7 +2,6 @@
 #define __INTER_MSG_PING_SLAVES_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include <functional>
 
 class InterMsgPingSlaves : public InterMsg
 {
