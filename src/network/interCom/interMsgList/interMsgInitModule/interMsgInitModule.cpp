@@ -2,10 +2,10 @@
 
 #include "tools/logStream/logStream.h"
 
-InterMsgInitModule::InterMsgInitModule(Client client, uint8_t moduleType)
+InterMsgInitModule::InterMsgInitModule(Client client, KitConfig kitConfig)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::InitModule, sizeof(m_data)), (char *)&m_data), m_sendType)
 {
-    m_data.moduleType = moduleType;
+    m_data.m_kitConfig = kitConfig;
 }
 
 InterMsgInitModule::InterMsgInitModule(Client client, char *rawData, uint32_t size)
@@ -13,13 +13,13 @@ InterMsgInitModule::InterMsgInitModule(Client client, char *rawData, uint32_t si
 {
 }
 
-uint8_t InterMsgInitModule::getModuleType() const
+KitConfig InterMsgInitModule::getKitConfig() const
 {
-    return m_data.moduleType;
+    return m_data.m_kitConfig;
 }
 
 std::string InterMsgInitModule::toString() const
 {
-    return "InterMsgInitModule: type = " + std::to_string(m_data.moduleType) +
+    return "InterMsgInitModule: kitConfig = " + m_data.m_kitConfig.toString() +
            ", client = " + getClient().getIP().getIpString();
 }

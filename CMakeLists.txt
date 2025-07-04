@@ -34,6 +34,11 @@ endif()
 add_sources(
     main.cpp
 
+    kit/kitConfig/kitAttributeType/kitAttributeType.cpp
+    kit/kitConfig/kitServiceType/kitServiceType.cpp
+    kit/kitConfig/kitType/kitType.cpp
+    kit/kitConfig/kitConfig.cpp
+
     tools/maths/matrix/matrix.cpp
     tools/timeTools/timeMs.cpp
     tools/timeTools/chronoMs.cpp

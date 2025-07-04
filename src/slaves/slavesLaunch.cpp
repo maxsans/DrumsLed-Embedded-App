@@ -8,6 +8,7 @@
 #include "api/udp/udp.h"
 #include "network/networkConfig.h"
 #include "tools/timeTools/timeMs.h"
+#include "kit/kitConfig/kitConfigManager.h"
 
 static void init()
 {
@@ -17,6 +18,7 @@ static void init()
     adc_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
+    KitConfigManager::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 }
 
