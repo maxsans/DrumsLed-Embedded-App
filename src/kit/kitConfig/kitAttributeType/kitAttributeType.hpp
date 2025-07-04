@@ -18,8 +18,10 @@ class KitAttributeType
         {
             None,
 
-            Rgb,
-            LevelAdc,
+            Rgb,          /** < Simple RGB output with no particular geometry. */
+            RoundRgb,     /** < RGB output with a round shape. */
+
+            LevelAdc,     /** < Level ADC input. */
             // Add more attribute types here as needed
 
             Count
