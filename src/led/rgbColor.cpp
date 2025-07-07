@@ -2,56 +2,63 @@
 
 RgbColor::RgbColor()
 {
-    m_redValue = 0;
-    m_greenValue = 0;
-    m_blueValue = 0;
+    setColor(0, 0, 0);
 }
 
 RgbColor::RgbColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue)
 {
-    m_redValue = redValue;
-    m_greenValue = greenValue;
-    m_blueValue = blueValue;
+    setColor(redValue, greenValue, blueValue);
 }
 
-RgbColor::RgbColor(uint32_t color)
+RgbColor::RgbColor(RawColor raw)
 {
-    m_redValue = (color >> 16) & 0xFF;
-    m_greenValue = (color >> 8) & 0xFF;
-    m_blueValue = color & 0xFF;
+    setColor(raw);
 }
 
 void RgbColor::setColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue)
 {
-    m_redValue = redValue;
-    m_greenValue = greenValue;
-    m_blueValue = blueValue;
+    m_rawColor.r = redValue;
+    m_rawColor.g = greenValue;
+    m_rawColor.b = blueValue;
 }
 
-void RgbColor::setColor(uint32_t color)
+void RgbColor::setColor(RawColor raw)
 {
-    m_redValue = (color >> 16) & 0xFF;
-    m_greenValue = (color >> 8) & 0xFF;
-    m_blueValue = color & 0xFF;
+    m_rawColor = raw;
 }
 
 void RgbColor::getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue)
 {
-    *redValue = m_redValue;
-    *greenValue = m_greenValue;
-    *blueValue = m_blueValue;
+    *redValue = m_rawColor.r;
+    *greenValue = m_rawColor.g;
+    *blueValue = m_rawColor.b;
 }
 
-uint32_t RgbColor::getColor()
+RgbColor::RawColor RgbColor::getRaw()
 {
-    return ((uint32_t)m_redValue << 16) | ((uint32_t)m_greenValue << 8) | m_blueValue;
+    return m_rawColor;
+}
+
+uint8_t RgbColor::getRed()
+{
+    return m_rawColor.r;
+}
+
+uint8_t RgbColor::getGreen()
+{
+    return m_rawColor.g;
+}
+
+uint8_t RgbColor::getBlue()
+{
+    return m_rawColor.b;
 }
 
 RgbColor RgbColor::operator*(float value)
 {
-    RgbColor l_color;
-    l_color.m_redValue = (uint8_t)((float)m_redValue * value);
-    l_color.m_greenValue = (uint8_t)((float)m_greenValue * value);
-    l_color.m_blueValue = (uint8_t)((float)m_blueValue * value);
-    return l_color;
+    return RgbColor(
+        static_cast<uint8_t>(value * m_rawColor.r),
+        static_cast<uint8_t>(value * m_rawColor.g),
+        static_cast<uint8_t>(value * m_rawColor.b)
+    );
 }

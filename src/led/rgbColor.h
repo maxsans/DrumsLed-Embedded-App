@@ -8,17 +8,27 @@
  */
 class RgbColor
 {
+    public:
+        typedef union
+        {
+            uint32_t color;
+            struct
+            {
+                uint8_t b;
+                uint8_t g;
+                uint8_t r;
+            };
+        } RawColor;
+
     private:
-        uint8_t m_redValue;
-        uint8_t m_greenValue;
-        uint8_t m_blueValue;
+        RawColor m_rawColor;
 
     protected:
 
     public:
         RgbColor();
         RgbColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
-        RgbColor(uint32_t color);
+        RgbColor(RawColor raw);
         /**
          * @brief Set the color.
          *
@@ -28,11 +38,12 @@ class RgbColor
          */
         void setColor(uint8_t redValue, uint8_t greenValue, uint8_t blueValue);
         /**
-         * @brief Set the color.
+         * @brief Set the color from raw color value.
          *
          * @param color The color.
          */
-        void setColor(uint32_t color);
+        void setColor(RawColor raw);
+
         /**
          * @brief Get the color.
          *
@@ -41,21 +52,22 @@ class RgbColor
          * @param [out] blueValue The blue value.
          */
         void getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue);
+
         /**
-         * @brief Get the color.
+         * @brief Get the color as a raw value.
          *
-         * @return uint32_t The color.
+         * @return RawColor The color.
          */
-        uint32_t getColor();
+        RawColor getRaw();
 
         /**
          * @brief Get the R/G/B value.
          *
          * @return uint8_t The R/G/B value.
          */
-        uint8_t getRed() { return m_redValue; }
-        uint8_t getGreen() { return m_greenValue; }
-        uint8_t getBlue() { return m_blueValue; }
+        uint8_t getRed();
+        uint8_t getGreen();
+        uint8_t getBlue();
 
         /**
          * @brief Operators for rgbColor.
