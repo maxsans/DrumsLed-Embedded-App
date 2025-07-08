@@ -14,6 +14,11 @@ class InterMsgAdc : public InterMsg
             adc_measure_t m_adcValue;
         } m_data;
 
+        /**
+         * @see InterMsg::getPrivData
+         */
+        const char* getPrivData() const override;
+
     public:
         /**
          * @brief Create an InterMsgAdc with ADC channel data.

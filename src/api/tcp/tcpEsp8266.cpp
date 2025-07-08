@@ -145,8 +145,6 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
 uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
     uint32_t read_len = 0;
-    static struct sockaddr_in last_client_addr;
-    static int last_client_addr_valid = 0;
 
     xSemaphoreTake(tcp_recv_buf.mutex, portMAX_DELAY);
     while (tcp_recv_buf.tail != tcp_recv_buf.head && read_len < len)

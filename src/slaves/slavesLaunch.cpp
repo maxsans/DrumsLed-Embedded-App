@@ -6,9 +6,10 @@
 #include "api/adc/adc.h"
 #include "api/addrLed/addrLed.h"
 #include "api/udp/udp.h"
+#include "api/tcp/tcp.h"
 #include "network/networkConfig.h"
 #include "tools/timeTools/timeMs.h"
-#include "kit/kitConfig/kitConfigManager.h"
+#include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
 
 static void init()
 {

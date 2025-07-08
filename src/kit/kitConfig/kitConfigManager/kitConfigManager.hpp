@@ -1,7 +1,7 @@
 #ifndef __KIT_CONFIG_MANAGER_HPP__
 #define __KIT_CONFIG_MANAGER_HPP__
 
-#include "kitConfig/kitConfig.hpp"
+#include "kit/kitConfig/kitConfig.hpp"
 
 /**
  * @brief KitConfigManager static class to manage kit configurations of the current slave target.
@@ -26,3 +26,5 @@ class KitConfigManager
          */
         static KitConfig getKitConfig();
 };
+
+#endif // __KIT_CONFIG_MANAGER_HPP__

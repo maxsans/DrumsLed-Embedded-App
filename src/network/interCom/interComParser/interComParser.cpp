@@ -16,7 +16,8 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE], uint32_t msgSize
 {
     // Create an generic InterMsg from the received data
     Ipv4 l_ip(ipAddress);
-    InterMsgGeneric l_msgGeneric(Client(l_ip, macAddress), msg, msgSize);
+    Client l_client(l_ip, macAddress);
+    InterMsgGeneric l_msgGeneric(l_client, msg, msgSize);
     // Get the message ID
     InterMsgId l_msgId = l_msgGeneric.getId();
     // Find the callbacks of the message ID

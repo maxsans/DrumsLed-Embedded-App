@@ -1,8 +1,8 @@
 #include "kitSlave.hpp"
 
-#include "kit/kitConfig/kitConfigManager.hpp"
+#include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "tools/logStream/logStream.hpp"
+#include "tools/logStream/logStream.h"
 
 Client KitSlave::m_masterClient;
 
@@ -22,22 +22,22 @@ void KitSlave::onPing(const Client &client, InterMsg &msg)
         {
             // If the master is already set, force the client to be the master
             // But log a warning
-            LogStream::cout << "Warning: Master client already set to " << m_masterClient.toString()
-                            << ", but received ping from " << client.toString() << ". Overriding master client." << std::endl;
+            LogStream::cout << "Warning: Master client already set to " << m_masterClient.getIP().getIpString()
+                            << ", but received ping from " << client.getIP().getIpString() << ". Overriding master client." << LogStream::endl;
         }
     }
     // Update the master client
     m_masterClient = client;
     // Respond to the ping
-    InterMsgInitModule(client, getKitConfig()).send();
+    InterMsgInitModule(m_masterClient, getKitConfig()).send();
 }
 
 void KitSlave::init()
 {
     // Register the ping callback
-    InterComParser::registerMsgCallback(InterMsgInitModule::m_sendType, onPing);
+    InterComParser::registerCallback(InterMsgId::InitModule, KitSlave::onPing);
     // Log the initialization
-    LogStream::cout << "KitSlave initialized. Waiting for master client..." << std::endl;
+    LogStream::cout << "KitSlave initialized. Waiting for master client..." << LogStream::endl;
     // Initialize the master client to an invalid state
     m_masterClient = Client();
 }

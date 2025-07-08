@@ -13,6 +13,11 @@ InterMsg::InterMsg(Client client,
 {
 }
 
+InterMsg::InterMsg(InterMsgData data)
+    : m_data(data), m_sendType(SendType::Broadcast)
+{
+}
+
 void InterMsg::send()
 {
     char l_data[InterMsgData::MAX_PRIV_DATA_SIZE];

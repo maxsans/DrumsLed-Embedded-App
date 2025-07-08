@@ -8,7 +8,7 @@ InterMsgPingSlaves::InterMsgPingSlaves(Client client)
 }
 
 InterMsgPingSlaves::InterMsgPingSlaves()
-    : InterMsg(Client(), InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data), m_sendType)
+    : InterMsg(InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data))
 {
 }
 
