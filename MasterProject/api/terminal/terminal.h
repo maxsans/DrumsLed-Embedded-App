@@ -3,7 +3,7 @@
 
 #define TERMINAL_BUFFER_SIZE 256
 
-#include "session.h"
+#include "session.hpp"
 
 #include <stdint.h>
 

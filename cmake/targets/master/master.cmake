@@ -10,6 +10,7 @@ add_compile_options(-D__TARGET_MASTER)
 add_sources(
     master/masterLaunch.cpp
     master/session/session.cpp
+    master/master.cpp
 
     kit/kitMaster/kitMaster.cpp
 

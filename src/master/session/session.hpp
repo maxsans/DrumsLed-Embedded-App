@@ -1,8 +1,6 @@
-#ifndef __SESSION_H__
-#define __SESSION_H__
+#ifndef __SESSION_HPP__
+#define __SESSION_HPP__
 
-#include "modules/moduleManager.h"
-#include "micro/learning/learning.h"
 #include "animation/animationManager.h"
 
 class Session

@@ -3,7 +3,7 @@
 #include "tools/logStream/logStream.h"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
-#include "session/session.h"
+#include "session/session.hpp"
 #include "tools/timeTools/periodicCallsMs.h"
 #include "api/tcp/tcp.h"
 
