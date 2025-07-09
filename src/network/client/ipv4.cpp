@@ -1,5 +1,5 @@
-#include "ipv4
-#include "tools/logStream/logStream
+#include "ipv4.h"
+#include "tools/logStream/logStream.h"
 
 Ipv4::Ipv4()
 {

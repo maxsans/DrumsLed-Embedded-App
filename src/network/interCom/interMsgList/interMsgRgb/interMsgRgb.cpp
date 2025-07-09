@@ -1,6 +1,6 @@
 #include "interMsgRgb.hpp"
 
-#include "tools/logStream/logStream
+#include "tools/logStream/logStream.h"
 
 InterMsgRgb::InterMsgRgb(Client client, uint8_t red, uint8_t green, uint8_t blue)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Rgb, sizeof(m_data)), (char *)&m_data), m_sendType)

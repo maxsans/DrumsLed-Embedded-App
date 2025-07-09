@@ -1,14 +1,14 @@
-#include "launch
-#include "api/target/common
-#include "tools/logStream/logStream
-#include "tools/timeTools/periodicCallsMs
-#include "api/wifi/wifi
-#include "api/adc/adc
-#include "api/addrLed/addrLed
-#include "api/udp/udp
-#include "api/tcp/tcp
-#include "network/networkConfig
-#include "tools/timeTools/timeMs
+#include "launch.h"
+#include "api/target/common.h"
+#include "tools/logStream/logStream.h"
+#include "tools/timeTools/periodicCallsMs.h"
+#include "api/wifi/wifi.h"
+#include "api/adc/adc.h"
+#include "api/addrLed/addrLed.h"
+#include "api/udp/udp.h"
+#include "api/tcp/tcp.h"
+#include "network/networkConfig.h"
+#include "tools/timeTools/timeMs.h"
 #include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
 
 static void init()

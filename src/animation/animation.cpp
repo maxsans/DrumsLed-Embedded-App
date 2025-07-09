@@ -1,4 +1,4 @@
-#include "animation
+#include "animation.h"
 
 Animation::Animation(animationType_t type, Micro *m, RgbLed *rgbLed)
 {

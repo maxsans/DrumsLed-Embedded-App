@@ -2,7 +2,7 @@
 
 #include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "tools/logStream/logStream
+#include "tools/logStream/logStream.h"
 
 Client KitSlave::m_masterClient;
 

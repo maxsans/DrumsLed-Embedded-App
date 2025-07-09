@@ -1,5 +1,5 @@
-#include "module
-#include "tools/timeTools/timeMs
+#include "module.h"
+#include "tools/timeTools/timeMs.h"
 
 #define MODULE_TIMEOUT 10000 // ms
 #define MODULE_CHECK_TIME_PERIODIC_CALLS 1000 // ms

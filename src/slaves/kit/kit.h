@@ -1,0 +1,62 @@
+#ifndef __KIT_H__
+#define __KIT_H__
+
+#include "network/client/client.h"
+#include "api/addrLed/addrLed.h"
+#include "tools/timeTools/periodicCallsMs.h"
+
+class Kit
+{
+private:
+    /**
+     * @brief Master client.
+     *
+     */
+    static Client m_masterClient;
+
+    static AddrLed m_leds;
+
+    static const uint32_t m_numLeds = 200;
+
+    static const uint8_t m_ledPin = 4;
+
+    static const uint32_t m_adcPeriodMs = 20; // Send ADC data every 20ms
+
+    static periodicCallsMs m_adcPeriodicCall;
+
+    /**
+     * @brief Process ADC data.
+     *
+     * This function is called periodically to process ADC data.
+     */
+    static void adc_send(void *object);
+
+public:
+    Kit();
+    ~Kit();
+
+    static void init();
+
+    static void process();
+
+    /**
+     * @brief Get the master client.
+     *
+     * @return Client& Reference to the master client.
+     */
+    static Client &getMasterClient();
+
+    /**
+     * @brief Set the master client.
+     *
+     * @param client The new master client.
+     */
+    static void setMasterClient(Client &client);
+
+    static AddrLed *getLeds()
+    {
+        return &m_leds;
+    }
+};
+
+#endif

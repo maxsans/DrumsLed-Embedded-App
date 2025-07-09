@@ -1,5 +1,5 @@
-#include "fade
-#include "api/time/time
+#include "fade.h"
+#include "api/time/time.h"
 
 Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, uint32_t duration) : Animation(ANIMATION_TYPE_FADE, m, rgbLed)
 {

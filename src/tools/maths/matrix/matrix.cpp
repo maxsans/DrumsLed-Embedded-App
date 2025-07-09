@@ -1,5 +1,5 @@
-#include "matrix
-#include "tools/logStream/logStream
+#include "matrix.h"
+#include "tools/logStream/logStream.h"
 
 #include <assert.h>
 

@@ -1,7 +1,7 @@
 #ifndef __KIT_SLAVE_HPP__
 #define __KIT_SLAVE_HPP__
 
-#include "network/client/client
+#include "network/client/client.h"
 #include "kit/kitConfig/kitConfig.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
 

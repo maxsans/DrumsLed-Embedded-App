@@ -1,4 +1,4 @@
-#include "animationManager
+#include "animationManager.h"
 
 #include <assert.h>
 

@@ -1,9 +1,9 @@
-#include "kit
+#include "kit.h"
 
-#include "tools/logStream/logStream
-#include "network/client/client
-#include "api/addrLed/addrLed
-#include "api/adc/adc
+#include "tools/logStream/logStream.h"
+#include "network/client/client.h"
+#include "api/addrLed/addrLed.h"
+#include "api/adc/adc.h"
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 
 Client Kit::m_masterClient;

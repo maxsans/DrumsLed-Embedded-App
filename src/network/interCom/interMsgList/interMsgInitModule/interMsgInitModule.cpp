@@ -1,6 +1,6 @@
 #include "interMsgInitModule.hpp"
 
-#include "tools/logStream/logStream
+#include "tools/logStream/logStream.h"
 
 InterMsgInitModule::InterMsgInitModule(Client client, KitConfig kitConfig) :
     InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::InitModule, sizeof(Data)), (char *)&m_data), m_sendType)

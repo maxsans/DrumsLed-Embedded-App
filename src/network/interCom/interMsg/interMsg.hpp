@@ -5,7 +5,7 @@
 #include <string>
 
 #include "network/interCom/interMsgData/interMsgData.hpp"
-#include "network/client/client
+#include "network/client/client.h"
 
 class InterMsg
 {

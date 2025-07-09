@@ -1,4 +1,4 @@
-#include "cymbalModule
+#include "cymbalModule.h"
 
 #include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 
