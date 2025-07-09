@@ -1,6 +1,6 @@
 #include "interMsgExample.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
 InterMsgExample::InterMsgExample(Client client, int exampleData)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Example, sizeof(m_data)), (char *)&m_data), m_sendType)

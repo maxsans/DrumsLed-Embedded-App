@@ -1,6 +1,6 @@
 #include "master.hpp"
 
-Session Master::m_currentSession;
+Session *Master::m_currentSession;
 
 void Master::init()
 {

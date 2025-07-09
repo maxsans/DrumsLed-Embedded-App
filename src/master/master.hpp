@@ -1,7 +1,7 @@
 #ifndef __KIT_MASTER_HPP__
 #define __KIT_MASTER_HPP__
 
-#include "session/session.hpppp"
+#include "session/session.hpp"
 
 /**
  * @brief How the master see itself.

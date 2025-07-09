@@ -1,5 +1,5 @@
-#include "adc.h"
-#include "driver/adc.h"
+#include "adc.hpp"
+#include "driver/adc.hpp"
 
 void adc_init()
 {
