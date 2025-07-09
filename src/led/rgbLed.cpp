@@ -1,4 +1,4 @@
-#include "rgbLed.h"
+#include "rgbLed.hpp"
 
 #include <cmath>
 #include <assert.h>

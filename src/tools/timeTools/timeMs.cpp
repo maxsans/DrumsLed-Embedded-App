@@ -1,6 +1,6 @@
-#include "timeMs.h"
+#include "timeMs.hpp"
 
-#include "api/time/time.h"
+#include "api/time/time.hpp"
 
 timeMs::timeMs()
 {

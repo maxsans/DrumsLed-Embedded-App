@@ -1,6 +1,6 @@
 /**
  * @file wifiEsp8266.cpp
- * @author Cyprien Ménard
+ * @author Cyprien Mï¿½nard
  * @brief This is an adaptation of the wifi example from the ESP8266 RTOS SDK.
  * https://github.com/espressif/esp-idf/blob/master/examples/wifi/getting_started/station/main/station_example_main.c
  * @version 0.1
@@ -10,22 +10,22 @@
  *
  */
 
-#include "wifi.h"
+#include "wifi.hpp"
 
 #include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_log.h"
-#include "esp_netif.h"
-#include "esp_event.h"
-#include "esp_wifi.h"
+#include "freertos/FreeRTOS.hpp"
+#include "freertos/task.hpp"
+#include "freertos/event_groups.hpp"
+#include "esp_system.hpp"
+#include "esp_log.hpp"
+#include "esp_netif.hpp"
+#include "esp_event.hpp"
+#include "esp_wifi.hpp"
 
-#include "api/logs/logs.h"
+#include "api/logs/logs.hpp"
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
+#include "lwip/err.hpp"
+#include "lwip/sys.hpp"
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -108,7 +108,7 @@ static void wifi_connect_task(void *pvParameters)
         {
             log("connected to ap SSID: %s password: %s\n", g_ssid, g_password);
             g_connected = true;
-            // Attendre la déconnexion
+            // Attendre la dï¿½connexion
             xEventGroupClearBits(s_wifi_event_group, WIFI_FAIL_BIT);
             xEventGroupWaitBits(s_wifi_event_group, WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
             log("WiFi disconnected, will try to reconnect...\n");
@@ -135,7 +135,7 @@ static void wifi_connect_task(void *pvParameters)
 
 void wifi_init_sta(void)
 {
-    // Lance la connexion wifi dans une tâche indépendante
+    // Lance la connexion wifi dans une tï¿½che indï¿½pendante
     xTaskCreate(&wifi_connect_task, "wifi_connect_task", 4096, NULL, 5, NULL);
 }
 

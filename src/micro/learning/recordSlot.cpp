@@ -1,5 +1,5 @@
-#include "recordSlot.h"
-#include "impactsManager.h"
+#include "recordSlot.hpp"
+#include "impactsManager.hpp"
 
 #include <assert.h>
 

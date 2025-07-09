@@ -1,4 +1,4 @@
-#include "chronoMs.h"
+#include "chronoMs.hpp"
 
 chronoMs::chronoMs()
 {

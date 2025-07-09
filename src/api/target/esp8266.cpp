@@ -1,5 +1,5 @@
-#include "common.h"
-#include "freertos/FreeRTOS.h"
+#include "common.hpp"
+#include "freertos/FreeRTOS.hpp"
 
 void target_common_init()
 {

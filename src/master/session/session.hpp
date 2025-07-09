@@ -1,7 +1,7 @@
 #ifndef __SESSION_HPP__
 #define __SESSION_HPP__
 
-#include "animation/animationManager.h"
+#include "animation/animationManager.hpp"
 
 class Session
 {

@@ -1,4 +1,4 @@
-#include "drumModule.h"
+#include "drumModule.hpp"
 
 #include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 

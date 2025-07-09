@@ -1,7 +1,7 @@
-#include "learning.h"
-#include "tools/logStream/logStream.h"
-#include "modules/moduleManager.h"
-#include "tools/timeTools/periodicCallsMs.h"
+#include "learning.hpp"
+#include "tools/logStream/logStream.hpp"
+#include "modules/moduleManager.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 
 #include <assert.h>
 

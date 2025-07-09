@@ -2,7 +2,7 @@
 #define __INTER_COM_PARSER_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/timeTools/periodicCallsMs.h"
+#include "tools/timeTools/periodicCallsMs.hpp"
 
 #include <functional>
 #include <map>

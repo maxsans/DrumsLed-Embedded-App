@@ -1,7 +1,7 @@
 #include "interMsg.hpp"
 
-#include "api/udp/udp.h"
-#include "api/tcp/tcp.h"
+#include "api/udp/udp.hpp"
+#include "api/tcp/tcp.hpp"
 
 #include <cassert>
 #include <cstring>

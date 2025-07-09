@@ -1,5 +1,5 @@
-#include "client.h"
-#include "api/udp/udp.h"
+#include "client.hpp"
+#include "api/udp/udp.hpp"
 
 Client::Client()
 {

@@ -1,8 +1,8 @@
-#include "moduleManager.h"
-#include "modules/drumModule.h"
-#include "modules/cymbalModule.h"
+#include "moduleManager.hpp"
+#include "modules/drumModule.hpp"
+#include "modules/cymbalModule.hpp"
 #include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
 #include <sys/time.h>
