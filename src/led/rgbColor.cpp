@@ -1,4 +1,4 @@
-#include "rgbColor.h"
+#include "rgbColor
 
 RgbColor::RgbColor()
 {

@@ -1,6 +1,6 @@
 #include "interMsgGeneric.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream
 
 #include <cassert>
 

@@ -1,4 +1,4 @@
-#include "impact.h"
+#include "impact
 
 Impact::Impact()
 {

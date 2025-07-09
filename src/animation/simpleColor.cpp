@@ -1,4 +1,4 @@
-#include "simpleColor.h"
+#include "simpleColor
 
 SimpleColor::SimpleColor(RgbLed *rgbLed, RgbColor color) : Animation(ANIMATION_TYPE_SIMPLE_COLOR, NULL, rgbLed)
 {

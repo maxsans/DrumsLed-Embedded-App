@@ -1,8 +1,8 @@
 #include "interComParser.hpp"
-#include "api/udp/udp.h"
-#include "api/tcp/tcp.h"
+#include "api/udp/udp
+#include "api/tcp/tcp
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream
 
 #include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
 

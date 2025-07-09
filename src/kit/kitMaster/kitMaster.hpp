@@ -1,7 +1,7 @@
-#ifndef __KIT_MASTER_H__
-#define __KIT_MASTER_H__
+#ifndef __KIT_MASTER_HPP__
+#define __KIT_MASTER_HPP__
 
-#include "network/client/client.h"
+#include "network/client/client
 #include "kit/kitConfig/kitConfig.hpp"
 
 /**
@@ -30,4 +30,4 @@ class KitMaster
         KitMaster(KitConfig kitConfig, Client client);
 };
 
-#endif // __KIT_MASTER_H__
+#endif // __KIT_MASTER_HPP__

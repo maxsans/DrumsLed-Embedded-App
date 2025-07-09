@@ -1,14 +1,14 @@
-#include "tcp.h"
+#include "tcp
 #include <string.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "esp_wifi.h"
-#include "esp_system.h"
+#include "freertos/FreeRTOS
+#include "freertos/task
+#include "freertos/semphr
+#include "esp_wifi
+#include "esp_system
 
 #define TCP_RECV_BUF_SIZE 2048
 

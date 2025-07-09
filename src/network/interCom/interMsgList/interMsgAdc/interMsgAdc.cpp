@@ -1,6 +1,6 @@
 #include "interMsgAdc.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream
 #include <cstring>
 
 InterMsgAdc::InterMsgAdc(Client client, adc_measure_t adcValue)

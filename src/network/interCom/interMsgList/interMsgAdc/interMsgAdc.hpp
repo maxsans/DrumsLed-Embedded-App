@@ -2,7 +2,7 @@
 #define __INTER_MSG_ADC_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "api/adc/adc.h"
+#include "api/adc/adc
 
 class InterMsgAdc : public InterMsg
 {

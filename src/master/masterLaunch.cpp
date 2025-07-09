@@ -1,11 +1,11 @@
-#include "launch.h"
-#include "api/udp/udp.h"
-#include "tools/logStream/logStream.h"
+#include "launch
+#include "api/udp/udp
+#include "tools/logStream/logStream
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.hpp"
-#include "tools/timeTools/periodicCallsMs.h"
-#include "api/tcp/tcp.h"
+#include "tools/timeTools/periodicCallsMs
+#include "api/tcp/tcp
 
 void launch()
 {

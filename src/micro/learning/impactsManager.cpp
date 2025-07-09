@@ -1,5 +1,5 @@
-#include "impactsManager.h"
-#include "tools/maths/matrix/matrix.h"
+#include "impactsManager
+#include "tools/maths/matrix/matrix
 
 #include <assert.h>
 
