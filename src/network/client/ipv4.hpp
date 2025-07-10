@@ -15,7 +15,6 @@ class Ipv4
         Ipv4();
         Ipv4(uint8_t ip1, uint8_t ip2, uint8_t ip3, uint8_t ip4);
         Ipv4(uint32_t ip);
-        Ipv4(Ipv4 &ip);
         Ipv4(char *ip);
         Ipv4(const char *ip);
         ~Ipv4();

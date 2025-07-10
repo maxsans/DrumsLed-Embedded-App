@@ -23,9 +23,25 @@ class InterComParser
         using MessageReceivedCallback = std::function<void(const Client &, InterMsg &)>;
 
         /**
+         * @brief Structure to hold callback information including object pointer
+         */
+        struct CallbackInfo {
+            MessageReceivedCallback callback;
+            void* object;
+
+            CallbackInfo() : object(nullptr) {}
+            CallbackInfo(MessageReceivedCallback cb, void* obj = nullptr) : callback(cb), object(obj) {}
+        };
+
+        /**
          * @brief Map of callbacks to call if a message is received.
          */
-        static std::map<InterMsgId, MessageReceivedCallback> m_callbacks;
+        static std::map<InterMsgId, CallbackInfo> m_callbacks;
+
+        /**
+         * @brief Map of client-specific callbacks using string keys (clientKey + msgId)
+         */
+        static std::map<std::pair<Client, InterMsgId>, CallbackInfo> m_clientCallbacks;
 
         /**
          * @brief Periodic calls handler to process incoming messages.
@@ -79,6 +95,44 @@ class InterComParser
          * @note This function allows you to register a custom callback for processing messages of a specific type.
          */
         static void registerCallback(InterMsgId msgId, MessageReceivedCallback callback);
+
+        /**
+         * @brief Register a callback for a specific message ID with an object pointer.
+         * @param msgId The message ID for which the callback should be registered.
+         * @param callback The callback function to be called when a message with the specified ID is received.
+         * @param object Pointer to the object to be passed to the callback function.
+         * @note This function allows you to register a custom callback for processing messages of a specific type.
+         */
+        static void registerCallback(InterMsgId msgId, MessageReceivedCallback callback, void *object);
+
+        /**
+         * @brief Register a callback for a specific message ID and a specific client.
+         * @param client The client for which the callback should be registered.
+         * @param msgId The message ID for which the callback should be registered.
+         * @param callback The callback function to be called when a message with the specified ID is received.
+         * @note This function allows you to register a custom callback for processing messages of a specific type.
+         * @note The callback will be called uniquely if the message is received from the specified client.
+         */
+        static void registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback);
+
+        /**
+         * @brief Register a callback for a specific message ID and a specific client with an object pointer.
+         * @param client The client for which the callback should be registered.
+         * @param msgId The message ID for which the callback should be registered.
+         * @param callback The callback function to be called when a message with the specified ID is received.
+         * @param object Pointer to the object to be passed to the callback function.
+         * @note This function allows you to register a custom callback for processing messages of a specific type.
+         * @note The callback will be called uniquely if the message is received from the specified client.
+         */
+        static void registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback, void *object);
+
+        /**
+         * @brief Generate a unique key for client-specific callbacks
+         * @param client The client
+         * @param msgId The message ID
+         * @return Unique string key for the client-message combination
+         */
+        static std::string generateClientKey(const Client &client, InterMsgId msgId);
 };
 
 #endif // __INTER_COM_PARSER_HPP__

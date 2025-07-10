@@ -13,7 +13,6 @@ class MacAddr
     public:
         MacAddr();
         MacAddr(uint8_t mac1, uint8_t mac2, uint8_t mac3, uint8_t mac4, uint8_t mac5, uint8_t mac6);
-        MacAddr(const MacAddr &mac);
         MacAddr(const char *mac);
         ~MacAddr();
 
