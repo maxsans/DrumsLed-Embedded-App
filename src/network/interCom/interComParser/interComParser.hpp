@@ -125,14 +125,6 @@ class InterComParser
          * @note The callback will be called uniquely if the message is received from the specified client.
          */
         static void registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback, void *object);
-
-        /**
-         * @brief Generate a unique key for client-specific callbacks
-         * @param client The client
-         * @param msgId The message ID
-         * @return Unique string key for the client-message combination
-         */
-        static std::string generateClientKey(const Client &client, InterMsgId msgId);
 };
 
 #endif // __INTER_COM_PARSER_HPP__
