@@ -59,9 +59,9 @@ bool Learning::isLearning()
 void Learning::startLearning()
 {
     // Disable the addition of new modules
-    ModuleManager::enableNewModules(false);
+    // ModuleManager::enableNewModules(false);
 
-    uint32_t l_nbMicros = ModuleManager::getImpactsManager()->getMicroCount();
+    uint32_t l_nbMicros = 0; //ModuleManager::getImpactsManager()->getMicroCount();
     if (l_nbMicros > 0)
     {
         LogStream::cout << "Start learning" << LogStream::endl;
@@ -89,13 +89,13 @@ void Learning::startLearning(int32_t microIndex)
     LogStream::cout << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
-    Micro *l_mainMicro = ModuleManager::getImpactsManager()->getMicro(microIndex);
+    Micro *l_mainMicro = 0; // ModuleManager::getImpactsManager()->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
     // and put black the others
-    for(uint32_t l_moduleIndex = 0; l_moduleIndex < ModuleManager::getModuleCount(); l_moduleIndex++)
+    for(uint32_t l_moduleIndex = 0; l_moduleIndex < 0/*ModuleManager::getModuleCount()*/; l_moduleIndex++)
     {
-        Module *l_module = ModuleManager::getModule(l_moduleIndex);
+        Module *l_module = 0;//ModuleManager::getModule(l_moduleIndex);
         if (l_module->getMicro() == l_mainMicro)
         {
             // The module is associated with the micro
@@ -131,12 +131,12 @@ void Learning::recordAllMic()
 {
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
-    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
-    uint32_t l_nbMicros = l_impactsManager->getMicroCount();
+    ImpactsManager *l_impactsManager = nullptr; //ModuleManager::getImpactsManager();
+    uint32_t l_nbMicros = 0; //l_impactsManager->getMicroCount();
     for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the micro
-        Micro *l_micro = l_impactsManager->getMicro(l_microIndex);
+        Micro *l_micro = nullptr; //l_impactsManager->getMicro(l_microIndex);
 
         // Get the micro's value
         uint8_t l_value = l_micro->getMicroValue();
@@ -191,9 +191,9 @@ void Learning::stopLearning()
     else
     {
         // Turn off all the leds
-        for(uint32_t l_moduleIndex = 0; l_moduleIndex < ModuleManager::getModuleCount(); l_moduleIndex++)
+        for(uint32_t l_moduleIndex = 0; l_moduleIndex < 0/*ModuleManager::getModuleCount()*/; l_moduleIndex++)
         {
-            Module *l_module = ModuleManager::getModule(l_moduleIndex);
+            Module *l_module = 0;//ModuleManager::getModule(l_moduleIndex);
             RgbLed *l_led = l_module->getRgbLed();
             if(l_led != nullptr)
             {
@@ -208,7 +208,7 @@ void Learning::stopLearning()
         // Interpret the records
         calculateCorrection();      // Calculate the correction of each micro
         calculateRealImpacts();     // Calculate the real impacts of each micro
-        ModuleManager::getImpactsManager()->calculateArtImpacts();         // Calculate the artificial impacts
+        // ModuleManager::getImpactsManager()->calculateArtImpacts();         // Calculate the artificial impacts
         calculateThreshold();        // Calculate the threshold of each micro
 
         // Print the results
@@ -221,7 +221,7 @@ void Learning::stopLearning()
         }
 
         // Enable back the addition of new modules
-        ModuleManager::enableNewModules(true);
+        // ModuleManager::enableNewModules(true);
     }
 }
 
@@ -232,8 +232,8 @@ void Learning::calculateCorrection()
     // CORRECTION_NORMALIZATION isn't 255 because we want to keep some margin
 
 
-    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
-    uint32_t l_nbMicros = l_impactsManager->getMicroCount();
+    ImpactsManager *l_impactsManager = 0; //ModuleManager::getImpactsManager();
+    uint32_t l_nbMicros = 0; //l_impactsManager->getMicroCount();
 
     for (uint32_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
@@ -273,8 +273,8 @@ void Learning::calculateCorrection()
 void Learning::calculateRealImpacts()
 {
     // Calculate the real impact of each micro for all the records
-    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
-    uint32_t l_nbMicros = l_impactsManager->getMicroCount();
+    ImpactsManager *l_impactsManager = 0; //ModuleManager::getImpactsManager();
+    uint32_t l_nbMicros = 0; //l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Calculate the impacts of the micro on all the records
@@ -290,8 +290,8 @@ void Learning::calculateThreshold()
     // Then shearch the maximum positive error
     // The threshold is the maximum positive error
     // First, reset all the thresholds to 0
-    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
-    uint32_t l_nbMicros = l_impactsManager->getMicroCount();
+    ImpactsManager *l_impactsManager = 0; //ModuleManager::getImpactsManager();
+    uint32_t l_nbMicros = 0; //l_impactsManager->getMicroCount();
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the micro
@@ -351,8 +351,8 @@ void Learning::calculateThreshold()
 void Learning::printResults()
 {
     // Display the corrections calculated
-    ImpactsManager *l_impactsManager = ModuleManager::getImpactsManager();
-    uint32_t l_nbMicros = l_impactsManager->getMicroCount();
+    ImpactsManager *l_impactsManager = 0; //ModuleManager::getImpactsManager();
+    uint32_t l_nbMicros = 0; //l_impactsManager->getMicroCount();
     LogStream::cout << "\nCorrections :" << LogStream::endl;
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {

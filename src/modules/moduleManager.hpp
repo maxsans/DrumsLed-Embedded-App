@@ -5,130 +5,136 @@
 #include "tools/timeTools/periodicCallsMs.hpp"
 #include "network/client/client.hpp"
 #include "micro/learning/impactsManager.hpp"
+#include "network/interCom/interComParser/interComParser.hpp"
 
 #include <vector>
 #include <stdint.h>
 #include <stdbool.h>
 
 /**
- * @brief Class to manage the modules.
+ * @brief Class to manage all the modules of a session.
  */
 class ModuleManager
 {
     private:
-        static std::vector<Module *> m_modules;
-        static bool m_enableNewModules;
-        static periodicCallsMs *m_ringPeriodicCalls;
+        /**
+         * @brief The interval in milliseconds to ping the modules.
+         */
+        static const timeMs m_ringInterval;
+
+        /**
+         * @brief The list of modules.
+         */
+        std::vector<Module *> m_modules;
+
+        /**
+         * @brief Flag to set this module manager to be active.
+         * @warning Only one module manager should enable this flag at a time.
+         * @note Any module manager can be active.
+         */
+        bool m_active;
+
+        /**
+         * @brief The periodic calls to ping the modules.
+         * @note This is used to check if the modules are still connected.
+         */
+        periodicCallsMs m_ringPeriodicCalls;
         static void ringCallback(void *object);
-        static ImpactsManager m_impactsManager;
+
+        /**
+         * @brief The impacts manager.
+         * @note This is used to manage the impacts of module on each other.
+         */
+        ImpactsManager m_impactsManager;
+
+        /**
+         * @brief Set the micro value.
+         * @param client The client of the module.
+         * @param microValue The new micro value.
+         * @note This function will calculate the corrected micro value.
+         * @note Then it will call the setMicro function of the module.
+         */
+        void setMicro(Client client, uint8_t microValue);
+
+        /**
+         * @brief Callback to call when a new ADC message is received.
+         * @param client The client of the module that sent the message.
+         * @param msg The ADC message.
+         */
+        void onAdcMsg(const Client &client, InterMsg &msg);
 
     public:
-        ModuleManager() = delete;
+        /**
+         * @brief Create an empty ModuleManager.
+         */
+        ModuleManager(bool active = false);
 
         /**
-         * @brief Initialize the module manager.
+         * @see ModuleManager::enable
+         * @param e True to enable, false to disable.
+         * @warning Only one module manager should enable this flag at a time.
          */
-        static void init();
-
-        /**
-         * @brief Process the modules.
-         * @note This function must be called in the main loop.
-         */
-        static void process();
-
-        /**
-         * @brief Enable or disable the addition of new modules.
-         *
-         * @param enable True to enable, false to disable.
-         */
-        static void enableNewModules(bool enable);
+        void enable(bool e);
 
         /**
          * @brief Check if the addition of new modules is enabled.
-         *
          * @return True if enabled.
          */
-        static bool NewModulesEnabled();
+        bool isActive();
 
         /**
          * @brief Add a module.
-         *
-         * @param type The type of the module.
+         * @param kitConfig The kit config of the new module.
          * @param client The client of the module.
-         *
          * @return module* The module added.
          */
-        static Module *addModule(moduleType_t type, Client client);
+        Module *addModule(KitConfig kitConfig, Client client);
 
         /**
          * @brief Get a module.
-         *
          * @param index The index of the module.
          * @return module* The module.
          */
-        static Module *getModule(int32_t index);
+        Module *getModule(int32_t index);
 
         /**
          * @brief Get a module.
-         *
          * @param client The client of the module.
          * @return module* The module.
          */
-        static Module *getModule(Client client);
+        Module *getModule(Client client);
 
         /**
          * @brief Get a module.
-         *
          * @param ip The IP of the module.
          * @return module* The module.
          */
-        static Module *getModule(Ipv4 ip);
+        Module *getModule(Ipv4 ip);
 
         /**
          * @brief Get a module.
-         *
          * @param mac The MAC address of the module.
          * @return module* The module.
          */
-        static Module *getModule(MacAddr mac);
-
-        /**
-         * @brief Get the Module of a micro.
-         *
-         * @param micro The micro.
-         * @return module* The module.
-         */
-        static Module *getModule(Micro *micro);
+        Module *getModule(MacAddr mac);
 
         /**
          * @brief Get the number of modules.
-         *
          * @return uint32_t The number of modules.
          */
-        static uint32_t getModuleCount();
+        uint32_t getModuleCount();
 
         /**
          * @brief Ping all the modules to check if they are still connected.
          * @note This function must be called periodically.
          */
-        static void ringModules();
-
-        /**
-         * @brief Set the micro value.
-         * @note This function will calculate the corrected micro value.
-         * @note Then it will call the setMicro function of the module.
-         *
-         * @param client The client of the module.
-         * @param microValue The new micro value.
-         */
-        static void setMicro(Client client, uint8_t microValue);
+        void ringModules();
 
         /**
          * @brief Get the impacts manager.
-         *
          * @return impactsManager* The impacts manager.
          */
-        static ImpactsManager *getImpactsManager();
+        ImpactsManager *getImpactsManager();
 };
 
 #endif

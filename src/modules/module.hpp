@@ -5,13 +5,7 @@
 #include "tools/timeTools/periodicCallsMs.hpp"
 #include "micro/micro.hpp"
 #include "led/rgbLed.hpp"
-
-typedef enum
-{
-    TYPE_DRUM_MODULE,
-    TYPE_CYMBAL_MODULE
-} moduleType_t;
-
+#include "kit/kitConfig/kitConfig.hpp"
 
 /**
  * @brief Class to represent a module.
@@ -19,63 +13,55 @@ typedef enum
 class Module
 {
     private:
-        moduleType_t m_moduleType;
-
-    protected:
-        periodicCallsMs m_checkTimePeriodicCalls;
-        Client m_client;
-        bool m_connected;
-        uint64_t m_lastSyncTime;
-        void checkTime();
-
-    public:
-        Module(moduleType_t moduleType, Client client);
+        /**
+         * @brief Timeout for the module to be considered disconnected.
+         */
+        static const timeMs m_moduleTimeout;
 
         /**
-         * @brief Process the module.
-         * @note This function must be called in the main loop.
-         * @note By default, this function will not do anything.
-         * Please override it in the child class if needed.
+         * @brief The kit config of the module.
          */
-        virtual void process();
+        KitConfig m_kitConfig;
+
+        /**
+         * @brief The client associated with the module.
+         */
+        Client m_client;
+
+        /**
+         * @brief time of the last sync.
+         */
+        timeMs m_lastSyncTime;
+
+    public:
+        Module(KitConfig kitConfig, Client client);
 
         /**
          * @brief Get the micro of the module.
-         * @note By default, this function will return nullptr.
-         * Please override it in the child class if needed.
-         *
          * @return Micro* The micro of the module.
+         * @return nullptr if no micro is associated with the module.
          */
-        virtual Micro *getMicro();
+        Micro *getMicro();
 
         /**
          * @brief Get the rgbLed of the module.
-         * @note By default, this function will return nullptr.
-         * Please override it in the child class if needed.
-         *
          * @return RgbLed* The rgbLed of the module.
+         * @return nullptr if no rgbLed is associated with the module.
          */
-        virtual RgbLed *getRgbLed();
+        RgbLed *getRgbLed();
 
         /**
          * @brief Check if the module is connected.
-         *
          * @return true if connected
          * @return false if not connected
          */
         bool isConnected();
 
         /**
-         * @brief Get the type of the module.
-         *
-         * @return moduleType_t The type of the module.
+         * @brief Get the config of the module.
+         * @return KitConfig The config of the module.
          */
-        moduleType_t getType();
-
-        /**
-         * @brief Internal callback.
-         */
-        static void checkTimeCallBack(void *object);
+        KitConfig getConfig();
 
         /**
          * @brief After news over udp, sync the module to push back the timeout.
@@ -83,15 +69,7 @@ class Module
         void sync();
 
         /**
-         * @brief Set the IP of the module.
-         *
-         * @param ip The new sIP of the module
-         */
-        void setIp(Ipv4 ip);
-
-        /**
          * @brief Get the client of the module.
-         *
          * @return Client The client of the module.
          */
         Client getClient();

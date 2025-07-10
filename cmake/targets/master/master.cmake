@@ -30,8 +30,6 @@ add_sources(
     micro/micro.cpp
 
     modules/module.cpp
-    modules/drumModule.cpp
-    modules/cymbalModule.cpp
     modules/moduleManager.cpp
     )
 
