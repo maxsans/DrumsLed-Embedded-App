@@ -6,6 +6,7 @@
 #include "micro/micro.hpp"
 #include "led/rgbLed.hpp"
 #include "kit/kitConfig/kitConfig.hpp"
+#include "network/interCom/interMsg/interMsg.hpp"
 
 /**
  * @brief Class to represent a module.
@@ -32,6 +33,12 @@ class Module
          * @brief time of the last sync.
          */
         timeMs m_lastSyncTime;
+
+        /**
+         * @brief Callback to call when a new ADC message is received.
+         * @param msg The ADC message.
+         */
+        void onAdcMsg(InterMsg &msg);
 
     public:
         Module(KitConfig kitConfig, Client client);

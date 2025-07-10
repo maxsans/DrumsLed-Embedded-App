@@ -1,5 +1,6 @@
 #include "module.hpp"
 #include "tools/timeTools/timeMs.hpp"
+#include "network/interCom/interComParser/interComParser.hpp"
 
 const timeMs Module::m_moduleTimeout = timeMs(5000);
 
@@ -8,6 +9,16 @@ Module::Module(KitConfig kitConfig, Client client) :
     m_client(client),
     m_lastSyncTime(0)
 {
+    // Register the callback for ADC messages
+    InterComParser::registerCallback(m_client, InterMsgId::Adc,
+        [this](const Client &client, InterMsg &msg, void *object) {
+            this->onAdcMsg(msg);
+        });
+}
+
+void Module::onAdcMsg(InterMsg &msg)
+{
+    // TODO: Real implementation
 }
 
 Micro *Module::getMicro()

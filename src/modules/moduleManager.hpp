@@ -56,13 +56,6 @@ class ModuleManager
          */
         void setMicro(Client client, uint8_t microValue);
 
-        /**
-         * @brief Callback to call when a new ADC message is received.
-         * @param client The client of the module that sent the message.
-         * @param msg The ADC message.
-         */
-        void onAdcMsg(const Client &client, InterMsg &msg);
-
     public:
         /**
          * @brief Create an empty ModuleManager.

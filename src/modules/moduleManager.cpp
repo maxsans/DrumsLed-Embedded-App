@@ -21,10 +21,6 @@ void ModuleManager::enable(bool e)
     m_active = e;
     if (m_active)
     {
-        // Register the msg callback for ADC messages
-        // InterComParser::registerCallback(InterMsgId::Adc, [this](const Client& client, InterMsg& msg) {
-        //     this->onAdcMsg(client, msg);
-        // });
         // Start the periodic calls to ring the modules
         m_ringPeriodicCalls.enable(true);
     }
