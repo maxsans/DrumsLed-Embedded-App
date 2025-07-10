@@ -35,7 +35,7 @@ void launch()
 
     // Initialize the interComParser
     InterComParser l_interComParser;
-    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg) {
+    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg, void *object) {
         LogStream::cout << "Received Example message from " << client.getIP().getIpString()
         << " with MAC: " << client.getMAC().getMacString()
         << " and message data: " << ((InterMsgExample &)msg).getExampleData()

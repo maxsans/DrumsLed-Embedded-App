@@ -29,7 +29,7 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE], uint32_t msgSize
     {
         // If client-specific callback is found, call it
         InterMsg &l_msg = l_msgGeneric;
-        clientIt->second.callback(l_msg.getClient(), l_msg);
+        clientIt->second.callback(l_msg.getClient(), l_msg, clientIt->second.object);
         return;
     }
 
@@ -39,7 +39,7 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE], uint32_t msgSize
     {
         // If callbacks are found, call them with the message
         InterMsg &l_msg = l_msgGeneric;
-        it->second.callback(l_msg.getClient(), l_msg);
+        it->second.callback(l_msg.getClient(), l_msg, it->second.object);
     }
     else
     {
