@@ -26,7 +26,7 @@ void launch()
     LogStream::cout << "Host MAC: " << l_mac << LogStream::endl;
 
     // Create a session
-    Session l_session;
+    Session l_session(true);
 
     // TODO: Move terminal from old project and enable this line
     // terminal::setCurrentSession(&l_session);

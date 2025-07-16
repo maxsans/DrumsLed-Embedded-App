@@ -72,6 +72,11 @@ class Learning
         std::vector<RecordSlot *> m_microRecordSlots;
 
         /**
+         * @brief Callback to call when the learning is done
+         */
+        void (*m_learningDoneCallback)(void *object);
+
+        /**
          * @brief Callback to periodically call recordAllMic()
          *
          * @param object learning object (this)
@@ -105,9 +110,10 @@ class Learning
     public:
         /**
          * @brief Initialize the learning process
-            * @param modules The vector of modules to learn
-            */
-        Learning(ModuleManager *moduleManager);
+         * @param modules The vector of modules to learn
+         * @param learningDoneCallback The callback to call when the learning is done
+         */
+        Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object) = nullptr);
 
         /**
          * @brief Check if a learning process is running

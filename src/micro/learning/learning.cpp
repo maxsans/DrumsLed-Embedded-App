@@ -9,8 +9,10 @@ const timeMs Learning::m_timeBetweenMeasures = 20;
 const RgbColor Learning::m_learningColor = RgbColor(255, 255, 255);
 const RgbColor Learning::m_notLearningColor = RgbColor(0, 0, 0);
 
-Learning::Learning(ModuleManager *moduleManager) :
-    m_moduleManager(moduleManager), m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this)
+Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object)) :
+    m_moduleManager(moduleManager),
+    m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
+    m_learningDoneCallback(learningDoneCallback)
 {
     // Initialize the micro record slots
     m_microRecordSlots.clear();
@@ -210,6 +212,12 @@ void Learning::stopLearning()
 
         // Enable back the addition of new modules
         m_moduleManager->enable(true);
+
+        // Call the learning done callback if it is set
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(this);
+        }
     }
 }
 
