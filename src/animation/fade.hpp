@@ -2,7 +2,8 @@
 #define __FADE_HPP__
 
 #include "animation.hpp"
-#include "api/time/time.hpp"
+#include "tools/timeTools/timeMs.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 
 #include <stdint.h>
 
@@ -13,15 +14,34 @@
 class Fade : public Animation
 {
     private:
+        /**
+         * @brief The color to fade to.
+         */
         RgbColor m_color;
-        uint32_t m_duration;
-        time_ms_t m_hitTime;
+
+        /**
+         * @brief The duration of the fade in milliseconds.
+         */
+        timeMs m_duration;
+
+        /**
+         * @brief The time when the fade started.
+         */
+        timeMs m_hitTime;
+
+        /**
+         * @brief Periodic call to process the fade animation.
+         * @note This is used to call the process() method periodically to update the LED color.
+         */
+        periodicCallsMs m_periodicCall;
+
+        static void process(void *object);
+        void process();
 
     public:
-        Fade(Micro *m, RgbLed *rgbLed, RgbColor color, uint32_t duration);
+        Fade(Micro *m, RgbLed *rgbLed, RgbColor color, timeMs duration);
         ~Fade();
         void start();
-        void process();
         void stop();
 };
 

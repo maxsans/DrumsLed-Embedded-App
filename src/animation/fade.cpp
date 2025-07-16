@@ -1,7 +1,8 @@
 #include "fade.hpp"
-#include "api/time/time.hpp"
+#include "tools/timeTools/timeMs.hpp"
 
-Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, uint32_t duration) : Animation(ANIMATION_TYPE_FADE, m, rgbLed)
+Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, timeMs duration) :
+    Animation(ANIMATION_TYPE_FADE, m, rgbLed), m_periodicCall(0, Fade::process, this)
 {
     m_color = color;
     m_duration = duration;
@@ -17,17 +18,23 @@ void Fade::start()
     m_rgbLed->releaseColor(COLOR_PRIORITY_FADE);
 }
 
+void Fade::process(void *object)
+{
+    Fade *fade = static_cast<Fade*>(object);
+    fade->process();
+}
+
 void Fade::process()
 {
     if (m_micro->isHit())
     {
-        m_hitTime = time_ms();
+        m_hitTime.setNow();
     }
 
     if (m_hitTime != 0)
     {
-        time_ms_t currentTime = time_ms();
-        time_ms_t elapsedTime = currentTime - m_hitTime;
+        timeMs currentTime = timeMs::nowMs();
+        timeMs elapsedTime = currentTime - m_hitTime;
 
         if (elapsedTime <= m_duration)
         {
@@ -38,7 +45,7 @@ void Fade::process()
             }
             else
             {
-                ratio = 1 - (float)elapsedTime / m_duration;
+                ratio = 1 - (float)elapsedTime.get() / (float)m_duration.get();
             }
             RgbColor color = m_color * ratio;
             m_rgbLed->setColor(COLOR_PRIORITY_FADE, color);

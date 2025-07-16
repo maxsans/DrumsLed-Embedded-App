@@ -21,43 +21,53 @@ typedef enum
 class Animation
 {
     private:
+        /**
+        * @brief The type of the animation.
+        */
         animationType_t m_type;
 
     protected:
+        /**
+         * @brief Pointer to the Micro object.
+         */
         Micro *m_micro;
+
+        /**
+         * @brief Pointer to the RgbLed object.
+         */
         RgbLed *m_rgbLed;
 
     public:
         Animation(animationType_t type, Micro *m, RgbLed *rgbLed);
         ~Animation();
+
         /**
          * @brief Get the type of the animation.
          *
          * @return animationType
          */
         animationType_t getType();
+
         /**
          * @brief Get the micro object.
          *
          * @return micro* A pointer to the micro object.
          */
         Micro *getMicro();
+
         /**
          * @brief Get the rgbLed object.
          *
          * @return rgbLed* A pointer to the rgbLed object.
          */
         RgbLed *getRgbLed();
+
         /**
          * @brief Start the animation.
          * @note This function is pure virtual and must be implemented by the derived class.
          */
         virtual void start() = 0;
-        /**
-         * @brief Process the animation.
-         * @note This function is pure virtual and must be implemented by the derived class.
-         */
-        virtual void process() = 0;
+
         /**
          * @brief Stop the animation.
          * @note This function is pure virtual and must be implemented by the derived class.

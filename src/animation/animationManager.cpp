@@ -14,14 +14,6 @@ AnimationManager::~AnimationManager()
     }
 }
 
-void AnimationManager::process()
-{
-    for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
-    {
-        (*it)->process();
-    }
-}
-
 void AnimationManager::addAnimation(Animation* anim)
 {
     m_animations.push_back(anim);

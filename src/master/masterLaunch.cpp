@@ -47,6 +47,5 @@ void launch()
         periodicCallsMs::processAll();
         // TODO: Move terminal from old project and enable this line
         // terminal::process();
-        l_session.process();
     }
 }

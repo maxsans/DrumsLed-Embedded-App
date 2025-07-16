@@ -35,6 +35,7 @@ class timeMs
          * @return time_ms_t The time in milliseconds.
          */
         static time_ms_t nowMs();
+
         /**
          * @brief Get the time of the object.
          *

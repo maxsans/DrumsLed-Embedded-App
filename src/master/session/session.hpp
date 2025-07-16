@@ -11,7 +11,6 @@ class Session
     public:
         Session();
         ~Session();
-        void process();
         AnimationManager *getAnimationManager();
 };
 
