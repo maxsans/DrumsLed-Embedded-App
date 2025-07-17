@@ -1,8 +1,8 @@
 #include "addrLed.hpp"
-#include "esp8266/gpio_struct.hpp"
-#include "driver/gpio.hpp"
-#include "freertos/FreeRTOS.hpp"
-#include "freertos/task.hpp"
+#include "esp8266/gpio_struct.h"
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #include <assert.h>
 
