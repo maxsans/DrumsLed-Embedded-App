@@ -4,7 +4,6 @@
 #include "kit/kitService/kitService.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 #include "api/adc/adc.hpp"
-#include "tools/circularBuffer/circularBuffer.hpp"
 
 class KitServicePeriodicLevelAdcSend : public KitService
 {
@@ -28,13 +27,13 @@ class KitServicePeriodicLevelAdcSend : public KitService
         /**
          * @brief The periodic call for sending ADC level data.
          */
-        PeriodicCallMs m_sendPeriodicCall;
+        periodicCallsMs m_sendPeriodicCall;
 
         /**
          * @brief The periodic call for measuring ADC level data.
          * @note This is used to measure the ADC level data periodically.
          */
-        PeriodicCallMs m_measurePeriodicCall;
+        periodicCallsMs m_measurePeriodicCall;
 
         /**
          * @brief Current index in the circular buffer.
@@ -81,6 +80,17 @@ class KitServicePeriodicLevelAdcSend : public KitService
          */
         static void periodicMeasureCallback(void *object);
         void periodicMeasureCallback();
+
+        /**
+         * @brief Measure the ADC level.
+         * @return The measured ADC level.
+         */
+        adc_measure_t measureAdcLevel();
+
+        /**
+         * @see KitService::onStart
+         */
+        void onStart() override;
 
     public:
         /**

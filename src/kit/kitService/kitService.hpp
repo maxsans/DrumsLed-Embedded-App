@@ -2,6 +2,7 @@
 #define __KIT_SERCICE_HPP__
 
 #include "kit/kitConfig/kitServiceType/kitServiceType.hpp"
+#include "network/client/client.hpp"
 
 /**
  * @brief Base class for all kit services.

@@ -18,6 +18,8 @@ add_sources(
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
     kit/kitConfig/kitConfigManager/kitConfigManager.cpp
+    kit/kitService/srvcPeriodicLevelAdcSend/srvcPeriodicLevelAdcSend.cpp
+    kit/kitService/kitService.cpp
     )
 
 ####################################################################################################

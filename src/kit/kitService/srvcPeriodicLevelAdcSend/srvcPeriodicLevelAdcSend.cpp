@@ -7,21 +7,21 @@ const timeMs KitServicePeriodicLevelAdcSend::m_bufferTime = timeMs(100);
 
 KitServicePeriodicLevelAdcSend::KitServicePeriodicLevelAdcSend()
     : KitService(KitServiceType::PeriodicLevelAdcSend),
-      m_sendPeriodicCall(m_sendInterval, &KitServicePeriodicLevelAdcSend::sendPeriodicCallBack, this),
-      m_measurePeriodicCall(m_measureInterval, &KitServicePeriodicLevelAdcSend::measurePeriodicCallBack, this),
+      m_sendPeriodicCall(m_sendInterval, &KitServicePeriodicLevelAdcSend::periodicSendCallback, this),
+      m_measurePeriodicCall(m_measureInterval, &KitServicePeriodicLevelAdcSend::periodicMeasureCallback, this),
       m_currentIndex(0),
       m_currentSize(0),
       m_circularBuffer(new adc_measure_t[getBufferSize()]),
       m_bufferSum(0)
 {
     // For now the communication isn't established with the master client
-    m_sendPeriodicCall.stop();
+    m_sendPeriodicCall.enable(false);
 }
 
 uint32_t KitServicePeriodicLevelAdcSend::getBufferSize()
 {
     // Calculate the buffer size based on the buffer time and measurement interval
-    return (uint32_t)(m_bufferTime.get() / m_measureInterval.get());
+    return (uint32_t)(m_bufferTime.get()) / (uint32_t)(m_measureInterval.get());
 }
 
 adc_measure_t KitServicePeriodicLevelAdcSend::getAverageAdcLevel()
@@ -33,13 +33,13 @@ adc_measure_t KitServicePeriodicLevelAdcSend::getAverageAdcLevel()
     return m_bufferSum / m_currentSize;
 }
 
-void KitServicePeriodicLevelAdcSend::sendPeriodicCallBack(void *object)
+void KitServicePeriodicLevelAdcSend::periodicSendCallback(void *object)
 {
     KitServicePeriodicLevelAdcSend *service = static_cast<KitServicePeriodicLevelAdcSend *>(object);
-    service->sendPeriodicCallBack();
+    service->periodicSendCallback();
 }
 
-void KitServicePeriodicLevelAdcSend::sendPeriodicCallBack()
+void KitServicePeriodicLevelAdcSend::periodicSendCallback()
 {
     adc_measure_t averageLevel = getAverageAdcLevel();
     Client l_masterClient = getMasterClient();
@@ -48,13 +48,13 @@ void KitServicePeriodicLevelAdcSend::sendPeriodicCallBack()
     l_msgAdc.send();
 }
 
-void KitServicePeriodicLevelAdcSend::measurePeriodicCallBack(void *object)
+void KitServicePeriodicLevelAdcSend::periodicMeasureCallback(void *object)
 {
     KitServicePeriodicLevelAdcSend *service = static_cast<KitServicePeriodicLevelAdcSend *>(object);
-    service->measurePeriodicCallBack();
+    service->periodicMeasureCallback();
 }
 
-void KitServicePeriodicLevelAdcSend::measurePeriodicCallBack()
+void KitServicePeriodicLevelAdcSend::periodicMeasureCallback()
 {
     adc_measure_t level = measureAdcLevel();
 
@@ -83,5 +83,5 @@ void KitServicePeriodicLevelAdcSend::onStart()
     adc_init();
     // Start the periodic calls for sending ADC level data
     // since the communication with the master client is established
-    m_sendPeriodicCall.start();
+    m_sendPeriodicCall.enable(true);
 }

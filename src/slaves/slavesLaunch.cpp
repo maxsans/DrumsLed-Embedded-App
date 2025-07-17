@@ -10,6 +10,7 @@
 #include "network/networkConfig.hpp"
 #include "tools/timeTools/timeMs.hpp"
 #include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
+#include "kit/kitService/srvcPeriodicLevelAdcSend/srvcPeriodicLevelAdcSend.hpp"
 
 static void init()
 {
