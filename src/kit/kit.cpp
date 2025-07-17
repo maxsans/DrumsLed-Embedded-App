@@ -1,18 +1,18 @@
-#include "kitSlave.hpp"
+#include "kit.hpp"
 
 #include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
-Client KitSlave::m_masterClient;
+Client Kit::m_masterClient;
 
-bool KitSlave::isMasterValid()
+bool Kit::isMasterValid()
 {
     // Check if the master has been registered
     return m_masterClient != Client();
 }
 
-void KitSlave::onPing(const Client &client, InterMsg &msg)
+void Kit::onPing(const Client &client, InterMsg &msg)
 {
     // Check if the master is already valid
     if (isMasterValid())
@@ -32,22 +32,22 @@ void KitSlave::onPing(const Client &client, InterMsg &msg)
     InterMsgInitModule(m_masterClient, getKitConfig()).send();
 }
 
-void KitSlave::init()
+void Kit::init()
 {
     // Register the ping callback
-    InterComParser::registerCallback(InterMsgId::InitModule, KitSlave::onPing);
+    InterComParser::registerCallback(InterMsgId::InitModule, Kit::onPing);
     // Log the initialization
-    LogStream::cout << "KitSlave initialized. Waiting for master client..." << LogStream::endl;
+    LogStream::cout << "Kit initialized. Waiting for master client..." << LogStream::endl;
     // Initialize the master client to an invalid state
     m_masterClient = Client();
 }
 
-KitConfig KitSlave::getKitConfig()
+KitConfig Kit::getKitConfig()
 {
     return KitConfigManager::getKitConfig();
 }
 
-Client KitSlave::getMasterClient()
+Client Kit::getMasterClient()
 {
     return m_masterClient;
 }

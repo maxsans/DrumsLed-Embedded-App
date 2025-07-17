@@ -1,5 +1,5 @@
-#ifndef __KIT_SLAVE_HPP__
-#define __KIT_SLAVE_HPP__
+#ifndef __KIT_HPP__
+#define __KIT_HPP__
 
 #include "network/client/client.hpp"
 #include "kit/kitConfig/kitConfig.hpp"
@@ -9,7 +9,7 @@
  * @brief How the slave kits see themselves.
  * @note There is only one way to see oneself, so this class is static.
  */
-class KitSlave
+class Kit
 {
     private:
         /**
@@ -52,7 +52,6 @@ class KitSlave
          * @return The master client for communication with the master kit.
          */
         static Client getMasterClient();
-
 };
 
-#endif // __KIT_SLAVE_HPP__
+#endif // __KIT_HPP__

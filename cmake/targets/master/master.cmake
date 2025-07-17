@@ -12,8 +12,6 @@ add_sources(
     master/session/session.cpp
     master/master.cpp
 
-    kit/kitMaster/kitMaster.cpp
-
     animation/animation.cpp
     animation/animationManager.cpp
     animation/fade.cpp
