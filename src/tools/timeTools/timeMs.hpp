@@ -41,7 +41,7 @@ class timeMs
          *
          * @return time_ms_t The time in milliseconds.
          */
-        time_ms_t get();
+        time_ms_t get() const;
 
         /**
          * @brief Convert the time to seconds.

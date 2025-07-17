@@ -27,7 +27,7 @@ time_ms_t timeMs::nowMs()
     return time_ms();
 }
 
-time_ms_t timeMs::get()
+time_ms_t timeMs::get() const
 {
     return m_timeMs;
 }
