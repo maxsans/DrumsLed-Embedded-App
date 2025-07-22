@@ -120,7 +120,7 @@ void WS2812Esp8266::show()
     uint8_t *p = ws_buf;
     for (uint32_t i = 0; i < m_num_leds; ++i)
     {
-        const wS2812Esp8266Color_t &c = m_pixels[i];
+        const ws2812Esp8266Color_t &c = m_pixels[i];
         *p++ = GAMMA_CORRECTION[c.g];
         *p++ = GAMMA_CORRECTION[c.r];
         *p++ = GAMMA_CORRECTION[c.b];
