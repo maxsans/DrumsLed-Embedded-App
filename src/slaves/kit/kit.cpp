@@ -2,12 +2,11 @@
 
 #include "tools/logStream/logStream.hpp"
 #include "network/client/client.hpp"
-#include "api/addrLed/addrLed.hpp"
 #include "api/adc/adc.hpp"
+#include "api/circleLeds/circleLeds.hpp"
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 
 Client Kit::m_masterClient;
-AddrLed Kit::m_leds(Kit::m_numLeds, Kit::m_ledPin);
 periodicCallsMs Kit::m_adcPeriodicCall(1000, adc_send, nullptr);
 
 Kit::Kit()
@@ -29,8 +28,8 @@ void Kit::init()
 {
     LogStream::cout << "Kit init" << LogStream::endl;
 
-    m_leds.init();
     adc_init();
+    circleLedsInit();
 }
 
 void Kit::process()

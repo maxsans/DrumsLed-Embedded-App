@@ -2,7 +2,7 @@
 #define __KIT_HPP__
 
 #include "network/client/client.hpp"
-#include "api/addrLed/addrLed.hpp"
+#include "api/circleLeds/circleLeds.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 
 class Kit
@@ -13,12 +13,6 @@ private:
      *
      */
     static Client m_masterClient;
-
-    static AddrLed m_leds;
-
-    static const uint32_t m_numLeds = 200;
-
-    static const uint8_t m_ledPin = 4;
 
     static const uint32_t m_adcPeriodMs = 20; // Send ADC data every 20ms
 
@@ -52,11 +46,6 @@ public:
      * @param client The new master client.
      */
     static void setMasterClient(Client &client);
-
-    static AddrLed *getLeds()
-    {
-        return &m_leds;
-    }
 };
 
 #endif
