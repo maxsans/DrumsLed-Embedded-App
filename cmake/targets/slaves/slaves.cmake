@@ -20,6 +20,7 @@ add_sources(
     api/drivers/ws2812Esp8266/ws2812Esp8266.cpp
     kit/kitConfig/kitConfigManager/kitConfigManager.cpp
     kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.cpp
+    kit/kitService/srvcRgbListen/srvcRgbListen.cpp
     kit/kitService/kitService.cpp
     )
 
