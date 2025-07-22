@@ -9,7 +9,6 @@ add_compile_options(-D__TARGET_SLAVES)
 ####################################################################################################
 add_sources(
     slaves/slavesLaunch.cpp
-    slaves/kit/kit.cpp
     kit/kit.hpp
     api/target/esp8266.cpp
     api/logs/logsEsp8266.cpp
@@ -22,6 +21,7 @@ add_sources(
     kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.cpp
     kit/kitService/srvcRgbListen/srvcRgbListen.cpp
     kit/kitService/kitService.cpp
+    kit/kit.cpp
     )
 
 ####################################################################################################

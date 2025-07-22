@@ -6,6 +6,9 @@
 
 Client Kit::m_masterClient;
 
+// Definition of static member
+std::vector<KitService *> Kit::m_services;
+
 bool Kit::isMasterValid()
 {
     // Check if the master has been registered

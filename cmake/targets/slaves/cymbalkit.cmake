@@ -8,7 +8,6 @@ add_compile_options(-D__TARGET_CYMBALKIT)
 add_sources(
     api/adc/adcEsp8266.cpp
     api/circleLeds/circleLedsCymbalKit.cpp
-    slaves/drumKit/drumKit.cpp
     kit/kitConfigGenerator/kitConfigGeneratorCymbalKit.cpp
     )
 

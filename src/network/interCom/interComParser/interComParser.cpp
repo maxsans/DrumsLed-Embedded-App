@@ -109,3 +109,13 @@ void InterComParser::registerCallback(const Client &client, InterMsgId msgId, Me
     auto key = std::make_pair(client, msgId);
     m_clientCallbacks[key] = CallbackInfo(callback, object);
 }
+
+void InterComParser::registerCallback(InterMsgId msgId, void (*callback)(const Client &, InterMsg &))
+{
+    // Wrap the static callback into a std::function with void* ignored
+    m_callbacks[msgId] = CallbackInfo(
+        [callback](const Client &client, InterMsg &msg, void*) {
+            callback(client, msg);
+        }
+    );
+}

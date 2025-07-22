@@ -1,5 +1,8 @@
 #include "kitAttributeType.hpp"
 
+// Definition of static constexpr array
+constexpr const char* KitAttributeType::m_typeStrings[KitAttributeType::Count];
+
 KitAttributeType::KitAttributeType(Type type, uint32_t nbAttributes)
     : m_type(type), m_nbAttributes(nbAttributes)
 {
