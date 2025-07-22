@@ -4,6 +4,8 @@
 #include "network/client/client.hpp"
 #include "kit/kitConfig/kitConfig.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
+#include "kit/kitService/kitService.hpp"
+#include <vector>
 
 /**
  * @brief How the slave kits see themselves.
@@ -17,6 +19,12 @@ class Kit
          * @note This client is used to communicate with the master kit.
          */
         static Client m_masterClient;
+
+        /**
+         * @brief The list of services for the slave kit.
+         * @note This list contains all the services that the slave kit can provide.
+         */
+        static std::vector<KitService *> m_services;
 
         /**
          * @brief Check if the master kit is connected and valid.

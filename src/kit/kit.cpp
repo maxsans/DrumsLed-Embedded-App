@@ -40,6 +40,10 @@ void Kit::init()
     LogStream::cout << "Kit initialized. Waiting for master client..." << LogStream::endl;
     // Initialize the master client to an invalid state
     m_masterClient = Client();
+    // Generate the kit configuration
+    KitConfigGenerator::init();
+    // Generate the kit services
+    m_services = KitConfigGenerator::generateKitServices();
 }
 
 KitConfig Kit::getKitConfig()
