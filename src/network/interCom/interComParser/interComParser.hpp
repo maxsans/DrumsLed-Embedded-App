@@ -125,6 +125,14 @@ class InterComParser
          * @note The callback will be called uniquely if the message is received from the specified client.
          */
         static void registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback, void *object);
+
+        /**
+         * @brief Register a static callback for a specific message ID.
+         * @param msgId The message ID for which the callback should be registered.
+         * @param callback The static callback function to be called when a message with the specified ID is received.
+         * @note This overload allows registering a static function pointer as callback.
+         */
+        static void registerCallback(InterMsgId msgId, void (*callback)(const Client &, InterMsg &));
 };
 
 #endif // __INTER_COM_PARSER_HPP__

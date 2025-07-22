@@ -3,24 +3,20 @@
 #include "tools/logStream/logStream.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 #include "api/wifi/wifi.hpp"
-#include "api/adc/adc.hpp"
-#include "api/addrLed/addrLed.hpp"
 #include "api/udp/udp.hpp"
 #include "api/tcp/tcp.hpp"
 #include "network/networkConfig.hpp"
 #include "tools/timeTools/timeMs.hpp"
-#include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
-#include "kit/kitService/srvcPeriodicLevelAdcSend/srvcPeriodicLevelAdcSend.hpp"
+#include "kit/kit.hpp"
 
 static void init()
 {
     target_common_init();
     LogStream::cout << "Slaves start .." << LogStream::endl;
 
-    adc_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
-    KitConfigManager::init();
+    Kit::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 }
 

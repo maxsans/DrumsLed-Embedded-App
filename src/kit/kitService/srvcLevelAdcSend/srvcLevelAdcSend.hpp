@@ -1,11 +1,11 @@
-#ifndef __SRVC_PERIODIC_LEVEL_ADC_SEND_HPP__
-#define __SRVC_PERIODIC_LEVEL_ADC_SEND_HPP__
+#ifndef __SRVC_LEVEL_ADC_SEND_HPP__
+#define __SRVC_LEVEL_ADC_SEND_HPP__
 
 #include "kit/kitService/kitService.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 #include "api/adc/adc.hpp"
 
-class KitServicePeriodicLevelAdcSend : public KitService
+class KitSrvcLevelAdcSend : public KitService
 {
     private:
         /**
@@ -48,7 +48,7 @@ class KitServicePeriodicLevelAdcSend : public KitService
 
         /**
          * @brief Circular buffer to store ADC measurements.
-         * @note This buffer will hold the last KitServicePeriodicLevelAdcSend::getBufferSize() measurements.
+         * @note This buffer will hold the last KitSrvcLevelAdcSend::getBufferSize() measurements.
          */
         adc_measure_t *m_circularBuffer;
 
@@ -94,9 +94,9 @@ class KitServicePeriodicLevelAdcSend : public KitService
 
     public:
         /**
-         * @brief Constructor for KitServicePeriodicLevelAdcSend.
+         * @brief Constructor for KitSrvcLevelAdcSend.
          */
-        KitServicePeriodicLevelAdcSend();
+        KitSrvcLevelAdcSend();
 };
 
-#endif // __SRVC_PERIODIC_LEVEL_ADC_SEND_HPP__
+#endif // __SRVC_LEVEL_ADC_SEND_HPP__

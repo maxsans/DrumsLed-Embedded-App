@@ -1,4 +1,4 @@
-#include "addrLed.hpp"
+#include "ws2812Esp8266.hpp"
 #include "esp8266/gpio_struct.h"
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
@@ -80,16 +80,11 @@ void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pi
     } while (pixels < end);
 }
 
-AddrLed::AddrLed(uint32_t num_leds, uint8_t pin) : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
+WS2812Esp8266::WS2812Esp8266(uint32_t num_leds, uint8_t pin) : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
 {
 }
 
-AddrLed::~AddrLed()
-{
-    m_pixels.clear();
-}
-
-void AddrLed::init()
+void WS2812Esp8266::init()
 {
     gpio_config_t io_conf;
     io_conf.intr_type = GPIO_INTR_DISABLE;
@@ -100,39 +95,32 @@ void AddrLed::init()
     gpio_config(&io_conf);
 }
 
-void AddrLed::setPixelColor(uint32_t index, addrLedColor_t color)
+void WS2812Esp8266::setPixelColor(uint32_t index, uint8_t r, uint8_t g, uint8_t b)
 {
-    if (index < m_num_leds)
-    {
-        m_pixels[index] = color;
-    }
-}
-
-void AddrLed::fill(addrLedColor_t color)
-{
-    for (uint32_t i = 0; i < m_num_leds; i++)
-    {
-        m_pixels[i] = color;
-    }
-}
-
-void AddrLed::fill(uint8_t r, uint8_t g, uint8_t b)
-{
-    addrLedColor_t color;
+    assert(index < m_num_leds);
+    ws2812Esp8266Color_t color;
     color.r = r;
     color.g = g;
     color.b = b;
-    fill(color);
+    m_pixels[index] = color;
 }
 
-void AddrLed::show()
+void WS2812Esp8266::fill(uint8_t r, uint8_t g, uint8_t b)
+{
+    for (uint32_t i = 0; i < m_num_leds; i++)
+    {
+        setPixelColor(i, r, g, b);
+    }
+}
+
+void WS2812Esp8266::show()
 {
     // Prepare buffer for WS2812: GRB order, gamma corrected
     uint8_t ws_buf[3 * WS2812_MAX_PIXELS];
     uint8_t *p = ws_buf;
     for (uint32_t i = 0; i < m_num_leds; ++i)
     {
-        const addrLedColor_t &c = m_pixels[i];
+        const ws2812Esp8266Color_t &c = m_pixels[i];
         *p++ = GAMMA_CORRECTION[c.g];
         *p++ = GAMMA_CORRECTION[c.r];
         *p++ = GAMMA_CORRECTION[c.b];

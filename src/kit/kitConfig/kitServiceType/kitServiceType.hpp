@@ -14,10 +14,10 @@ class KitServiceType
             None = 0,
 
             // Here are input services :
-            PeriodicLevelAdcSend,   /** < Service to periodically send ADC level data. */
+            LevelAdcSend,   /** < Service to periodically send ADC level data. */
 
             // Here are output services :
-            PeriodicRgbListen,      /** < Service to periodically listen for RGB data. */
+            RgbListen,      /** < Service to periodically listen for RGB data. */
 
             // Add more service types here as needed
             // Don't forget to update KitServiceType::m_typeStrings
@@ -35,8 +35,8 @@ class KitServiceType
             constexpr static const char* m_typeStrings[Type::Count] =
             {
                 "None",
-                "PeriodicLevelAdcSend",
-                "PeriodicRgbListen"
+                "LevelAdcSend",
+                "RgbListen"
             };
 
         public:

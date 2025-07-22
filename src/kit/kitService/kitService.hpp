@@ -36,8 +36,10 @@ class KitService
 
         /**
          * @brief Called when the kit service is started.
+         * @note This method can be overridden by derived classes to perform additional initialization.
+         * @note By default, it does nothing.
          */
-        virtual void onStart() = 0;
+        virtual void onStart() {};
 
     public:
         KitService() = delete; // Prevent default constructor
