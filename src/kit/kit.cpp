@@ -1,6 +1,6 @@
 #include "kit.hpp"
 
-#include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
+#include "kit/kitConfigGenerator/kitConfigGenerator.hpp"
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
@@ -44,7 +44,7 @@ void Kit::init()
 
 KitConfig Kit::getKitConfig()
 {
-    return KitConfigManager::getKitConfig();
+    return KitConfigGenerator::getKitConfig();
 }
 
 Client Kit::getMasterClient()

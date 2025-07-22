@@ -9,6 +9,7 @@ add_sources(
     api/adc/adcEsp8266.cpp
     api/circleLeds/circleLedsDrumKit.cpp
     slaves/drumKit/drumKit.cpp
+    kit/kitConfigGenerator/kitConfigGeneratorDrumKit.cpp
     )
 
 ####################################################################################################

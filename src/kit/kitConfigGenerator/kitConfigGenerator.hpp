@@ -1,12 +1,12 @@
-#ifndef __KIT_CONFIG_MANAGER_HPP__
-#define __KIT_CONFIG_MANAGER_HPP__
+#ifndef __KIT_CONFIG_GENERATOR_HPP__
+#define __KIT_CONFIG_GENERATOR_HPP__
 
 #include "kit/kitConfig/kitConfig.hpp"
 
 /**
- * @brief KitConfigManager static class to manage kit configurations of the current slave target.
+ * @brief KitConfigGenerator static class to generate kit configurations of the current slave target.
  */
-class KitConfigManager
+class KitConfigGenerator
 {
     private:
         /**
@@ -16,7 +16,12 @@ class KitConfigManager
 
     public:
         /**
-         * @brief Initialize the kit configuration manager.
+         * @brief Constructor is private to prevent instantiation.
+         */
+        KitConfigGenerator() = delete;
+
+        /**
+         * @brief Initialize the kit configuration generator.
          */
         static void init();
 
@@ -27,4 +32,4 @@ class KitConfigManager
         static KitConfig getKitConfig();
 };
 
-#endif // __KIT_CONFIG_MANAGER_HPP__
+#endif // __KIT_CONFIG_GENERATOR_HPP__

@@ -18,7 +18,7 @@ add_sources(
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
     api/drivers/ws2812Esp8266/ws2812Esp8266.cpp
-    kit/kitConfig/kitConfigManager/kitConfigManager.cpp
+    kit/kitConfigGenerator/kitConfigGenerator.cpp
     kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.cpp
     kit/kitService/srvcRgbListen/srvcRgbListen.cpp
     kit/kitService/kitService.cpp

@@ -7,7 +7,7 @@
 #include "api/tcp/tcp.hpp"
 #include "network/networkConfig.hpp"
 #include "tools/timeTools/timeMs.hpp"
-#include "kit/kitConfig/kitConfigManager/kitConfigManager.hpp"
+#include "kit/kitConfigGenerator/kitConfigGenerator.hpp"
 
 static void init()
 {
@@ -16,7 +16,7 @@ static void init()
 
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
-    KitConfigManager::init();
+    KitConfigGenerator::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 }
 
