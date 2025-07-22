@@ -6,7 +6,7 @@ const timeMs KitServicePeriodicLevelAdcSend::m_measureInterval = timeMs(1);
 const timeMs KitServicePeriodicLevelAdcSend::m_bufferTime = timeMs(100);
 
 KitServicePeriodicLevelAdcSend::KitServicePeriodicLevelAdcSend()
-    : KitService(KitServiceType::PeriodicLevelAdcSend),
+    : KitService(KitServiceType::LevelAdcSend),
       m_sendPeriodicCall(m_sendInterval, &KitServicePeriodicLevelAdcSend::periodicSendCallback, this),
       m_measurePeriodicCall(m_measureInterval, &KitServicePeriodicLevelAdcSend::periodicMeasureCallback, this),
       m_currentIndex(0),
