@@ -13,7 +13,8 @@ class TermParameters
     public:
         /**
          * @brief Construct TermParameters from a raw string of parameters.
-         * @param rawParameters The raw string containing parameters, e.g., "param1=value1;param2=value2".
+         * @param rawParameters The raw string containing parameters, e.g., 'param1 param2'
+         * @note Array with spaces are supported, e.g., '"array with spaces" anotherParam'
          */
         TermParameters(std::string rawParameters);
 
@@ -22,13 +23,6 @@ class TermParameters
          * @return A vector of all TermParameter objects.
          */
         std::vector<TermParameter> getParameters() const;
-
-        /**
-         * @brief Get the value of a specific parameter by name.
-         * @param name The name of the parameter to retrieve.
-         * @return The value of the parameter, or an empty string if not found.
-         */
-        std::string getParameterValue(const std::string& name) const;
 };
 
 #endif // __TERM_PARAMETERS_HPP__

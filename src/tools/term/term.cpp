@@ -26,11 +26,11 @@ void Term::init()
     // Register the default "example" command with parameters
     TermCommand exampleCmd(
         TermAction([](const TermParameters& params) {
-            LogStream::cout << "Commande 'example' exécutée avec paramètres : '";
+            LogStream::cout << "Commande 'example' exécutée avec paramètres : ";
             for (const auto& param : params.getParameters()) {
-                LogStream::cout << param.getName() << "=" << param.getValue() << "; ";
+                LogStream::cout << "'" <<param.getValue() << "' ";
             }
-            LogStream::cout << "'" << LogStream::endl;
+            LogStream::cout << LogStream::endl;
         }),
         "example",
         "Exemple de commande avec paramètres. Usage: example <param1> <param2> ..."

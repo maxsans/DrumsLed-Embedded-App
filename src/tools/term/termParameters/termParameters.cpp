@@ -4,18 +4,34 @@
 
 TermParameters::TermParameters(std::string rawParameters)
 {
-    std::istringstream stream(rawParameters);
+    m_parameters.clear();
     std::string param;
-
-    while (std::getline(stream, param, ';'))
+    bool inQuotes = false;
+    std::string current;
+    for (size_t i = 0; i < rawParameters.size(); ++i)
     {
-        size_t pos = param.find('=');
-        if (pos != std::string::npos)
+        char c = rawParameters[i];
+        if (c == '"')
         {
-            std::string name = param.substr(0, pos);
-            std::string value = param.substr(pos + 1);
-            m_parameters.emplace_back(name, value);
+            inQuotes = !inQuotes;
+            continue; // skip the quote
         }
+        if (c == ' ' && !inQuotes)
+        {
+            if (!current.empty())
+            {
+                m_parameters.emplace_back(current);
+                current.clear();
+            }
+        }
+        else
+        {
+            current += c;
+        }
+    }
+    if (!current.empty())
+    {
+        m_parameters.emplace_back(current);
     }
 }
 
@@ -23,16 +39,3 @@ std::vector<TermParameter> TermParameters::getParameters() const
 {
     return m_parameters;
 }
-
-std::string TermParameters::getParameterValue(const std::string& name) const
-{
-    for (const auto& param : m_parameters)
-    {
-        if (param.getName() == name)
-        {
-            return param.getValue();
-        }
-    }
-    return "";
-}
-
