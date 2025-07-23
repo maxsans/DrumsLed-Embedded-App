@@ -36,6 +36,19 @@ void Term::init()
         "Example command with parameters. Usage: example <param1> <param2> ..."
     );
     registerCommand(exampleCmd);
+
+    // Register the default "clear" command to clear the terminal
+    TermCommand clearCmd(
+        TermAction([](const TermParameters&) {
+            if (m_nativeTerminal)
+            {
+                m_nativeTerminal->clear();
+            }
+        }),
+        "clear",
+        "Clears the terminal screen."
+    );
+    registerCommand(clearCmd);
 }
 
 void Term::registerCommand(const TermCommand& command)

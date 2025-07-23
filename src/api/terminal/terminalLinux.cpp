@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <chrono>
+#include <iostream>
 
 static struct termios orig_termios;
 
@@ -36,4 +37,10 @@ bool terminal_kbhit()
 char terminal_getch()
 {
     return getchar();
+}
+
+void ApiTerminal::clear()
+{
+    // ANSI escape code to clear the screen and move cursor to home
+    std::cout << "\033[2J\033[H" << std::endl;
 }

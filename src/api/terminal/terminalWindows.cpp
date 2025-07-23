@@ -1,6 +1,7 @@
 #include "terminal.hpp"
 #include <conio.h>
 #include <chrono>
+#include <iostream>
 
 // Pas d'init ni cleanup spécifique pour Windows
 void terminal_platform_init() {}
@@ -12,4 +13,9 @@ bool terminal_kbhit() {
 
 char terminal_getch() {
     return _getch();
+}
+
+void ApiTerminal::clear() {
+    // ANSI escape code to clear the screen and move cursor to home
+    std::cout << "\033[2J\033[H" << std::endl;
 }

@@ -38,6 +38,12 @@ class ApiTerminal
         ApiTerminal(onCharReceivedCallback callback);
         ~ApiTerminal();
 
+        /**
+         * @brief Clear the output of the terminal.
+         * @note This method clears the terminal screen.
+         */
+        void clear();
+
         friend void pollTerminalInput(ApiTerminal* terminal);
 };
 
