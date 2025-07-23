@@ -79,6 +79,11 @@ void Term::onCharReceived(char c)
             m_stringBuffer.pop_back();
         }
     }
+    else if (c == '\t')
+    {
+        // TAB key for self-completion
+        autoCompleteBuffer();
+    }
     else
     {
         // Affiche le caractère et ajoute au buffer
@@ -127,6 +132,57 @@ void Term::onEndOfLineReceived()
 
     // Reset the string buffer after processing the command
     m_stringBuffer.clear();
+}
+
+void Term::autoCompleteBuffer()
+{
+    // We only complete the keyword (before space or separator)
+    size_t spacePos = m_stringBuffer.find_first_of(" ;");
+    std::string partial = (spacePos == std::string::npos)
+        ? m_stringBuffer
+        : m_stringBuffer.substr(0, spacePos);
+
+    // Looking for all the orders that start with the prefix
+    std::vector<std::string> matches;
+    for (const auto& cmd : m_commands)
+    {
+        if (cmd.getKeyword().find(partial) == 0)
+            matches.push_back(cmd.getKeyword());
+    }
+
+    if (matches.empty())
+    {
+        // Nothing to complete
+        return;
+    }
+    else if (matches.size() == 1)
+    {
+        // Unique completion: replaces the keyword in the buffer
+        std::string completion = matches[0];
+        if (completion.length() > partial.length())
+        {
+            // Erases the current text on the screen
+            for (size_t i = 0; i < partial.length(); ++i)
+                LogStream::cout << "\b \b";
+            // Displays the completion
+            LogStream::cout << completion;
+            // Updates the buffer
+            if (spacePos == std::string::npos)
+                m_stringBuffer = completion;
+            else
+                m_stringBuffer.replace(0, spacePos, completion);
+        }
+    }
+    else
+    {
+        // Several possibilities: displays the list
+        LogStream::cout << LogStream::endl;
+        for (const auto& match : matches)
+            LogStream::cout << match << "  ";
+        LogStream::cout << LogStream::endl;
+        // Restructs the current buffer
+        LogStream::cout << m_stringBuffer;
+    }
 }
 
 TermCommand* Term::findCommand(const std::string& keyword)

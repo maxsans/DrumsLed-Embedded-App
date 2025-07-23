@@ -45,6 +45,11 @@ class Term
          */
         static TermCommand* findCommand(const std::string& keyword);
 
+        /**
+         * @brief Try to autocomplete the current buffer.
+         */
+        static void autoCompleteBuffer();
+
     public:
         /**
          * @brief Initialize the terminal.
