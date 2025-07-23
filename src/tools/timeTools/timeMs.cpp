@@ -1,6 +1,6 @@
-#include "timeMs.h"
+#include "timeMs.hpp"
 
-#include "api/time/time.h"
+#include "api/time/time.hpp"
 
 timeMs::timeMs()
 {
@@ -27,7 +27,7 @@ time_ms_t timeMs::nowMs()
     return time_ms();
 }
 
-time_ms_t timeMs::get()
+time_ms_t timeMs::get() const
 {
     return m_timeMs;
 }

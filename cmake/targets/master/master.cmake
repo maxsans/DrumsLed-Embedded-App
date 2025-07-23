@@ -10,6 +10,7 @@ add_compile_options(-D__TARGET_MASTER)
 add_sources(
     master/masterLaunch.cpp
     master/session/session.cpp
+    master/master.cpp
 
     animation/animation.cpp
     animation/animationManager.cpp
@@ -27,8 +28,6 @@ add_sources(
     micro/micro.cpp
 
     modules/module.cpp
-    modules/drumModule.cpp
-    modules/cymbalModule.cpp
     modules/moduleManager.cpp
     )
 

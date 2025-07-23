@@ -1,4 +1,4 @@
-#include "animationManager.h"
+#include "animationManager.hpp"
 
 #include <assert.h>
 
@@ -11,14 +11,6 @@ AnimationManager::~AnimationManager()
     for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
     {
         delete *it;
-    }
-}
-
-void AnimationManager::process()
-{
-    for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
-    {
-        (*it)->process();
     }
 }
 

@@ -9,13 +9,19 @@ add_compile_options(-D__TARGET_SLAVES)
 ####################################################################################################
 add_sources(
     slaves/slavesLaunch.cpp
-    slaves/kit/kit.cpp
+    kit/kit.hpp
     api/target/esp8266.cpp
     api/logs/logsEsp8266.cpp
     api/udp/udpEsp8266.cpp
     api/tcp/tcpEsp8266.cpp
     api/time/timeEsp8266.cpp
     api/wifi/wifiEsp8266.cpp
+    api/drivers/ws2812Esp8266/ws2812Esp8266.cpp
+    kit/kitConfigGenerator/kitConfigGenerator.cpp
+    kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.cpp
+    kit/kitService/srvcRgbListen/srvcRgbListen.cpp
+    kit/kitService/kitService.cpp
+    kit/kit.cpp
     )
 
 ####################################################################################################

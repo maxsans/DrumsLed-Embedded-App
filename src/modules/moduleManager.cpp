@@ -1,66 +1,48 @@
-#include "moduleManager.h"
-#include "modules/drumModule.h"
-#include "modules/cymbalModule.h"
+#include "moduleManager.hpp"
 #include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
 #include <sys/time.h>
 
-#define RING_INTERVAL 500 // ms
+const timeMs ModuleManager::m_ringInterval = timeMs(500);
 
-std::vector<Module *> ModuleManager::m_modules;
-bool ModuleManager::m_enableNewModules = true;
-periodicCallsMs *ModuleManager::m_ringPeriodicCalls;
-ImpactsManager ModuleManager::m_impactsManager;
-
-void ModuleManager::init()
+ModuleManager::ModuleManager(bool active) :
+    m_ringPeriodicCalls(m_ringInterval, ringCallback, this)
 {
-    // Initialize the periodic calls
-    m_ringPeriodicCalls = new periodicCallsMs(RING_INTERVAL, ringCallback, NULL);
+    enable(active);
+
+    // Initialize the modules vector
+    m_modules.clear();
 }
 
-void ModuleManager::process()
+void ModuleManager::enable(bool e)
 {
-    // Process the modules
-    for (int32_t i = 0; i < m_modules.size(); i++)
+    m_active = e;
+    if (m_active)
     {
-        m_modules[i]->process();
+        // Start the periodic calls to ring the modules
+        m_ringPeriodicCalls.enable(true);
+    }
+    else
+    {
+        // Stop the periodic calls to ring the modules
+        m_ringPeriodicCalls.enable(false);
     }
 }
 
-void ModuleManager::enableNewModules(bool enable)
+bool ModuleManager::isActive()
 {
-    m_enableNewModules = enable;
+    return m_active;
 }
 
-bool ModuleManager::NewModulesEnabled()
+Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
 {
-    return m_enableNewModules;
-}
-
-Module *ModuleManager::addModule(moduleType_t type, Client client)
-{
-    if (m_enableNewModules)
+    if (m_active)
     {
-        switch (type)
-        {
-        case TYPE_DRUM_MODULE:
-            m_modules.push_back(new DrumModule(client));
-            return m_modules[m_modules.size() - 1];
-            break;
-
-        case TYPE_CYMBAL_MODULE:
-            m_modules.push_back(new CymbalModule(client));
-            return m_modules[m_modules.size() - 1];
-            break;
-
-        default:
-            LogStream::cout << "Module type not supported" << LogStream::endl;
-            break;
-        }
+        m_modules.push_back(new Module(kitConfig, client));
     }
-    return NULL;
+    return nullptr;
 }
 
 Module *ModuleManager::getModule(int32_t index)
@@ -69,7 +51,7 @@ Module *ModuleManager::getModule(int32_t index)
     {
         return m_modules[index];
     }
-    return NULL;
+    return nullptr;
 }
 
 Module *ModuleManager::getModule(Client client)
@@ -81,7 +63,7 @@ Module *ModuleManager::getModule(Client client)
             return m_modules[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 Module *ModuleManager::getModule(Ipv4 ip)
@@ -93,7 +75,7 @@ Module *ModuleManager::getModule(Ipv4 ip)
             return m_modules[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 Module *ModuleManager::getModule(MacAddr mac)
@@ -105,19 +87,7 @@ Module *ModuleManager::getModule(MacAddr mac)
             return m_modules[i];
         }
     }
-    return NULL;
-}
-
-Module *ModuleManager::getModule(Micro *micro)
-{
-    for (int32_t i = 0; i < m_modules.size(); i++)
-    {
-        if (m_modules[i]->getMicro() == micro)
-        {
-            return m_modules[i];
-        }
-    }
-    return NULL;
+    return nullptr;
 }
 
 uint32_t ModuleManager::getModuleCount()

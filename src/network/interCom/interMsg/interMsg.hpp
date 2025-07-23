@@ -5,7 +5,7 @@
 #include <string>
 
 #include "network/interCom/interMsgData/interMsgData.hpp"
-#include "network/client/client.h"
+#include "network/client/client.hpp"
 
 class InterMsg
 {
@@ -58,6 +58,14 @@ class InterMsg
         InterMsg(Client client,
                  InterMsgData data,
                  SendType sendType = SendType::UnicastWithControl);
+
+        /**
+         * @brief Constructor for InterMsg without a client.
+         * @note This constructor is used for messages that do not require a specific client association (broadcast messages).
+         * @note Due to the nature of this constructor, SendType is implicitly set to Broadcast.
+         * @note This constructor is protected to ensure that only derived classes can instantiate it.
+         */
+        InterMsg(InterMsgData data);
 
     public:
         /**

@@ -20,16 +20,6 @@ MacAddr::MacAddr(uint8_t mac1, uint8_t mac2, uint8_t mac3, uint8_t mac4, uint8_t
     m_mac[5] = mac6;
 }
 
-MacAddr::MacAddr(const MacAddr &mac)
-{
-    m_mac[0] = mac.m_mac[0];
-    m_mac[1] = mac.m_mac[1];
-    m_mac[2] = mac.m_mac[2];
-    m_mac[3] = mac.m_mac[3];
-    m_mac[4] = mac.m_mac[4];
-    m_mac[5] = mac.m_mac[5];
-}
-
 MacAddr::MacAddr(const char *mac)
 {
     setMac(mac);

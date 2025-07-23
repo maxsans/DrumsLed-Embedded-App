@@ -1,6 +1,6 @@
 #include "interMsgPingSlaves.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
 InterMsgPingSlaves::InterMsgPingSlaves(Client client)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data), m_sendType)
@@ -8,7 +8,7 @@ InterMsgPingSlaves::InterMsgPingSlaves(Client client)
 }
 
 InterMsgPingSlaves::InterMsgPingSlaves()
-    : InterMsg(Client(), InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data), m_sendType)
+    : InterMsg(InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data))
 {
 }
 

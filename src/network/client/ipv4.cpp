@@ -1,5 +1,5 @@
-#include "ipv4.h"
-#include "tools/logStream/logStream.h"
+#include "ipv4.hpp"
+#include "tools/logStream/logStream.hpp"
 
 Ipv4::Ipv4()
 {
@@ -23,14 +23,6 @@ Ipv4::Ipv4(uint32_t ip)
     m_ip[1] = (ip >> 16) & 0xFF;
     m_ip[2] = (ip >> 8) & 0xFF;
     m_ip[3] = ip & 0xFF;
-}
-
-Ipv4::Ipv4(Ipv4 &ip)
-{
-    m_ip[0] = ip.m_ip[0];
-    m_ip[1] = ip.m_ip[1];
-    m_ip[2] = ip.m_ip[2];
-    m_ip[3] = ip.m_ip[3];
 }
 
 Ipv4::Ipv4(char *ip)

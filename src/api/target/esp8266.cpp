@@ -1,4 +1,4 @@
-#include "common.h"
+#include "common.hpp"
 #include "freertos/FreeRTOS.h"
 
 void target_common_init()

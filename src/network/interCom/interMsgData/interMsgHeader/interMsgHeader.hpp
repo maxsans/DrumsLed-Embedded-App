@@ -50,7 +50,7 @@ class InterMsgHeader
          * @return The size of the header in bytes.
          * @note The header consists of the message ID and the size of the private message data.
          */
-        static constexpr const uint32_t getHeaderSize()
+        static constexpr uint32_t getHeaderSize()
         {
             return sizeof(headerType);
         }

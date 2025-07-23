@@ -1,12 +1,13 @@
 #include "interComParser.hpp"
-#include "api/udp/udp.h"
-#include "api/tcp/tcp.h"
+#include "api/udp/udp.hpp"
+#include "api/tcp/tcp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
 #include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
 
-std::map<InterMsgId, InterComParser::MessageReceivedCallback> InterComParser::m_callbacks = {};
+std::map<InterMsgId, InterComParser::CallbackInfo> InterComParser::m_callbacks = {};
+std::map<std::pair<Client, InterMsgId>, InterComParser::CallbackInfo> InterComParser::m_clientCallbacks = {};
 
 InterComParser::InterComParser() : m_periodicCall(PERIODIC_CALL_INTERVAL_MS, InterComParser::periodicCallBack, this)
 {
@@ -16,16 +17,29 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE], uint32_t msgSize
 {
     // Create an generic InterMsg from the received data
     Ipv4 l_ip(ipAddress);
-    InterMsgGeneric l_msgGeneric(Client(l_ip, macAddress), msg, msgSize);
+    Client l_client(l_ip, macAddress);
+    InterMsgGeneric l_msgGeneric(l_client, msg, msgSize);
     // Get the message ID
     InterMsgId l_msgId = l_msgGeneric.getId();
-    // Find the callbacks of the message ID
+
+    // Check for client-specific callbacks first
+    auto clientCallbackKey = std::make_pair(l_client, l_msgId);
+    auto clientIt = m_clientCallbacks.find(clientCallbackKey);
+    if (clientIt != m_clientCallbacks.end())
+    {
+        // If client-specific callback is found, call it
+        InterMsg &l_msg = l_msgGeneric;
+        clientIt->second.callback(l_msg.getClient(), l_msg, clientIt->second.object);
+        return;
+    }
+
+    // Find the general callbacks of the message ID
     auto it = m_callbacks.find(l_msgId);
     if (it != m_callbacks.end())
     {
         // If callbacks are found, call them with the message
         InterMsg &l_msg = l_msgGeneric;
-        it->second(l_msg.getClient(), l_msg);
+        it->second.callback(l_msg.getClient(), l_msg, it->second.object);
     }
     else
     {
@@ -73,5 +87,35 @@ void InterComParser::periodicCallBack(void *object)
 void InterComParser::registerCallback(InterMsgId msgId, MessageReceivedCallback callback)
 {
     // Register the callback for the specified message ID
-    m_callbacks[msgId] = callback;
+    m_callbacks[msgId] = CallbackInfo(callback);
+}
+
+void InterComParser::registerCallback(InterMsgId msgId, MessageReceivedCallback callback, void *object)
+{
+    // Register the callback for the specified message ID with object pointer
+    m_callbacks[msgId] = CallbackInfo(callback, object);
+}
+
+void InterComParser::registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback)
+{
+    // Register the callback for the specified client and message ID
+    auto key = std::make_pair(client, msgId);
+    m_clientCallbacks[key] = CallbackInfo(callback);
+}
+
+void InterComParser::registerCallback(const Client &client, InterMsgId msgId, MessageReceivedCallback callback, void *object)
+{
+    // Register the callback for the specified client and message ID with object pointer
+    auto key = std::make_pair(client, msgId);
+    m_clientCallbacks[key] = CallbackInfo(callback, object);
+}
+
+void InterComParser::registerCallback(InterMsgId msgId, void (*callback)(const Client &, InterMsg &))
+{
+    // Wrap the static callback into a std::function with void* ignored
+    m_callbacks[msgId] = CallbackInfo(
+        [callback](const Client &client, InterMsg &msg, void*) {
+            callback(client, msg);
+        }
+    );
 }

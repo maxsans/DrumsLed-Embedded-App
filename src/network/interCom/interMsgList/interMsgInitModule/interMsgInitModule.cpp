@@ -1,11 +1,11 @@
 #include "interMsgInitModule.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 
-InterMsgInitModule::InterMsgInitModule(Client client, uint8_t moduleType)
-    : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::InitModule, sizeof(m_data)), (char *)&m_data), m_sendType)
+InterMsgInitModule::InterMsgInitModule(Client client, KitConfig kitConfig) :
+    InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::InitModule, sizeof(Data)), (char *)&m_data), m_sendType)
 {
-    m_data.moduleType = moduleType;
+    m_data.m_kitConfig = kitConfig;
 }
 
 InterMsgInitModule::InterMsgInitModule(Client client, char *rawData, uint32_t size)
@@ -13,13 +13,18 @@ InterMsgInitModule::InterMsgInitModule(Client client, char *rawData, uint32_t si
 {
 }
 
-uint8_t InterMsgInitModule::getModuleType() const
+const char* InterMsgInitModule::getPrivData() const
 {
-    return m_data.moduleType;
+    return reinterpret_cast<const char*>(&m_data);
+}
+
+KitConfig InterMsgInitModule::getKitConfig() const
+{
+    return m_data.m_kitConfig;
 }
 
 std::string InterMsgInitModule::toString() const
 {
-    return "InterMsgInitModule: type = " + std::to_string(m_data.moduleType) +
+    return "InterMsgInitModule: kitConfig = " + m_data.m_kitConfig.toString() +
            ", client = " + getClient().getIP().getIpString();
 }

@@ -1,6 +1,6 @@
 #include "interMsgAdc.hpp"
 
-#include "tools/logStream/logStream.h"
+#include "tools/logStream/logStream.hpp"
 #include <cstring>
 
 InterMsgAdc::InterMsgAdc(Client client, adc_measure_t adcValue)
@@ -12,6 +12,11 @@ InterMsgAdc::InterMsgAdc(Client client, adc_measure_t adcValue)
 InterMsgAdc::InterMsgAdc(Client client, char *rawData, uint32_t size)
     : InterMsg(client, InterMsgData(rawData, size, (char *)&m_data), m_sendType)
 {
+}
+
+const char* InterMsgAdc::getPrivData() const
+{
+    return reinterpret_cast<const char*>(&m_data);
 }
 
 adc_measure_t InterMsgAdc::getAdcValue() const

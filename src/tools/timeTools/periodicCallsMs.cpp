@@ -1,4 +1,4 @@
-#include "periodicCallsMs.h"
+#include "periodicCallsMs.hpp"
 
 std::list <periodicCallsMs*> periodicCallsMs::m_instances;
 

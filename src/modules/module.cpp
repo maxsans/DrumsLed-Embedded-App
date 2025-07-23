@@ -1,66 +1,52 @@
-#include "module.h"
-#include "tools/timeTools/timeMs.h"
+#include "module.hpp"
+#include "tools/timeTools/timeMs.hpp"
+#include "network/interCom/interComParser/interComParser.hpp"
 
-#define MODULE_TIMEOUT 10000 // ms
-#define MODULE_CHECK_TIME_PERIODIC_CALLS 1000 // ms
+const timeMs Module::m_moduleTimeout = timeMs(5000);
 
-Module::Module(moduleType_t moduleType, Client client)
+Module::Module(KitConfig kitConfig, Client client) :
+    m_kitConfig(kitConfig),
+    m_client(client),
+    m_lastSyncTime(0)
 {
-    m_moduleType = moduleType;
-    m_client = client;
-    m_connected = false;
-    m_lastSyncTime = 0;
-    m_checkTimePeriodicCalls = periodicCallsMs(MODULE_CHECK_TIME_PERIODIC_CALLS, checkTimeCallBack, this);
+    // Register the callback for ADC messages
+    InterComParser::registerCallback(m_client, InterMsgId::Adc,
+        [this](const Client &client, InterMsg &msg, void *object) {
+            this->onAdcMsg(msg);
+        });
 }
 
-void Module::process()
+void Module::onAdcMsg(InterMsg &msg)
 {
-    // Nothing to do here
+    // TODO: Real implementation
 }
 
 Micro *Module::getMicro()
 {
+    // TODO: Real implementation
     return nullptr;
 }
 
 RgbLed *Module::getRgbLed()
 {
+    // TODO: Real implementation
     return nullptr;
 }
 
 bool Module::isConnected()
 {
-    return m_connected;
+    return m_lastSyncTime != 0
+    && m_lastSyncTime + timeMs::nowMs() < m_moduleTimeout;
 }
 
-moduleType_t Module::getType()
+KitConfig Module::getConfig()
 {
-    return m_moduleType;
-}
-
-void Module::checkTime()
-{
-    if (timeMs() - m_lastSyncTime > MODULE_TIMEOUT)
-    {
-        m_connected = false;
-    }
-}
-
-void Module::checkTimeCallBack(void *object)
-{
-    Module *m = (Module*)object;
-    m->checkTime();
+    return m_kitConfig;
 }
 
 void Module::sync()
 {
     m_lastSyncTime = timeMs::nowMs();
-    m_connected = true;
-}
-
-void Module::setIp(Ipv4 ip)
-{
-    m_client.setIP(ip);
 }
 
 Client Module::getClient()

@@ -1,5 +1,5 @@
-#include "api/logs/logs.h"
-#include "logStream.h"
+#include "api/logs/logs.hpp"
+#include "logStream.hpp"
 #include <cstdio>
 #include <cstdarg>
 

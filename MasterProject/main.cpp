@@ -2,7 +2,7 @@
 #include "udp.h"
 #include "udpParser.h"
 #include "terminal.h"
-#include "session.h"
+#include "session.hpp"
 #include "periodicCallsMs.h"
 
 #include <stdio.h>

@@ -1,22 +1,22 @@
-#include "launch.h"
-#include "api/target/common.h"
-#include "tools/logStream/logStream.h"
-#include "tools/timeTools/periodicCallsMs.h"
-#include "api/wifi/wifi.h"
-#include "api/adc/adc.h"
-#include "api/addrLed/addrLed.h"
-#include "api/udp/udp.h"
-#include "network/networkConfig.h"
-#include "tools/timeTools/timeMs.h"
+#include "launch.hpp"
+#include "api/target/common.hpp"
+#include "tools/logStream/logStream.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
+#include "api/wifi/wifi.hpp"
+#include "api/udp/udp.hpp"
+#include "api/tcp/tcp.hpp"
+#include "network/networkConfig.hpp"
+#include "tools/timeTools/timeMs.hpp"
+#include "kit/kit.hpp"
 
 static void init()
 {
     target_common_init();
     LogStream::cout << "Slaves start .." << LogStream::endl;
 
-    adc_init();
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
+    Kit::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 }
 

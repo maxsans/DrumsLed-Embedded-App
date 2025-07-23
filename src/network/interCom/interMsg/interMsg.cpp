@@ -1,7 +1,7 @@
 #include "interMsg.hpp"
 
-#include "api/udp/udp.h"
-#include "api/tcp/tcp.h"
+#include "api/udp/udp.hpp"
+#include "api/tcp/tcp.hpp"
 
 #include <cassert>
 #include <cstring>
@@ -10,6 +10,11 @@ InterMsg::InterMsg(Client client,
                    InterMsgData data,
                    SendType sendType)
     : m_client(client), m_data(data), m_sendType(sendType)
+{
+}
+
+InterMsg::InterMsg(InterMsgData data)
+    : m_data(data), m_sendType(SendType::Broadcast)
 {
 }
 
