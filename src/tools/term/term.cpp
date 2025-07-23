@@ -13,27 +13,27 @@ void Term::init()
     // Register the default "help" command
     TermCommand helpCmd(
         TermAction([](const TermParameters&) {
-            LogStream::cout << "Commandes disponibles :" << LogStream::endl;
+            LogStream::cout << "Available commands:" << LogStream::endl;
             for (const auto& cmd : m_commands) {
                 LogStream::cout << "  " << cmd.getKeyword() << " - " << cmd.getDescription() << LogStream::endl;
             }
         }),
         "help",
-        "Affiche la liste des commandes disponibles."
+        "Displays the list of available commands."
     );
     registerCommand(helpCmd);
 
     // Register the default "example" command with parameters
     TermCommand exampleCmd(
         TermAction([](const TermParameters& params) {
-            LogStream::cout << "Commande 'example' exécutée avec paramètres : ";
+            LogStream::cout << "Command 'example' executed with parameters: ";
             for (const auto& param : params.getParameters()) {
                 LogStream::cout << "'" <<param.getValue() << "' ";
             }
             LogStream::cout << LogStream::endl;
         }),
         "example",
-        "Exemple de commande avec paramètres. Usage: example <param1> <param2> ..."
+        "Example command with parameters. Usage: example <param1> <param2> ..."
     );
     registerCommand(exampleCmd);
 }
@@ -75,20 +75,20 @@ void Term::unregisterCommand(const std::string& keyword)
 
 void Term::onCharReceived(char c)
 {
-    // Affiche le caractère tapé (sauf retour arrière et retour à la ligne)
+    // Displays the typed character (except back and return to the line)
     if (c == '\r' || c == '\n')
     {
-        // Affiche un retour à la ligne
+        // Display a newline
         LogStream::cout << LogStream::endl;
-        // ...traitement de la commande...
+        // ...command processing...
         onEndOfLineReceived();
     }
     else if (c == 127 || c == '\b')
     {
-        // Efface le dernier caractère à l'écran si le buffer n'est pas vide
+        // Erase the last character on the screen if the buffer is not empty
         if (!m_stringBuffer.empty())
         {
-            // Efface visuellement le caractère
+            // Visually erase the character
             LogStream::cout << "\b \b";
             m_stringBuffer.pop_back();
         }
@@ -100,9 +100,9 @@ void Term::onCharReceived(char c)
     }
     else
     {
-        // Affiche le caractère et ajoute au buffer
+        // Display the character and add to the buffer
         LogStream::cout << c;
-        // Ajoute le caractère au buffer
+        // Add the character to the string buffer
         m_stringBuffer += c;
     }
 }
@@ -150,18 +150,20 @@ void Term::onEndOfLineReceived()
 
 void Term::autoCompleteBuffer()
 {
-    // We only complete the keyword (before space or separator)
+    // Only complete the keyword (before space or separator)
     size_t spacePos = m_stringBuffer.find_first_of(" ;");
     std::string partial = (spacePos == std::string::npos)
         ? m_stringBuffer
         : m_stringBuffer.substr(0, spacePos);
 
-    // Looking for all the orders that start with the prefix
+    // Look for all commands that start with the prefix
     std::vector<std::string> matches;
     for (const auto& cmd : m_commands)
     {
         if (cmd.getKeyword().find(partial) == 0)
+        {
             matches.push_back(cmd.getKeyword());
+        }
     }
 
     if (matches.empty())
@@ -175,26 +177,34 @@ void Term::autoCompleteBuffer()
         std::string completion = matches[0];
         if (completion.length() > partial.length())
         {
-            // Erases the current text on the screen
+            // Erase the current text on the screen
             for (size_t i = 0; i < partial.length(); ++i)
+            {
                 LogStream::cout << "\b \b";
-            // Displays the completion
+            }
+            // Display the completion
             LogStream::cout << completion;
-            // Updates the buffer
+            // Update the buffer
             if (spacePos == std::string::npos)
+            {
                 m_stringBuffer = completion;
+            }
             else
+            {
                 m_stringBuffer.replace(0, spacePos, completion);
+            }
         }
     }
     else
     {
-        // Several possibilities: displays the list
+        // Several possibilities: display the list
         LogStream::cout << LogStream::endl;
         for (const auto& match : matches)
+        {
             LogStream::cout << match << "  ";
+        }
         LogStream::cout << LogStream::endl;
-        // Restructs the current buffer
+        // Restore the current buffer
         LogStream::cout << m_stringBuffer;
     }
 }
