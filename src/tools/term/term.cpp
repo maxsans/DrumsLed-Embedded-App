@@ -61,16 +61,29 @@ void Term::unregisterCommand(const std::string& keyword)
 
 void Term::onCharReceived(char c)
 {
-    // If the character is a newline, process the command
-    if (c == '\n' || c == '\r')
+    // Affiche le caractère tapé (sauf retour arrière et retour à la ligne)
+    if (c == '\r' || c == '\n')
     {
+        // Affiche un retour à la ligne
+        LogStream::cout << LogStream::endl;
+        // ...traitement de la commande...
         onEndOfLineReceived();
-        // Clear the string buffer after processing the command
-        m_stringBuffer.clear();
+    }
+    else if (c == 127 || c == '\b')
+    {
+        // Efface le dernier caractère à l'écran si le buffer n'est pas vide
+        if (!m_stringBuffer.empty())
+        {
+            // Efface visuellement le caractère
+            LogStream::cout << "\b \b";
+            m_stringBuffer.pop_back();
+        }
     }
     else
     {
-        // Append the character to the string buffer
+        // Affiche le caractère et ajoute au buffer
+        LogStream::cout << c;
+        // Ajoute le caractère au buffer
         m_stringBuffer += c;
     }
 }
@@ -111,6 +124,9 @@ void Term::onEndOfLineReceived()
         // If the command is not found, log an error
         LogStream::cout << "Error: Command '" << keyword << "' not found." << LogStream::endl;
     }
+
+    // Reset the string buffer after processing the command
+    m_stringBuffer.clear();
 }
 
 TermCommand* Term::findCommand(const std::string& keyword)
