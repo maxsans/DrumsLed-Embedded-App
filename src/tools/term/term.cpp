@@ -9,6 +9,19 @@ std::string Term::m_stringBuffer;
 void Term::init()
 {
     m_nativeTerminal = new ApiTerminal([](char c) { Term::onCharReceived(c); });
+
+    // Register the default "help" command
+    TermCommand helpCmd(
+        TermAction([](const TermParameters&) {
+            LogStream::cout << "Commandes disponibles :" << LogStream::endl;
+            for (const auto& cmd : m_commands) {
+                LogStream::cout << "  " << cmd.getKeyword() << " - " << cmd.getDescription() << LogStream::endl;
+            }
+        }),
+        "help",
+        "Affiche la liste des commandes disponibles."
+    );
+    registerCommand(helpCmd);
 }
 
 void Term::registerCommand(const TermCommand& command)
