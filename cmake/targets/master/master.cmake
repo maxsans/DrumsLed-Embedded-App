@@ -29,6 +29,8 @@ add_sources(
 
     modules/module.cpp
     modules/moduleManager.cpp
+
+    api/terminal/terminal.cpp
     )
 
 # Specific windows source files
@@ -38,6 +40,7 @@ if(WIN32)
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
         api/tcp/tcpWindows.cpp
+        api/terminal/terminalWindows.cpp
         )
 endif()
 
@@ -47,6 +50,7 @@ if(UNIX)
         api/logs/logsLinux.cpp
         api/udp/udpLinux.cpp
         api/time/timeLinux.cpp
+        api/terminal/terminalLinux.cpp
         )
 endif()
 
