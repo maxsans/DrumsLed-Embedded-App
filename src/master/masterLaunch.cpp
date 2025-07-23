@@ -8,14 +8,20 @@
 #include "api/tcp/tcp.hpp"
 #include "modules/moduleManager.hpp"
 #include "micro/learning/learning.hpp"
+#include "tools/term/term.hpp"
 
 void launch()
 {
     LogStream::cout << "Master started" << LogStream::endl;
 
     /* Initialization */
-    // Initialize the udp api
+
+    // Initialize the terminal
+    Term::init();
+
+    // Initialize the udp and tcp api
     udp_init();
+    tcp_init();
 
     // Print the host IP address and MAC address
     char l_ip[16];
@@ -28,10 +34,6 @@ void launch()
     // Create a session
     Session l_session(true);
 
-    // TODO: Move terminal from old project and enable this line
-    // terminal::setCurrentSession(&l_session);
-
-    tcp_init();
 
     // Initialize the interComParser
     InterComParser l_interComParser;
@@ -45,7 +47,5 @@ void launch()
     while(1)
     {
         periodicCallsMs::processAll();
-        // TODO: Move terminal from old project and enable this line
-        // terminal::process();
     }
 }

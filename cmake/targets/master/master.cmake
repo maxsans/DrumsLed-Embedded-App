@@ -30,6 +30,12 @@ add_sources(
     modules/module.cpp
     modules/moduleManager.cpp
 
+    tools/term/term.cpp
+    tools/term/termCommand/termCommand.cpp
+    tools/term/termAction/termAction.cpp
+    tools/term/termParameters/termParameters.cpp
+    tools/term/termParameter/termParameter.cpp
+
     api/terminal/terminal.cpp
     )
 

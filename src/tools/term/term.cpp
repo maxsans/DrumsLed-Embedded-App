@@ -1,0 +1,113 @@
+#include "term.hpp"
+
+#include "tools/logStream/logStream.hpp"
+
+ApiTerminal *Term::m_nativeTerminal;
+std::vector<TermCommand> Term::m_commands;
+std::string Term::m_stringBuffer;
+
+void Term::init()
+{
+    m_nativeTerminal = new ApiTerminal([](char c) { Term::onCharReceived(c); });
+}
+
+void Term::registerCommand(const TermCommand& command)
+{
+    // Check if the command already exists
+    TermCommand* existingCommand = findCommand(command.getKeyword());
+    if (existingCommand)
+    {
+        // If it exists, replace it
+        *existingCommand = command;
+        // Log a warning about the replacement
+        LogStream::cout << "Warning: Command '" << command.getKeyword()
+                        << "' already exists. Replacing with new definition." << LogStream::endl;
+    }
+    else
+    {
+        // Otherwise, add the new command to the list
+        m_commands.push_back(command);
+    }
+}
+
+void Term::unregisterCommand(const std::string& keyword)
+{
+    TermCommand* existingCommand = findCommand(keyword);
+    if (existingCommand)
+    {
+        // Remove the command from the list
+        m_commands.erase(std::remove(m_commands.begin(), m_commands.end(), *existingCommand),
+                         m_commands.end());
+        LogStream::cout << "Command '" << keyword << "' unregistered successfully." << LogStream::endl;
+    }
+    else
+    {
+        LogStream::cout << "Warning: Command '" << keyword << "' not found for unregistration." << LogStream::endl;
+    }
+}
+
+void Term::onCharReceived(char c)
+{
+    // If the character is a newline, process the command
+    if (c == '\n' || c == '\r')
+    {
+        onEndOfLineReceived();
+        // Clear the string buffer after processing the command
+        m_stringBuffer.clear();
+    }
+    else
+    {
+        // Append the character to the string buffer
+        m_stringBuffer += c;
+    }
+}
+
+void Term::onEndOfLineReceived()
+{
+    // Get the keyword from the string buffer
+    // The keyword is separated by a space with the first parameter
+    // Or by a ";"
+    // Or by any separator if any parameter is present
+    std::string keyword;
+    size_t spacePos = m_stringBuffer.find_first_of(" ;");
+    if (spacePos != std::string::npos)
+    {
+        keyword = m_stringBuffer.substr(0, spacePos);
+    }
+    else
+    {
+        keyword = m_stringBuffer; // No space found, use the whole buffer as keyword
+    }
+
+    // Find the command by its keyword
+    TermCommand* command = findCommand(keyword);
+    if (command)
+    {
+        // Get the parameters from the string buffer
+        std::string parameters;
+        if (spacePos != std::string::npos)
+        {
+            parameters = m_stringBuffer.substr(spacePos + 1);
+        }
+        TermParameters params(parameters);
+        // Execute the command with the parameters
+        command->execute(params);
+    }
+    else
+    {
+        // If the command is not found, log an error
+        LogStream::cout << "Error: Command '" << keyword << "' not found." << LogStream::endl;
+    }
+}
+
+TermCommand* Term::findCommand(const std::string& keyword)
+{
+    for (auto& command : m_commands)
+    {
+        if (command.getKeyword() == keyword)
+        {
+            return &command; // Return a pointer to the found command
+        }
+    }
+    return nullptr; // Command not found
+}
