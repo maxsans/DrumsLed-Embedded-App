@@ -1,12 +1,31 @@
 #include "session.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/term/term.hpp"
 
 Session::Session(bool active)
     : m_active(active),
       m_animationManager(),
-      m_moduleManager(),
+      m_moduleManager(active),
       m_learning(nullptr)
 {
+    // Register some terminal commands
+    Term::registerCommand(TermCommand(
+        TermAction([this](const TermParameters&)
+        {
+            this->startLearning();
+        }),
+        "start_learning",
+        "Starts the learning process."
+    ));
+
+    Term::registerCommand(TermCommand(
+        TermAction([this](const TermParameters&)
+        {
+            this->stopLearning();
+        }),
+        "stop_learning",
+        "Stops the learning process."
+    ));
 }
 
 Session::~Session()

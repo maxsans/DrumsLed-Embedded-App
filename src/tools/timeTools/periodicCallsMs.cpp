@@ -25,7 +25,10 @@ void periodicCallsMs::processAll()
 {
     for (std::list <periodicCallsMs*>::iterator it = m_instances.begin(); it != m_instances.end(); it++)
     {
-        (*it)->process();
+        if (*it != nullptr)
+        {
+            (*it)->process();
+        }
     }
 }
 

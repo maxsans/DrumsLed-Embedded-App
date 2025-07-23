@@ -47,6 +47,10 @@ void Learning::startLearning()
     if (!m_moduleManager->isActive())
     {
         LogStream::cout << "Module manager is not enabled, cannot start learning" << LogStream::endl;
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(this);
+        }
         return;
     }
     // Disable the addition of new modules by disabling the module manager
@@ -68,6 +72,11 @@ void Learning::startLearning()
     else
     {
         LogStream::cout << "No micros to learn" << LogStream::endl;
+        // Call the learning done callback if it is set
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(this);
+        }
     }
 }
 
@@ -171,7 +180,17 @@ void Learning::recordAllMic()
 
 void Learning::stopLearning()
 {
-
+    // Check if a learning process is running
+    if (!isLearning())
+    {
+        LogStream::cout << "No learning process is running" << LogStream::endl;
+        // Call the learning done callback if it is set
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(this);
+        }
+        return;
+    }
     // If there are still micros to learn
     if (m_MicroInRecord < m_microRecordSlots.size() - 1)
     {
