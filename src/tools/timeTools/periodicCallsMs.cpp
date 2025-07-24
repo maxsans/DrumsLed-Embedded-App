@@ -1,39 +1,33 @@
 #include "periodicCallsMs.hpp"
+#include <algorithm>
 
-std::list<periodicCallsMs*>& periodicCallsMs::instances()
-{
-    static std::list<periodicCallsMs*> s_instances;
-    return s_instances;
-}
+std::vector<periodicCallsMs*> periodicCallsMs::m_instances;
 
 periodicCallsMs::periodicCallsMs()
 {
-    instances().push_back(this);
+    m_instances.push_back(this);
     m_enable = true;
 }
 
 periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *object)
 {
-    instances().push_back(this);
+    m_instances.push_back(this);
     m_chrono.arm(period);
     m_callback = callback;
     m_object = object;
-    m_enable = true;
 }
 
 periodicCallsMs::~periodicCallsMs()
 {
-    instances().remove(this);
+    m_instances.erase(std::remove(m_instances.begin(), m_instances.end(), this), m_instances.end());
 }
 
 void periodicCallsMs::processAll()
 {
-    for (std::list <periodicCallsMs*>::iterator it = instances().begin(); it != instances().end(); it++)
+    // Iterate through all instances and call their process method
+    for (periodicCallsMs *instance : m_instances)
     {
-        if (*it != nullptr)
-        {
-            (*it)->process();
-        }
+        instance->process();
     }
 }
 

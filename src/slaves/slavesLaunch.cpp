@@ -2,6 +2,7 @@
 #include "api/target/common.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/async/async.hpp"
 #include "api/wifi/wifi.hpp"
 #include "api/udp/udp.hpp"
 #include "api/tcp/tcp.hpp"
@@ -24,6 +25,7 @@ static void process()
 {
     target_process();
     periodicCallsMs::processAll();
+    Async::process();
     // Init the udp on each wifi reconnexion
     static bool l_lastWifiStatus = false;
     bool l_newWifiState = is_wifi_connected();

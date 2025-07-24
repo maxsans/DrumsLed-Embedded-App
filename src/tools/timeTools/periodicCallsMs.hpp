@@ -3,7 +3,7 @@
 
 #include "chronoMs.hpp"
 
-#include <list>
+#include <vector>
 #include <stdbool.h>
 
 /**
@@ -16,7 +16,7 @@ class periodicCallsMs
         void (*m_callback)(void*);
         void *m_object;
         bool m_enable;
-        static std::list<periodicCallsMs*>& instances(); // accessor for static list
+        static std::vector<periodicCallsMs*> m_instances;
 
     public:
         periodicCallsMs();

@@ -1,13 +1,18 @@
 #include "async.hpp"
 #include <algorithm>
+#include <mutex>
 
 std::vector<Async *> Async::m_asyncOperations;
-periodicCallsMs Async::m_processHandler(0, Async::processAsync, nullptr);
+std::mutex Async::m_mutex;
 
-void Async::processAsync(void *object)
+void Async::process()
 {
-    // Process all registered async operations
-    for (auto it : m_asyncOperations)
+    std::vector<Async *> toProcess;
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        toProcess.swap(m_asyncOperations); // Take ownership and clear the shared list
+    }
+    for (auto it : toProcess)
     {
         if (it->m_callback)
         {
@@ -18,15 +23,14 @@ void Async::processAsync(void *object)
             delete it;
         }
     }
-    // Clear the list of async operations after processing
-    m_asyncOperations.clear();
+    // No need to clear m_asyncOperations here, it's already swapped out
 }
 
 Async::Async(AsyncCallback callback, bool mustDelete)
     : m_callback(callback),
       m_mustDelete(mustDelete)
 {
-    // Register this async operation
+    std::lock_guard<std::mutex> lock(m_mutex);
     m_asyncOperations.push_back(this);
 }
 
@@ -44,6 +48,6 @@ void Async::registerAsync(AsyncCallback callback)
 
 bool Async::isDone() const
 {
-    // Find if this async operation is in the list
+    std::lock_guard<std::mutex> lock(m_mutex);
     return std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this) == m_asyncOperations.end();
 }
