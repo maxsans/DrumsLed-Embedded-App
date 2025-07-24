@@ -7,10 +7,12 @@
 #include "api/udp/udp.hpp"
 #include "api/tcp/tcp.hpp"
 #include "network/networkConfig.hpp"
+#include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "tools/timeTools/timeMs.hpp"
 #include "kit/kit.hpp"
 
-static void init()
+void launch()
 {
     target_common_init();
     LogStream::cout << "Slaves start .." << LogStream::endl;
@@ -19,30 +21,32 @@ static void init()
     wifi_init();
     Kit::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
-}
 
-static void process()
-{
-    target_process();
-    periodicCallsMs::processAll();
-    Async::process();
-    // Init the udp on each wifi reconnexion
-    static bool l_lastWifiStatus = false;
-    bool l_newWifiState = is_wifi_connected();
-    if (l_lastWifiStatus != l_newWifiState)
-    {
-        l_lastWifiStatus = l_newWifiState;
-        udp_init();
-        tcp_init();
-        LogStream::cout << "Udp Initialized" << LogStream::endl;
-    }
-}
 
-void launch()
-{
-    init();
+    // Initialize the interComParser
+    InterComParser l_interComParser;
+    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg, void *object) {
+        LogStream::cout << "Received Example message from " << client.getIP().getIpString()
+        << " with MAC: " << client.getMAC().getMacString()
+        << " and message data: " << ((InterMsgExample &)msg).getExampleData()
+        << LogStream::endl;
+    });
+
     while (1)
     {
-        process();
+        target_process();
+        periodicCallsMs::processAll();
+        Async::process();
+
+        // Init the udp/tcp only when WiFi becomes connected (rising edge)
+        static bool l_lastWifiStatus = false;
+        bool l_newWifiState = is_wifi_connected();
+        if (!l_lastWifiStatus && l_newWifiState)
+        {
+            udp_init();
+            tcp_init();
+            LogStream::cout << "Udp Initialized" << LogStream::endl;
+        }
+        l_lastWifiStatus = l_newWifiState;
     }
 }
