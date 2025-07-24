@@ -26,6 +26,13 @@ if(${TARGET} STREQUAL "Master")
     set(SRC_PREFIX src)
 elseif(${TARGET} IN_LIST SLAVES_TARGETS)
     set(SRC_PREFIX ".")
+    # Automatically copy sdkconfig.default to sdkconfig if sdkconfig does not exist
+    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/sdkconfig")
+        file(COPY "${CMAKE_SOURCE_DIR}/sdkconfig.default" DESTINATION "${CMAKE_BINARY_DIR}")
+        file(RENAME "${CMAKE_BINARY_DIR}/sdkconfig.default" "${CMAKE_BINARY_DIR}/sdkconfig")
+        file(COPY "${CMAKE_BINARY_DIR}/sdkconfig" DESTINATION "${CMAKE_SOURCE_DIR}")
+        file(REMOVE "${CMAKE_BINARY_DIR}/sdkconfig.default")
+    endif()
 endif()
 
 ####################################################################################################
@@ -83,4 +90,5 @@ else()
                         "Possible targets are: ${POSSIBLE_TARGETS}")
 endif()
 
+project(${TARGET} CXX)
 project(${TARGET} CXX)
