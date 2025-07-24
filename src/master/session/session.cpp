@@ -59,17 +59,17 @@ void Session::learningDoneCallback(void *object)
 
 void Session::processLearningDone()
 {
-    LogStream::cout << "Learning session is done." << LogStream::endl;
-    // Delete the learning session
-    if (m_learning != nullptr)
+    // Use Async because the callback is called from Learning class itself
+    Async::registerAsync([this]()
     {
-        // Use Async because the callback is called from Learning class itself
-        Async::registerAsync([this]()
+        LogStream::cout << "Learning session is done." << LogStream::endl;
+        // Delete the learning session
+        if (m_learning != nullptr)
         {
             delete m_learning;
             m_learning = nullptr;
-        });
-    }
+        }
+    });
 }
 
 void Session::startLearning()
@@ -87,7 +87,7 @@ void Session::startLearning()
         return;
     }
     // Create a new learning session
-    m_learning = new Learning(&m_moduleManager, Session::learningDoneCallback);
+    m_learning = new Learning(&m_moduleManager, Session::learningDoneCallback, this);
     m_learning->startLearning();
 }
 

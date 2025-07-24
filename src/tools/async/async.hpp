@@ -27,7 +27,7 @@ class Async
          * @brief Periodic process handler for the async operation
          */
         static periodicCallsMs m_processHandler;
-        static void processAsync(void *);
+        static void processAsync(void *object);
 
         /**
          * @brief Callback to call when the async operation is done

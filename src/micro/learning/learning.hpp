@@ -75,6 +75,7 @@ class Learning
          * @brief Callback to call when the learning is done
          */
         void (*m_learningDoneCallback)(void *object);
+        void *m_learningDoneCallbackObject;
 
         /**
          * @brief Callback to periodically call recordAllMic()
@@ -113,7 +114,7 @@ class Learning
          * @param modules The vector of modules to learn
          * @param learningDoneCallback The callback to call when the learning is done
          */
-        Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object) = nullptr);
+        Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object) = nullptr, void *obj = nullptr);
 
         /**
          * @brief Check if a learning process is running

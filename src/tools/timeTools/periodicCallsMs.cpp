@@ -18,6 +18,7 @@ periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *o
     m_chrono.arm(period);
     m_callback = callback;
     m_object = object;
+    m_enable = true;
 }
 
 periodicCallsMs::~periodicCallsMs()

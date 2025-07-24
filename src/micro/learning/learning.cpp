@@ -9,10 +9,11 @@ const timeMs Learning::m_timeBetweenMeasures = 20;
 const RgbColor Learning::m_learningColor = RgbColor(255, 255, 255);
 const RgbColor Learning::m_notLearningColor = RgbColor(0, 0, 0);
 
-Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object)) :
+Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object), void *obj) :
     m_moduleManager(moduleManager),
     m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
-    m_learningDoneCallback(learningDoneCallback)
+    m_learningDoneCallback(learningDoneCallback),
+    m_learningDoneCallbackObject(obj)
 {
     // Initialize the micro record slots
     m_microRecordSlots.clear();
@@ -49,7 +50,7 @@ void Learning::startLearning()
         LogStream::cout << "Module manager is not enabled, cannot start learning" << LogStream::endl;
         if (m_learningDoneCallback != nullptr)
         {
-            m_learningDoneCallback(this);
+            m_learningDoneCallback(m_learningDoneCallbackObject);
         }
         return;
     }
@@ -75,7 +76,7 @@ void Learning::startLearning()
         // Call the learning done callback if it is set
         if (m_learningDoneCallback != nullptr)
         {
-            m_learningDoneCallback(this);
+            m_learningDoneCallback(m_learningDoneCallbackObject);
         }
     }
 }
@@ -187,7 +188,7 @@ void Learning::stopLearning()
         // Call the learning done callback if it is set
         if (m_learningDoneCallback != nullptr)
         {
-            m_learningDoneCallback(this);
+            m_learningDoneCallback(m_learningDoneCallbackObject);
         }
         return;
     }
@@ -235,7 +236,7 @@ void Learning::stopLearning()
         // Call the learning done callback if it is set
         if (m_learningDoneCallback != nullptr)
         {
-            m_learningDoneCallback(this);
+            m_learningDoneCallback(m_learningDoneCallbackObject);
         }
     }
 }
