@@ -1,16 +1,20 @@
 #include "periodicCallsMs.hpp"
 
-std::list <periodicCallsMs*> periodicCallsMs::m_instances;
+std::list<periodicCallsMs*>& periodicCallsMs::instances()
+{
+    static std::list<periodicCallsMs*> s_instances;
+    return s_instances;
+}
 
 periodicCallsMs::periodicCallsMs()
 {
-    m_instances.push_back(this);
+    instances().push_back(this);
     m_enable = true;
 }
 
 periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *object)
 {
-    m_instances.push_back(this);
+    instances().push_back(this);
     m_chrono.arm(period);
     m_callback = callback;
     m_object = object;
@@ -18,12 +22,12 @@ periodicCallsMs::periodicCallsMs(timeMs period, void (*callback)(void*), void *o
 
 periodicCallsMs::~periodicCallsMs()
 {
-    m_instances.remove(this);
+    instances().remove(this);
 }
 
 void periodicCallsMs::processAll()
 {
-    for (std::list <periodicCallsMs*>::iterator it = m_instances.begin(); it != m_instances.end(); it++)
+    for (std::list <periodicCallsMs*>::iterator it = instances().begin(); it != instances().end(); it++)
     {
         if (*it != nullptr)
         {

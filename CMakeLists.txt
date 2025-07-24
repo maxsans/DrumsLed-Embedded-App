@@ -44,6 +44,7 @@ add_sources(
     tools/timeTools/chronoMs.cpp
     tools/timeTools/periodicCallsMs.cpp
     tools/logStream/logStream.cpp
+    tools/async/async.cpp
 
     network/client/client.cpp
     network/client/ipv4.cpp

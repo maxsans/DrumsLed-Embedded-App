@@ -1,6 +1,7 @@
 #include "session.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/term/term.hpp"
+#include "tools/async/async.hpp"
 
 Session::Session(bool active)
     : m_active(active),
@@ -62,8 +63,12 @@ void Session::processLearningDone()
     // Delete the learning session
     if (m_learning != nullptr)
     {
-        delete m_learning;
-        m_learning = nullptr;
+        // Use Async because the callback is called from Learning class itself
+        Async::registerAsync([this]()
+        {
+            delete m_learning;
+            m_learning = nullptr;
+        });
     }
 }
 
