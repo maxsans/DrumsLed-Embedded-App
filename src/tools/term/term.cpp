@@ -1,6 +1,7 @@
 #include "term.hpp"
 
 #include "tools/logStream/logStream.hpp"
+#include "tools/async/async.hpp"
 
 ApiTerminal *Term::m_nativeTerminal;
 std::vector<TermCommand> Term::m_commands;
@@ -94,7 +95,12 @@ void Term::onCharReceived(char c)
         // Display a newline
         LogStream::cout << LogStream::endl;
         // ...command processing...
-        onEndOfLineReceived();
+        // This function may called from a different thread
+        // So call this one asynchronously is a good idea
+        Async::registerAsync([]()
+        {
+            Term::onEndOfLineReceived();
+        });
     }
     else if (c == 127 || c == '\b')
     {

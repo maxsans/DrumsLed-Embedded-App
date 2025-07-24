@@ -12,13 +12,19 @@ InterMsgData::InterMsgData(char *rawData, uint32_t rawSize, char *privData)
     : m_header(rawData), m_privData(privData)
 {
     assert(rawData != nullptr && "Raw data pointer cannot be null.");
-    assert(rawSize >= m_header.getHeaderSize() + m_header.getPrivSize() && "Raw data size is insufficient for header and private data.");
-    // Find the header size and private data size
-    uint32_t headerSize = m_header.getHeaderSize();
-    uint32_t privSize = m_header.getPrivSize();
-    assert(privSize <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
-    // Copy the private data from the raw data buffer
-    std::memcpy(privData, rawData + headerSize, privSize);
+    // Check if the raw data size is sufficient
+    if (rawSize >= m_header.getHeaderSize() + m_header.getPrivSize())
+    {
+        // Find the header size and private data size
+        uint32_t headerSize = m_header.getHeaderSize();
+        uint32_t privSize = m_header.getPrivSize();
+        // Ensure the private data size does not exceed the maximum allowed size
+        if (privSize <= MAX_PRIV_DATA_SIZE)
+        {
+            // Copy the private data from the raw data buffer
+            std::memcpy(privData, rawData + headerSize, privSize);
+        }
+    }
 }
 
 uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const

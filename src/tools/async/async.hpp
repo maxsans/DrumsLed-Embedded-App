@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <vector>
+#include <mutex>
 #include "tools/timeTools/periodicCallsMs.hpp"
 
 /**
@@ -24,10 +25,9 @@ class Async
         static std::vector<Async *> m_asyncOperations;
 
         /**
-         * @brief Periodic process handler for the async operation
+         * @brief Mutex to protect async operations list
          */
-        static periodicCallsMs m_processHandler;
-        static void processAsync(void *object);
+        static std::mutex m_mutex;
 
         /**
          * @brief Callback to call when the async operation is done
@@ -52,6 +52,12 @@ class Async
          * @param callback The callback to call when the async operation is done.
          */
         Async(AsyncCallback callback);
+
+        /**
+         * @brief Process all registered async operations.
+         * @note This function may be called in the main loop.
+         */
+        static void process();
 
         /**
          * @brief Register an async operation without keeping a reference to it.

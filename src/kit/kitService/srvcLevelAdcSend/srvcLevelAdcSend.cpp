@@ -73,6 +73,12 @@ void KitSrvcLevelAdcSend::periodicMeasureCallback()
 
 adc_measure_t KitSrvcLevelAdcSend::measureAdcLevel()
 {
+    static bool adc_initialized = false;
+    if (!adc_initialized)
+    {
+        adc_init();
+        adc_initialized = true;
+    }
     // Read the ADC value using the adc API
     return adc_read();
 }

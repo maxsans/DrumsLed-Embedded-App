@@ -63,7 +63,14 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
 {
     if (m_active)
     {
-        m_modules.push_back(new Module(kitConfig, client));
+        // Check if the module already exists
+        if (getModule(client) == nullptr)
+        {
+            // Create a new module and add it to the list
+            m_modules.push_back(new Module(kitConfig, client));
+            // Log the addition of the module
+            LogStream::cout << "Module added: " << client.getIP().getIpString() << LogStream::endl;
+        }
     }
     return nullptr;
 }

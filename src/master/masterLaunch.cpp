@@ -5,6 +5,7 @@
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/async/async.hpp"
 #include "api/tcp/tcp.hpp"
 #include "modules/moduleManager.hpp"
 #include "micro/learning/learning.hpp"
@@ -47,5 +48,6 @@ void launch()
     while(1)
     {
         periodicCallsMs::processAll();
+        Async::process();
     }
 }
