@@ -2,7 +2,7 @@
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 
 const timeMs KitSrvcLevelAdcSend::m_sendInterval = timeMs(20);
-const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(1);
+const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(5);
 const timeMs KitSrvcLevelAdcSend::m_bufferTime = timeMs(100);
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
