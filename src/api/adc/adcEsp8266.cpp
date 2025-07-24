@@ -13,9 +13,12 @@ void adc_init()
 adc_measure_t adc_read()
 {
     uint16_t adc_value = 0;
-    if (adc_read(&adc_value) == ESP_OK) {
+    if (adc_read(&adc_value) == ESP_OK)
+    {
         return adc_value;
-    } else {
+    }
+    else
+    {
         return 0; // Return 0 in case of error
     }
 }
