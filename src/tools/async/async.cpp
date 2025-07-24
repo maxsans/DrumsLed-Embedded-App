@@ -1,16 +1,27 @@
 #include "async.hpp"
 #include <algorithm>
-#include <mutex>
 
 std::vector<Async *> Async::m_asyncOperations;
-std::mutex Async::m_mutex;
+volatile bool Async::m_locked = false;
+
+void Async::lock()
+{
+    while (Async::m_locked) { /* busy wait */ }
+    Async::m_locked = true;
+}
+
+void Async::unlock()
+{
+    Async::m_locked = false;
+}
 
 void Async::process()
 {
     std::vector<Async *> toProcess;
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        lock();
         toProcess.swap(m_asyncOperations); // Take ownership and clear the shared list
+        unlock();
     }
     for (auto it : toProcess)
     {
@@ -30,8 +41,9 @@ Async::Async(AsyncCallback callback, bool mustDelete)
     : m_callback(callback),
       m_mustDelete(mustDelete)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    lock();
     m_asyncOperations.push_back(this);
+    unlock();
 }
 
 Async::Async(AsyncCallback callback)
@@ -48,6 +60,8 @@ void Async::registerAsync(AsyncCallback callback)
 
 bool Async::isDone() const
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    return std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this) == m_asyncOperations.end();
+    lock();
+    bool done = std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this) == m_asyncOperations.end();
+    unlock();
+    return done;
 }

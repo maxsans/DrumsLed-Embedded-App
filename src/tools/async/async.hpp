@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <vector>
-#include <mutex>
 #include "tools/timeTools/periodicCallsMs.hpp"
 
 /**
@@ -25,9 +24,9 @@ class Async
         static std::vector<Async *> m_asyncOperations;
 
         /**
-         * @brief Mutex to protect async operations list
+         * @brief Manual protection flag for async operations list
          */
-        static std::mutex m_mutex;
+        static volatile bool m_locked;
 
         /**
          * @brief Callback to call when the async operation is done
@@ -38,6 +37,13 @@ class Async
          * @brief Flag to indicate if the async operation must be deleted after being processed
          */
         bool m_mustDelete;
+
+        /**
+         * @brief Lock and unlock functions to protect the async operations list
+         * @note These functions use a busy wait loop for simplicity, but can be replaced with more efficient locking mechanisms if needed.
+         */
+        static void lock();
+        static void unlock();
 
         /**
          * @brief Private constructor to register the async operation
