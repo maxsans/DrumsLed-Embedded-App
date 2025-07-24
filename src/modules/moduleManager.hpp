@@ -56,6 +56,13 @@ class ModuleManager
          */
         void setMicro(Client client, uint8_t microValue);
 
+        /**
+         * @brief Callback to handle a new module detected.
+         * @param client The client of the new module.
+         * @param msg The message received.
+         */
+        void onNewModule(const Client &client, InterMsg &msg);
+
     public:
         /**
          * @brief Create an empty ModuleManager.
