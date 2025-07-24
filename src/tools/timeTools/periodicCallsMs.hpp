@@ -16,7 +16,7 @@ class periodicCallsMs
         void (*m_callback)(void*);
         void *m_object;
         bool m_enable;
-        static std::list <periodicCallsMs*> m_instances;
+        static std::list<periodicCallsMs*>& instances(); // accessor for static list
 
     public:
         periodicCallsMs();

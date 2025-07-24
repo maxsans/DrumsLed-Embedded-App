@@ -10,7 +10,6 @@ add_compile_options(-D__TARGET_MASTER)
 add_sources(
     master/masterLaunch.cpp
     master/session/session.cpp
-    master/master.cpp
 
     animation/animation.cpp
     animation/animationManager.cpp
@@ -29,6 +28,14 @@ add_sources(
 
     modules/module.cpp
     modules/moduleManager.cpp
+
+    tools/term/term.cpp
+    tools/term/termCommand/termCommand.cpp
+    tools/term/termAction/termAction.cpp
+    tools/term/termParameters/termParameters.cpp
+    tools/term/termParameter/termParameter.cpp
+
+    api/terminal/terminal.cpp
     )
 
 # Specific windows source files
@@ -38,6 +45,7 @@ if(WIN32)
         api/udp/udpWindows.cpp
         api/time/timeWindows.cpp
         api/tcp/tcpWindows.cpp
+        api/terminal/terminalWindows.cpp
         )
 endif()
 
@@ -47,6 +55,7 @@ if(UNIX)
         api/logs/logsLinux.cpp
         api/udp/udpLinux.cpp
         api/time/timeLinux.cpp
+        api/terminal/terminalLinux.cpp
         )
 endif()
 

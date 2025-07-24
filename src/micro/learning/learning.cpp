@@ -9,10 +9,11 @@ const timeMs Learning::m_timeBetweenMeasures = 20;
 const RgbColor Learning::m_learningColor = RgbColor(255, 255, 255);
 const RgbColor Learning::m_notLearningColor = RgbColor(0, 0, 0);
 
-Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object)) :
+Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object), void *obj) :
     m_moduleManager(moduleManager),
     m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
-    m_learningDoneCallback(learningDoneCallback)
+    m_learningDoneCallback(learningDoneCallback),
+    m_learningDoneCallbackObject(obj)
 {
     // Initialize the micro record slots
     m_microRecordSlots.clear();
@@ -47,15 +48,19 @@ void Learning::startLearning()
     if (!m_moduleManager->isActive())
     {
         LogStream::cout << "Module manager is not enabled, cannot start learning" << LogStream::endl;
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(m_learningDoneCallbackObject);
+        }
         return;
     }
-    // Disable the addition of new modules by disabling the module manager
-    m_moduleManager->enable(false);
 
     uint32_t l_nbMicros = m_moduleManager->getImpactsManager()->getMicroCount();
     if (l_nbMicros > 0)
     {
         LogStream::cout << "Start learning" << LogStream::endl;
+        // Disable the addition of new modules by disabling the module manager
+        m_moduleManager->enable(false);
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
         for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
@@ -68,6 +73,11 @@ void Learning::startLearning()
     else
     {
         LogStream::cout << "No micros to learn" << LogStream::endl;
+        // Call the learning done callback if it is set
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(m_learningDoneCallbackObject);
+        }
     }
 }
 
@@ -171,7 +181,17 @@ void Learning::recordAllMic()
 
 void Learning::stopLearning()
 {
-
+    // Check if a learning process is running
+    if (!isLearning())
+    {
+        LogStream::cout << "No learning process is running" << LogStream::endl;
+        // Call the learning done callback if it is set
+        if (m_learningDoneCallback != nullptr)
+        {
+            m_learningDoneCallback(m_learningDoneCallbackObject);
+        }
+        return;
+    }
     // If there are still micros to learn
     if (m_MicroInRecord < m_microRecordSlots.size() - 1)
     {
@@ -216,7 +236,7 @@ void Learning::stopLearning()
         // Call the learning done callback if it is set
         if (m_learningDoneCallback != nullptr)
         {
-            m_learningDoneCallback(this);
+            m_learningDoneCallback(m_learningDoneCallbackObject);
         }
     }
 }

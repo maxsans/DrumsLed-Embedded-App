@@ -1,5 +1,6 @@
 #include "moduleManager.hpp"
 #include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
+#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
@@ -14,6 +15,14 @@ ModuleManager::ModuleManager(bool active) :
 
     // Initialize the modules vector
     m_modules.clear();
+
+    // Register the callback to push back the module when a new module is detected
+    InterComParser::registerCallback(InterMsgId::InitModule,
+        [this](const Client &client, InterMsg &msg, void *object)
+        {
+            this->onNewModule(client, msg);
+        }
+    );
 }
 
 void ModuleManager::enable(bool e)
@@ -28,6 +37,20 @@ void ModuleManager::enable(bool e)
     {
         // Stop the periodic calls to ring the modules
         m_ringPeriodicCalls.enable(false);
+    }
+}
+
+void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
+{
+    // Add the new module to the module manager
+    InterMsgInitModule *initMsg = dynamic_cast<InterMsgInitModule*>(&msg);
+    if (initMsg != nullptr)
+    {
+        addModule(initMsg->getKitConfig(), client);
+    }
+    else
+    {
+        LogStream::cout << "Received InitModule message with invalid type: " << msg.toString() << LogStream::endl;
     }
 }
 

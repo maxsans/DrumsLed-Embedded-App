@@ -1,12 +1,32 @@
 #include "session.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/term/term.hpp"
+#include "tools/async/async.hpp"
 
 Session::Session(bool active)
     : m_active(active),
       m_animationManager(),
-      m_moduleManager(),
+      m_moduleManager(active),
       m_learning(nullptr)
 {
+    // Register some terminal commands
+    Term::registerCommand(TermCommand(
+        TermAction([this](const TermParameters&)
+        {
+            this->startLearning();
+        }),
+        "start_learning",
+        "Starts the learning process."
+    ));
+
+    Term::registerCommand(TermCommand(
+        TermAction([this](const TermParameters&)
+        {
+            this->stopLearning();
+        }),
+        "stop_learning",
+        "Stops the learning process."
+    ));
 }
 
 Session::~Session()
@@ -39,13 +59,17 @@ void Session::learningDoneCallback(void *object)
 
 void Session::processLearningDone()
 {
-    LogStream::cout << "Learning session is done." << LogStream::endl;
-    // Delete the learning session
-    if (m_learning != nullptr)
+    // Use Async because the callback is called from Learning class itself
+    Async::registerAsync([this]()
     {
-        delete m_learning;
-        m_learning = nullptr;
-    }
+        LogStream::cout << "Learning session is done." << LogStream::endl;
+        // Delete the learning session
+        if (m_learning != nullptr)
+        {
+            delete m_learning;
+            m_learning = nullptr;
+        }
+    });
 }
 
 void Session::startLearning()
@@ -63,7 +87,7 @@ void Session::startLearning()
         return;
     }
     // Create a new learning session
-    m_learning = new Learning(&m_moduleManager, Session::learningDoneCallback);
+    m_learning = new Learning(&m_moduleManager, Session::learningDoneCallback, this);
     m_learning->startLearning();
 }
 
