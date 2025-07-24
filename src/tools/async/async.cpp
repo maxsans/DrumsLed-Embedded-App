@@ -1,4 +1,5 @@
 #include "async.hpp"
+#include <algorithm>
 
 std::vector<Async *> Async::m_asyncOperations;
 periodicCallsMs Async::m_processHandler(0, Async::processAsync, nullptr);
