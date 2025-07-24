@@ -54,13 +54,13 @@ void Learning::startLearning()
         }
         return;
     }
-    // Disable the addition of new modules by disabling the module manager
-    m_moduleManager->enable(false);
 
     uint32_t l_nbMicros = m_moduleManager->getImpactsManager()->getMicroCount();
     if (l_nbMicros > 0)
     {
         LogStream::cout << "Start learning" << LogStream::endl;
+        // Disable the addition of new modules by disabling the module manager
+        m_moduleManager->enable(false);
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
         for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
