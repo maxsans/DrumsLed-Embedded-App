@@ -44,12 +44,6 @@ class InterComParser
         static std::map<std::pair<Client, InterMsgId>, CallbackInfo> m_clientCallbacks;
 
         /**
-         * @brief Periodic calls handler to process incoming messages.
-         * @note This is used to call the periodicCall() method periodically to process incoming messages.
-         */
-        periodicCallsMs m_periodicCall;
-
-        /**
          * @brief The interval in milliseconds for periodic calls to process incoming messages.
          * @note This value is set to 0 to be called as fast as possible
          */
@@ -74,6 +68,12 @@ class InterComParser
          * @see InterMsg::processCallbacks()
          */
         void periodicCall();
+
+        /**
+         * @brief Periodic calls handler to process incoming messages.
+         * @note This is used to call the periodicCall() method periodically to process incoming messages.
+         */
+        periodicCallsMs m_periodicCall;
 
     public:
         InterComParser();

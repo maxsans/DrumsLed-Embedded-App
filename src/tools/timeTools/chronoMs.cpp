@@ -27,10 +27,7 @@ bool chronoMs::ring()
 {
     if (m_armed)
     {
-        if (m_end.get() < timeMs::nowMs())
-        {
-            return true;
-        }
+        return m_end.get() <= timeMs::nowMs();
     }
 
     return false;
@@ -40,7 +37,7 @@ bool chronoMs::oneTimeRing()
 {
     if (m_armed)
     {
-        if (m_end.get() < timeMs::nowMs())
+        if (m_end.get() <= timeMs::nowMs())
         {
             m_armed = false;
             return true;
