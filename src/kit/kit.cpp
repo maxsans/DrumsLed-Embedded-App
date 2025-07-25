@@ -43,7 +43,7 @@ void Kit::onPing(const Client &client, InterMsg &msg)
 void Kit::init()
 {
     // Register the ping callback
-    InterComParser::registerCallback(InterMsgId::InitModule, Kit::onPing);
+    InterComParser::registerCallback(InterMsgId::PingSlaves, Kit::onPing);
     // Log the initialization
     LogStream::cout << "Kit initialized. Waiting for master client..." << LogStream::endl;
     // Initialize the master client to an invalid state
