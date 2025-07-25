@@ -43,7 +43,7 @@ void ModuleManager::enable(bool e)
 void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
 {
     // Add the new module to the module manager
-    InterMsgInitModule *initMsg = dynamic_cast<InterMsgInitModule*>(&msg);
+    InterMsgInitModule *initMsg = static_cast<InterMsgInitModule *>(&msg);
     if (initMsg != nullptr)
     {
         addModule(initMsg->getKitConfig(), client);
