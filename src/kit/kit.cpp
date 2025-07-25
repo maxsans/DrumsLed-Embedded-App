@@ -29,6 +29,11 @@ void Kit::onPing(const Client &client, InterMsg &msg)
                             << ", but received ping from " << client.getIP().getIpString() << ". Overriding master client." << LogStream::endl;
         }
     }
+    else
+    {
+        // Log the new master client
+        LogStream::cout << "New master client registered: " << client.getIP().getIpString() << LogStream::endl;
+    }
     // Update the master client
     m_masterClient = client;
     // Respond to the ping

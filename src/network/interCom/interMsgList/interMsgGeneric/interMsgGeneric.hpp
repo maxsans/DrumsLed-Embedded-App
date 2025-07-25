@@ -11,7 +11,7 @@
 class InterMsgGeneric : public InterMsg
 {
     private:
-        static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 1024; // Maximum size of private data
+        static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 256; // Maximum size of private data
 
         struct Data
         {

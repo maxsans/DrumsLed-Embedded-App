@@ -1,4 +1,3 @@
-
 CONFIG_IDF_TARGET_ESP8266=y
 CONFIG_IDF_TARGET="esp8266"
 
@@ -34,5 +33,8 @@ CONFIG_ESP_TLS_USING_MBEDTLS=n
 
 # Désactiver la gestion du log avancé
 CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# Augmenter la taille de la pile du thread principal
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
 
 # Fin du fichier minimaliste

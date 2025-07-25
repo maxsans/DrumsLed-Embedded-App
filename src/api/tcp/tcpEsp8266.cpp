@@ -196,7 +196,13 @@ uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
             *port = 0;
     }
 
-    // mac is not filled (not available for TCP peer)
+    // The MAC address is not needed on esp8266 module
+    if (mac)
+    {
+        // So set it to a default value
+        strcpy(mac, "00:00:00:00:00:00");
+    }
+
     return read_len;
 }
 
