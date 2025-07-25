@@ -35,6 +35,19 @@ uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
     return m_header.getPrivSize();
 }
 
+uint32_t InterMsgData::getData(char data[MAX_PRIV_DATA_SIZE]) const
+{
+    assert(data != nullptr && "Data pointer cannot be null.");
+    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
+    // Copy the header data to the output buffer
+    uint32_t headerSize = m_header.getHeaderSize();
+    std::memcpy(data, &m_header, headerSize);
+    // Copy the private data to the output buffer
+    std::memcpy(data + headerSize, m_privData, m_header.getPrivSize());
+    // Return the total size of the data written to the buffer
+    return headerSize + m_header.getPrivSize();
+}
+
 const InterMsgHeader& InterMsgData::getHeader() const
 {
     return m_header;

@@ -21,7 +21,7 @@ InterMsg::InterMsg(InterMsgData data)
 void InterMsg::send()
 {
     char l_data[InterMsgData::MAX_PRIV_DATA_SIZE];
-    uint32_t l_size = m_data.getPrivData(l_data);
+    uint32_t l_size = m_data.getData(l_data);
     const char *l_ip = m_client.getIP().getIpString().c_str();
     switch (m_sendType)
     {

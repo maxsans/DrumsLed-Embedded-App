@@ -49,6 +49,15 @@ class InterMsgData
         uint32_t getPrivData(char data[MAX_PRIV_DATA_SIZE]) const;
 
         /**
+         * @brief Get the raw data of the message.
+         * @param data Pointer to a buffer where the message data will be stored.
+         * @note The buffer should be large enough to hold the message data.
+         * @see MAX_PRIV_DATA_SIZE for the maximum size of the data.
+         * @return The size of the data written to the buffer.
+         */
+        uint32_t getData(char data[MAX_PRIV_DATA_SIZE]) const;
+
+        /**
          * @brief Get the header of the message.
          * @return A reference to the InterMsgHeader object containing the message ID and private data size.
          */
