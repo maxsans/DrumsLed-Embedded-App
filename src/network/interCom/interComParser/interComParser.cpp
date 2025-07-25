@@ -41,11 +41,11 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE], uint32_t msgSize
         InterMsg &l_msg = l_msgGeneric;
         it->second.callback(l_msg.getClient(), l_msg, it->second.object);
     }
-    else
-    {
-        // If no callbacks are found, log a warning
-        LogStream::cout << "No callback registered for message ID: " << l_msgId.rawValue();
-    }
+    // else
+    // {
+    //     // If no callbacks are found, log a warning
+    //     LogStream::cout << "No callback registered for message ID: " << l_msgId.rawValue() << LogStream::endl;
+    // }
 }
 
 void InterComParser::checkIncomingMessages()
