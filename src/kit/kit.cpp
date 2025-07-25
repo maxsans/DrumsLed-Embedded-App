@@ -18,26 +18,13 @@ bool Kit::isMasterValid()
 void Kit::onPing(const Client &client, InterMsg &msg)
 {
     // Check if the master is already valid
-    if (isMasterValid())
+    if (!isMasterValid())
     {
-        // Check if the client is the same as the master
-        if (m_masterClient != client)
-        {
-            // If the master is already set, force the client to be the master
-            // But log a warning
-            LogStream::cout << "Warning: Master client already set to " << m_masterClient.getIP().getIpString()
-                            << ", but received ping from " << client.getIP().getIpString() << ". Overriding master client." << LogStream::endl;
-        }
+        // Update the master client
+        m_masterClient = client;
+        // Respond to the ping
+        InterMsgInitModule(m_masterClient, getKitConfig()).send();
     }
-    else
-    {
-        // Log the new master client
-        LogStream::cout << "New master client registered: " << client.getIP().getIpString() << LogStream::endl;
-    }
-    // Update the master client
-    m_masterClient = client;
-    // Respond to the ping
-    InterMsgInitModule(m_masterClient, getKitConfig()).send();
 }
 
 void Kit::init()
