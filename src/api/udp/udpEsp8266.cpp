@@ -42,7 +42,10 @@ void udp_init()
 void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
 {
     if (udp_sock < 0)
-        udp_init();
+    {
+        // udp_init() has not been called yet
+        return;
+    }
     struct sockaddr_in dest_addr;
     memset(&dest_addr, 0, sizeof(dest_addr));
     dest_addr.sin_family = AF_INET;
@@ -54,7 +57,10 @@ void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
 void udp_send_broadcast(const char *data, int16_t len, int16_t port)
 {
     if (udp_sock < 0)
-        udp_init();
+    {
+        // udp_init() has not been called yet
+        return;
+    }
     int broadcastEnable = 1;
     setsockopt(udp_sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
     struct sockaddr_in dest_addr;
@@ -69,8 +75,8 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
     if (udp_sock < 0)
     {
-        printf("udp_recv: socket not initialized, calling udp_init()\n");
-        udp_init();
+        // udp_init() has not been called yet
+        return 0; // Socket not available
     }
     if (udp_sock < 0)
     {

@@ -102,6 +102,13 @@ void tcp_init()
 
 void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
 {
+    // Check if tcp_init() has been called
+    if (tcp_recv_buf.mutex == NULL)
+    {
+        // tcp_init() has not been called yet
+        return;
+    }
+
     int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (sock < 0)
     {
@@ -144,6 +151,13 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
 
 uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
+    // Check if tcp_init() has been called
+    if (tcp_recv_buf.mutex == NULL)
+    {
+        // tcp_init() has not been called yet
+        return 0; // Socket not available
+    }
+
     uint32_t read_len = 0;
 
     xSemaphoreTake(tcp_recv_buf.mutex, portMAX_DELAY);
