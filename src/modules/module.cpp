@@ -1,6 +1,7 @@
 #include "module.hpp"
 #include "tools/timeTools/timeMs.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgAlive/interMsgAlive.hpp"
 
 const timeMs Module::m_moduleTimeout = timeMs(5000);
 
@@ -26,6 +27,22 @@ Module::Module(KitConfig kitConfig, Client client) :
     {
         m_rgbLed = nullptr;
     }
+
+    // Register the Alive message callback
+    InterComParser::registerCallback(
+        InterMsgId::Alive,
+        [](const Client&, InterMsg &msg, void *object)
+        {
+            static_cast<Module*>(object)->onAliveMsg(msg);
+        },
+        this
+    );
+}
+
+void Module::onAliveMsg(InterMsg &msg)
+{
+    // The module is alive, update the last sync time
+    sync();
 }
 
 Micro *Module::getMicro()
