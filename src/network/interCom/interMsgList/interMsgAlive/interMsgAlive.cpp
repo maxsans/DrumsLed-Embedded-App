@@ -2,13 +2,10 @@
 
 #include "tools/logStream/logStream.hpp"
 
+constexpr const char* InterMsgAlive::m_data;
+
 InterMsgAlive::InterMsgAlive(Client client)
     : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Alive, sizeof(m_data)), (char *)&m_data), m_sendType)
-{
-}
-
-InterMsgAlive::InterMsgAlive()
-    : InterMsg(InterMsgData(InterMsgHeader(InterMsgId::Alive, sizeof(m_data)), (char *)&m_data))
 {
 }
 

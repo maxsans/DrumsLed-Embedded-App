@@ -1,4 +1,5 @@
 #include "kitConfigGenerator.hpp"
+#include "kit/kitService/srvcAliveSend/srvcAliveSend.hpp"
 #include "kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.hpp"
 #include "kit/kitService/srvcRgbListen/srvcRgbListen.hpp"
 
@@ -16,5 +17,6 @@ std::vector<KitService *> KitConfigGenerator::generateKitServices()
     // Generate the kit services based on the kit configuration
     services.push_back(new KitSrvcLevelAdcSend());
     services.push_back(new KitSrvcRgbListen());
+    services.push_back(new KitSrvcAliveSend());
     return services;
 }

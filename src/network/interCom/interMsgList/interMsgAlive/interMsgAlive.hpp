@@ -21,12 +21,6 @@ class InterMsgAlive : public InterMsg
         InterMsgAlive(Client client);
 
         /**
-         * @brief Default constructor for InterMsgAlive.
-         * This constructor is used when no specific client is associated with the message.
-         */
-        InterMsgAlive();
-
-        /**
          * @brief Create an InterMsgAlive from raw data.
          * @param rawData The raw data to be used for the message.
          * @param size The size of the raw data.

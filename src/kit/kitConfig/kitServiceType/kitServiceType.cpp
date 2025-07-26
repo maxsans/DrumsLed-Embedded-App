@@ -19,5 +19,5 @@ std::string KitServiceType::toString() const
     {
         return m_typeStrings[static_cast<size_t>(m_type)];
     }
-    return "Unknown";
+    return m_typeStrings[static_cast<size_t>(Type::None)];
 }
