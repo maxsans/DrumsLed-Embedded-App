@@ -5,6 +5,8 @@
 #include "kit/kitConfig/kitConfig.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "kit/kitService/kitService.hpp"
+#include "tools/timeTools/chronoMs.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 #include <vector>
 
 /**
@@ -26,6 +28,19 @@ class Kit
          */
         static std::vector<KitService *> m_services;
 
+        /**
+         * @brief The timeout for the ping to the master kit.
+         * @note This is used to check if the master kit is still connected.
+         */
+        static chronoMs m_pingTimeout;
+        static const timeMs m_pingTimeoutDuration;
+
+        /**
+         * @brief A periodic call to check if the master kit is still connected.
+         * @note This is used to ensure that the slave kit can communicate with the master kit.
+         */
+        static periodicCallsMs *m_timeoutChecker;
+        static void checkTimeouts(void *);
         /**
          * @brief Check if the master kit is connected and valid.
          * @return True if the master kit is valid, false otherwise.

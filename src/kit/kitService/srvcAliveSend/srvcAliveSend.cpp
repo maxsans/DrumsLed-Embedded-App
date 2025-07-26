@@ -32,3 +32,9 @@ void KitSrvcAliveSend::onStart()
     // since the communication with the master client is established
     m_sendPeriodicCall.enable(true);
 }
+
+void KitSrvcAliveSend::onStop()
+{
+    // Stop the periodic calls for sending alive messages
+    m_sendPeriodicCall.enable(false);
+}
