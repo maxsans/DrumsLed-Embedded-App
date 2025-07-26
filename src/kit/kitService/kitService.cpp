@@ -16,3 +16,10 @@ void KitService::start(Client masterClient)
     m_masterClient = masterClient;
     onStart();
 }
+
+void KitService::stop()
+{
+    LogStream::cout << "Stopping KitService of type: " << m_serviceType.toString() << LogStream::endl;
+    onStop();
+    m_masterClient = Client(); // Reset master client
+}

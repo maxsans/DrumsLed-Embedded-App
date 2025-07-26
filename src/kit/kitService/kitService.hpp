@@ -41,6 +41,13 @@ class KitService
          */
         virtual void onStart() {};
 
+        /**
+         * @brief Called when the kit service is stopped.
+         * @note This method can be overridden by derived classes to perform additional cleanup.
+         * @note By default, it does nothing.
+         */
+        virtual void onStop() {};
+
     public:
         KitService() = delete; // Prevent default constructor
 
@@ -50,6 +57,12 @@ class KitService
          * @note This method should be called when the communication with the master client is established.
          */
         void start(Client masterClient);
+
+        /**
+         * @brief Stop the kit service.
+         * @note This method should be called when the communication with the master client is lost.
+         */
+        void stop();
 };
 
 #endif // __KIT_SERVICE_HPP__

@@ -161,6 +161,19 @@ void ModuleManager::ringCallback(void *object)
 
 void ModuleManager::ringModules()
 {
+    // Check if the modules are still connected
+    for (int32_t i = 0; i < m_modules.size(); i++)
+    {
+        Module *l_module = m_modules[i];
+        if (!l_module->isConnected())
+        {
+            LogStream::cout << "Module " << l_module->getClient().getIP().getIpString() << " disconnected." << LogStream::endl;
+            // Remove the module from the list
+            delete l_module;
+            m_modules.erase(m_modules.begin() + i);
+            i--;
+        }
+    }
     // Send a broadcast UDP packet to ring new modules
     // The modules detected will respond
     InterMsgPingSlaves().send();

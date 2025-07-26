@@ -44,6 +44,7 @@ class KitAttributeType
 
             constexpr static const char* m_typeStrings[Type::Count] =
             {
+                "None",
                 "Rgb",
                 "RoundRgb",
                 "LevelAdc"

@@ -28,6 +28,7 @@ class InterMsgId
         PingSlaves,
         Rgb,
         Adc,
+        Alive,
         // Add new message IDs here
 
         /**

@@ -1,5 +1,6 @@
 #include "srvcLevelAdcSend.hpp"
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
+#include <cstring>
 
 const timeMs KitSrvcLevelAdcSend::m_sendInterval = timeMs(20);
 const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(5);
@@ -90,4 +91,15 @@ void KitSrvcLevelAdcSend::onStart()
     // Start the periodic calls for sending ADC level data
     // since the communication with the master client is established
     m_sendPeriodicCall.enable(true);
+}
+
+void KitSrvcLevelAdcSend::onStop()
+{
+    // Stop the periodic calls for sending ADC level data
+    m_sendPeriodicCall.enable(false);
+    // Clean up the circular buffer
+    memset(m_circularBuffer, 0, getBufferSize() * sizeof(adc_measure_t));
+    m_currentIndex = 0;
+    m_currentSize = 0;
+    m_bufferSum = 0;
 }

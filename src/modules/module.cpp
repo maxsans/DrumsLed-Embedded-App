@@ -1,13 +1,13 @@
 #include "module.hpp"
 #include "tools/timeTools/timeMs.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgAlive/interMsgAlive.hpp"
 
 const timeMs Module::m_moduleTimeout = timeMs(5000);
 
 Module::Module(KitConfig kitConfig, Client client) :
     m_kitConfig(kitConfig),
-    m_client(client),
-    m_lastSyncTime(0)
+    m_client(client)
 {
     // Add the attributes based on the kit configuration
     if (kitConfig.hasAttributeType(KitAttributeType::Type::LevelAdc))
@@ -26,6 +26,25 @@ Module::Module(KitConfig kitConfig, Client client) :
     {
         m_rgbLed = nullptr;
     }
+
+    // At start, the module is connected
+    sync();
+
+    // Register the Alive message callback
+    InterComParser::registerCallback(
+        InterMsgId::Alive,
+        [](const Client&, InterMsg &msg, void *object)
+        {
+            static_cast<Module*>(object)->onAliveMsg(msg);
+        },
+        this
+    );
+}
+
+void Module::onAliveMsg(InterMsg &msg)
+{
+    // The module is alive, update the last sync time
+    sync();
 }
 
 Micro *Module::getMicro()
@@ -40,8 +59,7 @@ RgbLed *Module::getRgbLed()
 
 bool Module::isConnected()
 {
-    return m_lastSyncTime != 0
-    && m_lastSyncTime + timeMs::nowMs() < m_moduleTimeout;
+    return (m_lastSyncTime + m_moduleTimeout) > timeMs::nowMs();
 }
 
 KitConfig Module::getConfig()

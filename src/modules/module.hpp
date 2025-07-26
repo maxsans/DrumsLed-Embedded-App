@@ -44,6 +44,12 @@ class Module
          */
         RgbLed *m_rgbLed;
 
+        /**
+         * @brief Callback for Alive messages.
+         * @param msg The message received.
+         */
+        void onAliveMsg(InterMsg &msg);
+
     public:
         Module(KitConfig kitConfig, Client client);
 

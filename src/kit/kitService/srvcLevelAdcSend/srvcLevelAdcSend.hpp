@@ -92,6 +92,11 @@ class KitSrvcLevelAdcSend : public KitService
          */
         void onStart() override;
 
+        /**
+         * @see KitService::onStop
+         */
+        void onStop() override;
+
     public:
         /**
          * @brief Constructor for KitSrvcLevelAdcSend.

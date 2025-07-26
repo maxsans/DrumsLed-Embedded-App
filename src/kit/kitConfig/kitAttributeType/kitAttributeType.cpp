@@ -20,6 +20,11 @@ uint32_t KitAttributeType::getNbAttributes() const
 
 std::string KitAttributeType::toString() const
 {
-    return "KitAttributeType: type = " + std::string(m_typeStrings[static_cast<int>(m_type)]) +
-           ", nbAttributes = " + std::to_string(m_nbAttributes);
+    // Check if the type is valid
+    if (m_type < Type::Count)
+    {
+        return "KitAttributeType: type = " + std::string(m_typeStrings[static_cast<int>(m_type)]) +
+               ", nbAttributes = " + std::to_string(m_nbAttributes);
+    }
+    return "KitAttributeType: type = Unknown, nbAttributes = " + std::to_string(m_nbAttributes);
 }
