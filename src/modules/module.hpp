@@ -35,10 +35,14 @@ class Module
         timeMs m_lastSyncTime;
 
         /**
-         * @brief Callback to call when a new ADC message is received.
-         * @param msg The ADC message.
+         * @brief Micro associated with the module.
          */
-        void onAdcMsg(InterMsg &msg);
+        Micro *m_micro;
+
+        /**
+         * @brief RGB LEDs associated with the module.
+         */
+        RgbLed *m_rgbLed;
 
     public:
         Module(KitConfig kitConfig, Client client);

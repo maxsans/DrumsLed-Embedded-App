@@ -2,6 +2,7 @@
 #include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 
 #include <stdint.h>
 #include <sys/time.h>
@@ -21,6 +22,15 @@ ModuleManager::ModuleManager(bool active) :
         [this](const Client &client, InterMsg &msg, void *object)
         {
             this->onNewModule(client, msg);
+        }
+    );
+
+    // Register the callback to handle ADC messages
+    InterComParser::registerCallback(InterMsgId::Adc,
+        [this](const Client &client, InterMsg &msg, void *object)
+        {
+            this->onAdcMsg(msg);
+            return;
         }
     );
 }
@@ -51,6 +61,25 @@ void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
     else
     {
         LogStream::cout << "Received InitModule message with invalid type: " << msg.toString() << LogStream::endl;
+    }
+}
+
+void ModuleManager::onAdcMsg(InterMsg &msg)
+{
+    // Get the client from the message
+    Client client = msg.getClient();
+    // Find the module associated with the client
+    Module *l_module = getModule(client);
+    // Check if the module exists and have a micro
+    if (l_module != nullptr && l_module->getMicro() != nullptr)
+    {
+        // Get the ADC value from the message
+        InterMsgAdc *adcMsg = static_cast<InterMsgAdc *>(&msg);
+        adc_measure_t adcValue = adcMsg->getAdcValue();
+        // Set the raw ADC value to the micro
+        l_module->getMicro()->setMicroValue(adcValue);
+        // Calculate the corrected ADC value
+        m_impactsManager.setMicroValue(l_module->getMicro(), adcValue);
     }
 }
 

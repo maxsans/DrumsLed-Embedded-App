@@ -9,28 +9,33 @@ Module::Module(KitConfig kitConfig, Client client) :
     m_client(client),
     m_lastSyncTime(0)
 {
-    // Register the callback for ADC messages
-    InterComParser::registerCallback(m_client, InterMsgId::Adc,
-        [this](const Client &client, InterMsg &msg, void *object) {
-            this->onAdcMsg(msg);
-        });
-}
-
-void Module::onAdcMsg(InterMsg &msg)
-{
-    // TODO: Real implementation
+    // Add the attributes based on the kit configuration
+    if (kitConfig.hasAttributeType(KitAttributeType::Type::LevelAdc))
+    {
+        m_micro = new Micro();
+    }
+    else
+    {
+        m_micro = nullptr;
+    }
+    if (kitConfig.hasAttributeType(KitAttributeType::Type::Rgb))
+    {
+        m_rgbLed = new RgbLed();
+    }
+    else
+    {
+        m_rgbLed = nullptr;
+    }
 }
 
 Micro *Module::getMicro()
 {
-    // TODO: Real implementation
-    return nullptr;
+    return m_micro;
 }
 
 RgbLed *Module::getRgbLed()
 {
-    // TODO: Real implementation
-    return nullptr;
+    return m_rgbLed;
 }
 
 bool Module::isConnected()

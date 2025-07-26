@@ -63,6 +63,12 @@ class ModuleManager
          */
         void onNewModule(const Client &client, InterMsg &msg);
 
+        /**
+         * @brief Callback to call when a new ADC message is received.
+         * @param msg The ADC message.
+         */
+        void onAdcMsg(InterMsg &msg);
+
     public:
         /**
          * @brief Create an empty ModuleManager.

@@ -65,16 +65,16 @@ class KitConfig
         /**
          * @brief Check if the kit has a specific attribute type.
          * @param attributeType The type of the attribute to check.
-         * @return KitAttributeType object representing the attribute type, or KitAttributeType::None if not found.
+         * @return true if the kit has the attribute type, false otherwise.
          */
-        KitAttributeType getAttributeType(KitAttributeType::Type attributeType) const;
+        bool hasAttributeType(KitAttributeType::Type attributeType) const;
 
         /**
          * @brief Check if the kit has a specific service type.
          * @param serviceType The type of the service to check.
-         * @return KitServiceType object representing the service type, or KitServiceType::None if not found.
+         * @return true if the kit has the service type, false otherwise.
          */
-        KitServiceType getServiceType(KitServiceType::Type serviceType) const;
+        bool hasServiceType(KitServiceType::Type serviceType) const;
 
         /**
          * @brief Get a string representation of the kit configuration.

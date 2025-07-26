@@ -283,7 +283,7 @@ void ImpactsManager::setMicroValue(Micro *micro, uint8_t microValue)
     {
         l_microValueCorrected = 0;
     }
-    micro->setMicroValue(l_microValueCorrected);
+    micro->setMicroValueCorrected(l_microValueCorrected);
 }
 
 uint32_t ImpactsManager::getMicroCount()

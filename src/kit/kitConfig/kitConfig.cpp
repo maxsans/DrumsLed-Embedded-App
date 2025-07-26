@@ -42,22 +42,22 @@ KitType KitConfig::getType() const
     return m_type;
 }
 
-KitAttributeType KitConfig::getAttributeType(KitAttributeType::Type attributeType) const
+bool KitConfig::hasAttributeType(KitAttributeType::Type attributeType) const
 {
     if (attributeType < KitAttributeType::Count)
     {
-        return m_attributeTypes[attributeType];
+        return m_attributeTypes[attributeType].getType() != KitAttributeType::Type::None;
     }
-    return KitAttributeType(KitAttributeType::Type::None, 0);
+    return false;
 }
 
-KitServiceType KitConfig::getServiceType(KitServiceType::Type serviceType) const
+bool KitConfig::hasServiceType(KitServiceType::Type serviceType) const
 {
     if (serviceType < KitServiceType::Count)
     {
-        return m_serviceTypes[serviceType];
+        return m_serviceTypes[serviceType].getType() != KitServiceType::Type::None;
     }
-    return KitServiceType(KitServiceType::Type::None);
+    return false;
 }
 
 std::string KitConfig::toString() const
