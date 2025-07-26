@@ -33,6 +33,7 @@ add_include_dirs(
     )
 
 # Add the specific cmake file for the target
+message(STATUS "Target: ${TARGET}")
 if(${TARGET} STREQUAL "DrumKit")
     include(cmake/targets/slaves/drumkit.cmake)
 elseif(${TARGET} STREQUAL "CymbalKit")

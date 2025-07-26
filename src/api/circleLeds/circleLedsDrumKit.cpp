@@ -1,5 +1,6 @@
 #include "circleLeds.hpp"
 #include "api/drivers/ws2812Esp8266/ws2812Esp8266.hpp"
+#include <stdio.h>
 
 /**
  * @brief GPIO pin used for the circle LEDs.
@@ -33,8 +34,11 @@ void circleLedsFill(uint32_t color)
     circleLedsFill((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
 }
 
-void circleLedsFill(uint8_t red, uint8_t green, uint8_t blue) {
+void circleLedsFill(uint8_t red, uint8_t green, uint8_t blue)
+{
     g_ledDriver.fill(red, green, blue);
+    g_ledDriver.show();
+    printf("DrumKit : Filling circle LEDs with color R:%d G:%d B:%d\n", red, green, blue);
 }
 
 void circleLedsSetPixel(uint32_t index, uint32_t color)
@@ -45,4 +49,5 @@ void circleLedsSetPixel(uint32_t index, uint32_t color)
 void circleLedsSetPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue)
 {
     g_ledDriver.setPixelColor(index, red, green, blue);
+    g_ledDriver.show();
 }

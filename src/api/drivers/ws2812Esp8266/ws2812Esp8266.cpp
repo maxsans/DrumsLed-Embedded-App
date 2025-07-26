@@ -134,4 +134,5 @@ void WS2812Esp8266::show()
     taskEXIT_CRITICAL();
     // WS2812 reset time:
     ets_delay_us(WS2812_RESET_US);
+    printf("WS2812: Sent %d pixels on pin %d\n", m_num_leds, m_pin);
 }
