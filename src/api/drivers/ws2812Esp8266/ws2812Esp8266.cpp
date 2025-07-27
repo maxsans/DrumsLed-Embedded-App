@@ -82,7 +82,18 @@ void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pi
 
 WS2812Esp8266::WS2812Esp8266(uint32_t num_leds, uint8_t pin) : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
 {
+    m_mutex = xSemaphoreCreateMutex();
+    assert(m_mutex != nullptr);
 }
+
+WS2812Esp8266::~WS2812Esp8266()
+{
+    if (m_mutex)
+    {
+        vSemaphoreDelete(m_mutex);
+    }
+}
+
 
 void WS2812Esp8266::init()
 {
@@ -93,6 +104,8 @@ void WS2812Esp8266::init()
     io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
     io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_config(&io_conf);
+
+    startShowTask("ws2812_show_task", 8192, tskIDLE_PRIORITY + 1);
 }
 
 void WS2812Esp8266::setPixelColor(uint32_t index, uint8_t r, uint8_t g, uint8_t b)
@@ -102,22 +115,34 @@ void WS2812Esp8266::setPixelColor(uint32_t index, uint8_t r, uint8_t g, uint8_t 
     color.r = r;
     color.g = g;
     color.b = b;
+    xSemaphoreTake(m_mutex, portMAX_DELAY);
     m_pixels[index] = color;
+    xSemaphoreGive(m_mutex);
 }
 
 void WS2812Esp8266::fill(uint8_t r, uint8_t g, uint8_t b)
 {
+    xSemaphoreTake(m_mutex, portMAX_DELAY);
     for (uint32_t i = 0; i < m_num_leds; i++)
     {
-        setPixelColor(i, r, g, b);
+        ws2812Esp8266Color_t color;
+        color.r = r;
+        color.g = g;
+        color.b = b;
+        m_pixels[i] = color;
     }
+    xSemaphoreGive(m_mutex);
 }
 
 void WS2812Esp8266::show()
 {
-    // Prepare buffer for WS2812: GRB order, gamma corrected
+    if (m_num_leds > WS2812_MAX_PIXELS) {
+        printf("WS2812: ERROR: m_num_leds (%d) exceeds WS2812_MAX_PIXELS (%d)\n", m_num_leds, WS2812_MAX_PIXELS);
+        return;
+    }
     uint8_t ws_buf[3 * WS2812_MAX_PIXELS];
     uint8_t *p = ws_buf;
+    xSemaphoreTake(m_mutex, portMAX_DELAY);
     for (uint32_t i = 0; i < m_num_leds; ++i)
     {
         const ws2812Esp8266Color_t &c = m_pixels[i];
@@ -125,6 +150,7 @@ void WS2812Esp8266::show()
         *p++ = GAMMA_CORRECTION[c.r];
         *p++ = GAMMA_CORRECTION[c.b];
     }
+    xSemaphoreGive(m_mutex);
     // Disable interrupts !
     // This is important to ensure that the timing of the WS2812 signal is not disrupted
     taskENTER_CRITICAL();
@@ -134,4 +160,32 @@ void WS2812Esp8266::show()
     taskEXIT_CRITICAL();
     // WS2812 reset time:
     ets_delay_us(WS2812_RESET_US);
+}
+
+void WS2812Esp8266::showTask(void *pvParameters)
+{
+    WS2812Esp8266 *instance = static_cast<WS2812Esp8266 *>(pvParameters);
+    if (!instance) {
+        printf("WS2812: showTask received null instance pointer!\n");
+        vTaskDelete(NULL);
+        return;
+    }
+    const TickType_t xDelay = pdMS_TO_TICKS(20); // 50Hz (20ms)
+    while (1)
+    {
+        instance->show();
+        vTaskDelay(xDelay);
+    }
+}
+
+void WS2812Esp8266::startShowTask(const char *taskName, uint16_t stackDepth, UBaseType_t priority)
+{
+    xTaskCreate(
+        WS2812Esp8266::showTask,
+        taskName ? taskName : "ws2812_show",
+        stackDepth ? stackDepth : 2048,
+        this,
+        priority ? priority : tskIDLE_PRIORITY + 1,
+        NULL
+    );
 }

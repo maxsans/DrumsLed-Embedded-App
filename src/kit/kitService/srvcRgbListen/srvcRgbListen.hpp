@@ -13,6 +13,16 @@ class KitSrvcRgbListen : public KitService
          */
         void onRgbMsg(const Client &client, InterMsg &msg);
 
+        /**
+         * @see KitService::onStart()
+         */
+        void onStart() override;
+
+        /**
+         * @see KitService::onStop()
+         */
+        void onStop() override;
+
     public:
         KitSrvcRgbListen();
 };
