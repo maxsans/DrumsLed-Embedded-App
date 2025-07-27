@@ -37,7 +37,6 @@ void circleLedsFill(uint32_t color)
 void circleLedsFill(uint8_t red, uint8_t green, uint8_t blue)
 {
     g_ledDriver.fill(red, green, blue);
-    g_ledDriver.show();
 }
 
 void circleLedsSetPixel(uint32_t index, uint32_t color)
@@ -48,5 +47,4 @@ void circleLedsSetPixel(uint32_t index, uint32_t color)
 void circleLedsSetPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue)
 {
     g_ledDriver.setPixelColor(index, red, green, blue);
-    g_ledDriver.show();
 }
