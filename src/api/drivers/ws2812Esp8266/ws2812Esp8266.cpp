@@ -170,7 +170,7 @@ void WS2812Esp8266::showTask(void *pvParameters)
         vTaskDelete(NULL);
         return;
     }
-    const TickType_t xDelay = pdMS_TO_TICKS(20); // 50Hz (20ms)
+    const TickType_t xDelay = pdMS_TO_TICKS(40); // 25Hz (40ms)
     while (1)
     {
         instance->show();
