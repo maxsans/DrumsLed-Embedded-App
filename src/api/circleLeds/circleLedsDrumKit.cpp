@@ -38,7 +38,6 @@ void circleLedsFill(uint8_t red, uint8_t green, uint8_t blue)
 {
     g_ledDriver.fill(red, green, blue);
     g_ledDriver.show();
-    printf("DrumKit : Filling circle LEDs with color R:%d G:%d B:%d\n", red, green, blue);
 }
 
 void circleLedsSetPixel(uint32_t index, uint32_t color)

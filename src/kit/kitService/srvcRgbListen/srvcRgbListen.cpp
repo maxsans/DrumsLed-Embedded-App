@@ -16,8 +16,9 @@ KitSrvcRgbListen::KitSrvcRgbListen()
     );
 
     // By default, light up the led while the master isn't registered
-    LogStream::cout << "KitSrvcRgbListen initialized. Waiting for RGB messages..." << LogStream::endl;
+    circleLedsInit();
     circleLedsFill(255, 255, 255);
+    LogStream::cout << "KitSrvcRgbListen initialized. Waiting for RGB messages..." << LogStream::endl;
 }
 
 void KitSrvcRgbListen::onStart()
