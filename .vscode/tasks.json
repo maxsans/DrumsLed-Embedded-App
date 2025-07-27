@@ -19,11 +19,12 @@
         {
             "type": "shell",
             "label": "flash-slave",
-            "command": ".vscode/flash_esp8266.sh",
+            "command": "scripts/flash_esp8266.sh",
             "args": [
                 "${command:cmake.buildDirectory}",
                 "${command:cmake.launchTargetName}.bin"
             ],
+            "dependsOn": "build",
             "group": {
                 "kind": "build",
                 "isDefault": false
