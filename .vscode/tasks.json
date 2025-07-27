@@ -1,20 +1,36 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "cmake",
-			"label": "build",
-			"command": "build",
-			"targets": [
-				"all"
-			],
-			"preset": "${command:cmake.activeBuildPresetName}",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"problemMatcher": [],
-			"detail": "CMake template build task"
-		}
-	]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cmake",
+            "label": "build",
+            "command": "build",
+            "targets": [
+                "all"
+            ],
+            "preset": "${command:cmake.activeBuildPresetName}",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "CMake template build task"
+        },
+        {
+            "type": "shell",
+            "label": "flash-slave",
+            "command": "scripts/flash_esp8266.sh",
+            "args": [
+                "${command:cmake.buildDirectory}",
+                "${command:cmake.launchTargetName}.bin"
+            ],
+            "dependsOn": "build",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Flash all images using esptool.py script"
+        }
+    ]
 }
