@@ -39,8 +39,11 @@
             "inherits": "DefaultPreset",
             "hidden": true,
             "environment": {
-                "IDF_PATH": "${env.HOME}/esp/ESP8266_RTOS_SDK",
-                "PATH": "/usr/local/bin:/usr/bin:/bin:${env.HOME}/esp/xtensa-lx106-elf/bin"
+                "IDF_PATH": "/home/esp/ESP8266_RTOS_SDK",
+                "PATH": "/usr/local/bin:/usr/bin:/bin:/home/esp/xtensa-lx106-elf/bin"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "/home/esp/ESP8266_RTOS_SDK/tools/cmake/toolchain-esp8266.cmake"
             }
         },
         {
