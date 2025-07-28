@@ -1,0 +1,27 @@
+{
+    "name": "DrumsLed Embedded DevContainer",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python",
+        "ms-vscode.cmake-tools",
+        "acarreiro.calculate",
+        "xaver.clang-format",
+        "cschlosser.doxdocgen",
+        "mhutchie.git-graph",
+        "github.copilot",
+        "github.copilot-chat",
+        "eamodio.gitlens",
+        "hancel.google-translate",
+        "ms-vscode.hexeditor",
+        "ms-vsliveshare.vsliveshare",
+        "yzhang.markdown-all-in-one",
+        "donjayamanne.python-extension-pack",
+        "ms-vscode.vscode-serial-monitor",
+        "uctakeoff.vscode-counter",
+        "tomoki1207.pdf",
+        "franneck94.workspace-formatter",
+    ]
+}
