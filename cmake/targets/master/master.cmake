@@ -1,4 +1,3 @@
-
 include(cmake/tools.cmake)
 
 # Preprocessor definitions
@@ -38,26 +37,8 @@ add_sources(
     api/terminal/terminal.cpp
     )
 
-# Specific windows source files
-if(WIN32)
-    add_sources(
-        api/logs/logsWindows.cpp
-        api/udp/udpWindows.cpp
-        api/time/timeWindows.cpp
-        api/tcp/tcpWindows.cpp
-        api/terminal/terminalWindows.cpp
-        )
-endif()
-
-# Specific linux source files
-if(UNIX)
-    add_sources(
-        api/logs/logsLinux.cpp
-        api/udp/udpLinux.cpp
-        api/time/timeLinux.cpp
-        api/terminal/terminalLinux.cpp
-        )
-endif()
+# Add sources from platform-specific files
+include(${CMAKE_CURRENT_LIST_DIR}/master_custom/${CUSTOM_CMAKE_NAME}.cmake)
 
 ####################################################################################################
 # Master include directories (from src directory)

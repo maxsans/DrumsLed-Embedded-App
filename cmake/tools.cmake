@@ -4,6 +4,9 @@
 # Don't forget to set the SRC_DIR variable before using this macro
 # if SRCS is not defined, it will be created with a global scope
 macro(add_sources)
+    if(NOT DEFINED SRCS)
+        set(SRCS "" CACHE INTERNAL "List of source files")
+    endif()
     foreach(src ${ARGN})
         list(APPEND SRCS "${SRC_DIR}/${src}")
     endforeach()
@@ -13,6 +16,9 @@ endmacro()
 # Don't forget to set the SRC_DIR variable before using this macro
 # if INCLUDE_DIRS is not defined, it will be created with a global scope
 macro(add_include_dirs)
+    if(NOT DEFINED INCLUDE_DIRS)
+        set(INCLUDE_DIRS "" CACHE INTERNAL "List of include directories")
+    endif()
     foreach(dir ${ARGN})
         list(APPEND INCLUDE_DIRS "${SRC_DIR}/${dir}")
     endforeach()

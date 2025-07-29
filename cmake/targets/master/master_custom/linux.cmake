@@ -1,0 +1,7 @@
+
+add_sources(
+    api/logs/logsLinux.cpp
+    api/udp/udpLinux.cpp
+    api/time/timeLinux.cpp
+    api/terminal/terminalLinux.cpp
+    )
