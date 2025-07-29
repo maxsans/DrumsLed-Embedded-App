@@ -5,10 +5,9 @@
             "name": "DefaultPreset",
             "hidden": true,
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+                "CMAKE_BUILD_TYPE": "Debug"
             }
         },
         {
@@ -16,14 +15,16 @@
             "inherits": "DefaultPreset",
             "hidden": true,
             "cacheVariables": {
-                "TARGET": "Master"
+                "TARGET_CMAKE_NAME": "master",
+                "SRC_DIR": "${sourceDir}/src"
             }
         },
         {
             "name": "master-linux",
             "inherits": "master",
             "cacheVariables": {
-                "miDebuggerPath" : "C:/msys64/ucrt64/bin/gdb.exe"
+                "miDebuggerPath" : "C:/msys64/ucrt64/bin/gdb.exe",
+                "CUSTOM_CMAKE_NAME": "linux"
             }
         },
         {
@@ -31,7 +32,8 @@
             "inherits": "master",
             "cacheVariables": {
                 "miDebuggerPath" : "/usr/bin/gdb",
-                "CMAKE_MAKE_PROGRAM" : "C:/Users/cipry/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe"
+                "CMAKE_MAKE_PROGRAM" : "C:/Users/cipry/AppData/Local/Microsoft/WinGet/Packages/Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe/ninja.exe",
+                "CUSTOM_CMAKE_NAME": "windows"
             }
         },
         {
@@ -43,21 +45,23 @@
                 "PATH": "/usr/local/bin:/usr/bin:/bin:/home/esp/xtensa-lx106-elf/bin"
             },
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "/home/esp/ESP8266_RTOS_SDK/tools/cmake/toolchain-esp8266.cmake"
+                "CMAKE_TOOLCHAIN_FILE": "/home/esp/ESP8266_RTOS_SDK/tools/cmake/toolchain-esp8266.cmake",
+                "SRC_DIR": "${sourceDir}",
+                "TARGET_CMAKE_NAME": "slave"
             }
         },
         {
             "name": "DrumKit",
             "inherits": "SlavePreset",
             "cacheVariables": {
-                "TARGET": "DrumKit"
+                "CUSTOM_CMAKE_NAME": "drumkit"
             }
         },
         {
             "name": "CymbalKit",
             "inherits": "SlavePreset",
             "cacheVariables": {
-                "TARGET": "CymbalKit"
+                "CUSTOM_CMAKE_NAME": "cymbalkit"
             }
         }
     ]

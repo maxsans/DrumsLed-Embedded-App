@@ -33,15 +33,10 @@ add_include_dirs(
     )
 
 # Add the specific cmake file for the target
-message(STATUS "Target: ${TARGET}")
-if(${TARGET} STREQUAL "DrumKit")
-    include(cmake/targets/slaves/drumkit.cmake)
-elseif(${TARGET} STREQUAL "CymbalKit")
-    include(cmake/targets/slaves/cymbalkit.cmake)
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/slave_custom/${CUSTOM_CMAKE_NAME}.cmake)
 
 # Print the list of sources and include directories
 print_sources_and_include_dirs()
 
 # Add the specific cmake file for esp8266
-include(cmake/targets/slaves/esp8266.cmake)
+include(cmake/targets/slave/esp8266.cmake)
