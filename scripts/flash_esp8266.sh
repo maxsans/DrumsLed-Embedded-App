@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILD_DIR="${1:-out/build/DrumKit}"
+BUILD_DIR="${1:-build/DrumKit}"
 APP_BIN="${2:-build/DrumKit.bin}"
 
 BOOTLOADER_PATH="$BUILD_DIR/bootloader/bootloader.bin"
