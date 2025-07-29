@@ -1,6 +1,6 @@
 #include "simpleColor.hpp"
 
-SimpleColor::SimpleColor(RgbLed *rgbLed, RgbColor color) : Animation(ANIMATION_TYPE_SIMPLE_COLOR, NULL, rgbLed)
+SimpleColor::SimpleColor(RgbLed *rgbLed, RgbColor color) : Animation(ANIMATION_TYPE_SIMPLE_COLOR, nullptr, rgbLed)
 {
     m_color = color;
 }
