@@ -36,7 +36,7 @@ add_include_dirs(
 include(${CMAKE_CURRENT_LIST_DIR}/slave_custom/${CUSTOM_CMAKE_NAME}.cmake)
 
 # Print the list of sources and include directories
-print_sources_and_include_dirs()
+print_app_info()
 
 # Add the specific cmake file for esp8266
 include(cmake/targets/slave/esp8266.cmake)

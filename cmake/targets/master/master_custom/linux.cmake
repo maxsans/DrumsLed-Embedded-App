@@ -6,3 +6,7 @@ add_sources(
     api/time/timeLinux.cpp
     api/terminal/terminalLinux.cpp
     )
+
+add_libraries(
+    pthread
+)

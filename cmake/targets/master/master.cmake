@@ -48,8 +48,12 @@ add_include_dirs(
     )
 
 # Print the sources and include directories
-print_sources_and_include_dirs()
+print_app_info()
 
+# Add .exe to the target name
+set(TARGET ${TARGET}.exe)
+
+# Create the executable target
 add_executable(${TARGET} ${SRCS})
 target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
 
@@ -57,15 +61,4 @@ target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
 # Link libraries
 ####################################################################################################
 
-# Common libraries
-
-# Windows libraries
-if(WIN32)
-    target_link_libraries(${TARGET} Ws2_32)
-    target_link_libraries(${TARGET} iphlpapi)
-endif()
-
-# Linux libraries
-if(UNIX)
-    target_link_libraries(${TARGET} pthread)
-endif()
+target_link_libraries(${TARGET} ${LIBS})

@@ -24,8 +24,20 @@ macro(add_include_dirs)
     endforeach()
 endmacro()
 
-# Macro to print the list of sources and include directories
-macro(print_sources_and_include_dirs)
+# Macro to add a library to the list of libraries (LIBS)
+# if LIBS is not defined, it will be created with a global scope
+macro(add_libraries)
+    if(NOT DEFINED LIBS)
+        set(LIBS "" CACHE INTERNAL "List of libraries")
+    endif()
+    foreach(lib ${ARGN})
+        list(APPEND LIBS "${lib}")
+    endforeach()
+endmacro()
+
+# Macro to print the list of sources, the list of include directories
+# and the list of libraries
+macro(print_app_info)
     message(STATUS "Sources:")
     foreach(src ${SRCS})
         message(STATUS "    ${src}")
@@ -33,5 +45,9 @@ macro(print_sources_and_include_dirs)
     message(STATUS "Include directories:")
     foreach(dir ${INCLUDE_DIRS})
         message(STATUS "    ${dir}")
+    endforeach()
+    message(STATUS "Libraries:")
+    foreach(lib ${LIBS})
+        message(STATUS "    ${lib}")
     endforeach()
 endmacro()
