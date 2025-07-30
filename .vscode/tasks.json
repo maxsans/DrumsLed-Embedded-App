@@ -31,6 +31,17 @@
             },
             "problemMatcher": [],
             "detail": "Flash all images using esptool.py script"
+        },
+        {
+            "type": "shell",
+            "label": "build-all",
+            "command": "./scripts/build_all.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Build all CMake presets using build_all.sh"
         }
     ]
 }
