@@ -1,0 +1,12 @@
+---
+BasedOnStyle: Microsoft
+ColumnLimit: 80
+IndentCaseLabels: true
+BinPackArguments: false
+BinPackParameters : false
+BreakBeforeBinaryOperators: All
+CommentPragmas: '^'
+AlignArrayOfStructures: Left
+AccessModifierOffset: 0
+IndentWidth: 4
+AllowShortIfStatementsOnASingleLine: false

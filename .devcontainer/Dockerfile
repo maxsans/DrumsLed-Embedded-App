@@ -18,7 +18,8 @@ RUN apt-get update && \
     mingw-w64 \
     ninja-build \
     gdb \
-    jq
+    jq \
+    clang-format
 
 # Create an alias for python3
 RUN ln -s /usr/bin/python3 /usr/bin/python
