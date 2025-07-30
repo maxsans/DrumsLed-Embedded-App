@@ -43,7 +43,8 @@ uint32_t RecordSlot::getSize()
     return m_records.size();
 }
 
-void RecordSlot::calculateImpacts(ImpactsManager *impactsManager, uint32_t mainMicroIndex)
+void RecordSlot::calculateImpacts(ImpactsManager *impactsManager,
+                                  uint32_t mainMicroIndex)
 {
     // Calculate the real impacts of the main micro of this record on all others micros
     // Method :
@@ -52,11 +53,12 @@ void RecordSlot::calculateImpacts(ImpactsManager *impactsManager, uint32_t mainM
     Micro *l_mainMicro = impactsManager->getMicro(mainMicroIndex);
 
     assert(m_records.size() > 0);
-    assert( (mainMicroIndex < m_records.size()) && (mainMicroIndex >= 0) );
+    assert((mainMicroIndex < m_records.size()) && (mainMicroIndex >= 0));
 
     uint32_t l_nbMicros = m_records[mainMicroIndex]->getSize();
 
-    for (uint32_t l_ImpactedMicroIndex = 0; l_ImpactedMicroIndex < l_nbMicros; l_ImpactedMicroIndex++)
+    for (uint32_t l_ImpactedMicroIndex = 0; l_ImpactedMicroIndex < l_nbMicros;
+         l_ImpactedMicroIndex++)
     {
         Micro *l_ImpactedMicro = impactsManager->getMicro(l_ImpactedMicroIndex);
         if (l_ImpactedMicroIndex == mainMicroIndex)
@@ -67,18 +69,23 @@ void RecordSlot::calculateImpacts(ImpactsManager *impactsManager, uint32_t mainM
         {
             float l_sum = 0;
             uint32_t l_nbRecords = m_records.size();
-            for (uint32_t l_recordIndex = 0; l_recordIndex < l_nbRecords; l_recordIndex++)
+            for (uint32_t l_recordIndex = 0; l_recordIndex < l_nbRecords;
+                 l_recordIndex++)
             {
                 Record *l_record = m_records[l_recordIndex];
-                uint8_t l_ImpactorMicroValue = l_record->getValue(mainMicroIndex);
-                uint8_t l_ImpactedMicroValue = l_record->getValue(l_ImpactedMicroIndex);
+                uint8_t l_ImpactorMicroValue
+                    = l_record->getValue(mainMicroIndex);
+                uint8_t l_ImpactedMicroValue
+                    = l_record->getValue(l_ImpactedMicroIndex);
                 if (l_ImpactorMicroValue != 0)
                 {
-                    l_sum += (float)l_ImpactedMicroValue / (float)l_ImpactorMicroValue;
+                    l_sum += (float)l_ImpactedMicroValue
+                             / (float)l_ImpactorMicroValue;
                 }
             }
             float l_impact = l_sum / l_nbRecords;
-            impactsManager->setRealImpact(l_mainMicro, l_ImpactedMicro, l_impact);
+            impactsManager->setRealImpact(
+                l_mainMicro, l_ImpactedMicro, l_impact);
         }
     }
 }

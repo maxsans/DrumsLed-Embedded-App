@@ -1,10 +1,10 @@
 #include "udp.hpp"
-#include <string.h>
-#include <lwip/sockets.h>
+#include <esp_system.h>
+#include <esp_wifi.h>
 #include <lwip/inet.h>
 #include <lwip/netdb.h>
-#include <esp_wifi.h>
-#include <esp_system.h>
+#include <lwip/sockets.h>
+#include <string.h>
 
 static int udp_sock = -1;
 
@@ -21,7 +21,10 @@ void udp_init()
             local_addr.sin_family = AF_INET;
             local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
             local_addr.sin_port = htons(UDP_DEFAULT_PORT);
-            if (bind(udp_sock, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
+            if (bind(udp_sock,
+                     (struct sockaddr *)&local_addr,
+                     sizeof(local_addr))
+                < 0)
             {
                 printf("UDP bind failed on port %d\n", UDP_DEFAULT_PORT);
                 close(udp_sock);
@@ -51,7 +54,12 @@ void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
     dest_addr.sin_addr.s_addr = inet_addr(ip);
-    sendto(udp_sock, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+    sendto(udp_sock,
+           data,
+           len,
+           0,
+           (struct sockaddr *)&dest_addr,
+           sizeof(dest_addr));
 }
 
 void udp_send_broadcast(const char *data, int16_t len, int16_t port)
@@ -62,13 +70,22 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
         return;
     }
     int broadcastEnable = 1;
-    setsockopt(udp_sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
+    setsockopt(udp_sock,
+               SOL_SOCKET,
+               SO_BROADCAST,
+               &broadcastEnable,
+               sizeof(broadcastEnable));
     struct sockaddr_in dest_addr;
     memset(&dest_addr, 0, sizeof(dest_addr));
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
     dest_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-    sendto(udp_sock, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+    sendto(udp_sock,
+           data,
+           len,
+           0,
+           (struct sockaddr *)&dest_addr,
+           sizeof(dest_addr));
 }
 
 uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
@@ -94,7 +111,8 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         fcntl(udp_sock, F_SETFL, flags | O_NONBLOCK);
     }
 
-    int recv_len = recvfrom(udp_sock, data, len, 0, (struct sockaddr *)&src_addr, &addr_len);
+    int recv_len = recvfrom(
+        udp_sock, data, len, 0, (struct sockaddr *)&src_addr, &addr_len);
     if (recv_len > 0)
     {
         // printf("Received %d bytes from %s:%d\n", recv_len, inet_ntoa(src_addr.sin_addr), ntohs(src_addr.sin_port));
@@ -152,7 +170,12 @@ void udp_get_host_mac(char *mac)
 {
     uint8_t mac_addr[6];
     esp_wifi_get_mac(WIFI_IF_STA, mac_addr);
-    sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X",
-            mac_addr[0], mac_addr[1], mac_addr[2],
-            mac_addr[3], mac_addr[4], mac_addr[5]);
+    sprintf(mac,
+            "%02X:%02X:%02X:%02X:%02X:%02X",
+            mac_addr[0],
+            mac_addr[1],
+            mac_addr[2],
+            mac_addr[3],
+            mac_addr[4],
+            mac_addr[5]);
 }

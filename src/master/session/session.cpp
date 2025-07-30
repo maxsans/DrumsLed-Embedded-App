@@ -1,32 +1,22 @@
 #include "session.hpp"
+#include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/term/term.hpp"
-#include "tools/async/async.hpp"
 
 Session::Session(bool active)
-    : m_active(active),
-      m_animationManager(),
-      m_moduleManager(active),
+    : m_active(active), m_animationManager(), m_moduleManager(active),
       m_learning(nullptr)
 {
     // Register some terminal commands
     Term::registerCommand(TermCommand(
-        TermAction([this](const TermParameters&)
-        {
-            this->startLearning();
-        }),
+        TermAction([this](const TermParameters &) { this->startLearning(); }),
         "start_learning",
-        "Starts the learning process."
-    ));
+        "Starts the learning process."));
 
     Term::registerCommand(TermCommand(
-        TermAction([this](const TermParameters&)
-        {
-            this->stopLearning();
-        }),
+        TermAction([this](const TermParameters &) { this->stopLearning(); }),
         "stop_learning",
-        "Stops the learning process."
-    ));
+        "Stops the learning process."));
 }
 
 Session::~Session()
@@ -60,8 +50,7 @@ void Session::learningDoneCallback(void *object)
 void Session::processLearningDone()
 {
     // Use Async because the callback is called from Learning class itself
-    Async::registerAsync([this]()
-    {
+    Async::registerAsync([this]() {
         LogStream::cout << "Learning session is done." << LogStream::endl;
         // Delete the learning session
         if (m_learning != nullptr)
@@ -77,17 +66,20 @@ void Session::startLearning()
     // Check if the session is active
     if (!m_active)
     {
-        LogStream::cout << "Session is not active. Cannot start learning." << LogStream::endl;
+        LogStream::cout << "Session is not active. Cannot start learning."
+                        << LogStream::endl;
         return;
     }
     // Check if a learning session is already active
     if (m_learning != nullptr)
     {
-        LogStream::cout << "A learning session is already active." << LogStream::endl;
+        LogStream::cout << "A learning session is already active."
+                        << LogStream::endl;
         return;
     }
     // Create a new learning session
-    m_learning = new Learning(&m_moduleManager, Session::learningDoneCallback, this);
+    m_learning
+        = new Learning(&m_moduleManager, Session::learningDoneCallback, this);
     m_learning->startLearning();
 }
 

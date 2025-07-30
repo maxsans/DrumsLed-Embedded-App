@@ -1,15 +1,15 @@
-#include "launch.hpp"
+#include "api/tcp/tcp.hpp"
 #include "api/udp/udp.hpp"
-#include "tools/logStream/logStream.hpp"
+#include "launch.hpp"
+#include "micro/learning/learning.hpp"
+#include "modules/moduleManager.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
 #include "tools/async/async.hpp"
-#include "api/tcp/tcp.hpp"
-#include "modules/moduleManager.hpp"
-#include "micro/learning/learning.hpp"
+#include "tools/logStream/logStream.hpp"
 #include "tools/term/term.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 
 void launch()
 {
@@ -35,17 +35,20 @@ void launch()
     // Create a session
     Session l_session(true);
 
-
     // Initialize the interComParser
     InterComParser l_interComParser;
-    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg, void *object) {
-        LogStream::cout << "Received Example message from " << client.getIP().getIpString()
-        << " with MAC: " << client.getMAC().getMacString()
-        << " and message data: " << ((InterMsgExample &)msg).getExampleData()
-        << LogStream::endl;
-    });
+    InterComParser::registerCallback(
+        InterMsgId::Example,
+        [](const Client &client, InterMsg &msg, void *object) {
+            LogStream::cout << "Received Example message from "
+                            << client.getIP().getIpString()
+                            << " with MAC: " << client.getMAC().getMacString()
+                            << " and message data: "
+                            << ((InterMsgExample &)msg).getExampleData()
+                            << LogStream::endl;
+        });
 
-    while(1)
+    while (1)
     {
         periodicCallsMs::processAll();
         Async::process();

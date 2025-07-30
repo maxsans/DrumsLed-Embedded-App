@@ -1,7 +1,7 @@
 #include "time.hpp"
 
-#include <sys/time.h>
 #include <esp_timer.h>
+#include <sys/time.h>
 
 void time_init()
 {

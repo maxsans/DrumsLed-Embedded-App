@@ -1,10 +1,9 @@
 #include "kitServiceType.hpp"
 
 // Definition of static constexpr array
-constexpr const char* KitServiceType::m_typeStrings[KitServiceType::Count];
+constexpr const char *KitServiceType::m_typeStrings[KitServiceType::Count];
 
-KitServiceType::KitServiceType(Type type)
-    : m_type(type)
+KitServiceType::KitServiceType(Type type) : m_type(type)
 {
 }
 

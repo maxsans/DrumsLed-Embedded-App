@@ -3,21 +3,29 @@
 #include "tools/logStream/logStream.hpp"
 
 InterMsgPingSlaves::InterMsgPingSlaves(Client client)
-    : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data), m_sendType)
+    : InterMsg(
+          client,
+          InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)),
+                       (char *)&m_data),
+          m_sendType)
 {
 }
 
 InterMsgPingSlaves::InterMsgPingSlaves()
-    : InterMsg(InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)), (char *)&m_data))
+    : InterMsg(
+          InterMsgData(InterMsgHeader(InterMsgId::PingSlaves, sizeof(m_data)),
+                       (char *)&m_data))
 {
 }
 
-InterMsgPingSlaves::InterMsgPingSlaves(Client client, char *rawData, uint32_t size)
+InterMsgPingSlaves::InterMsgPingSlaves(Client client,
+                                       char *rawData,
+                                       uint32_t size)
     : InterMsg(client, InterMsgData(rawData, size, (char *)&m_data), m_sendType)
 {
 }
 
-const char* InterMsgPingSlaves::getPrivData() const
+const char *InterMsgPingSlaves::getPrivData() const
 {
     return m_data;
 }

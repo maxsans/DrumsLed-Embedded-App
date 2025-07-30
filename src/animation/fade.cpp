@@ -1,8 +1,9 @@
 #include "fade.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
-Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, timeMs duration) :
-    Animation(ANIMATION_TYPE_FADE, m, rgbLed), m_periodicCall(0, Fade::process, this)
+Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, timeMs duration)
+    : Animation(ANIMATION_TYPE_FADE, m, rgbLed),
+      m_periodicCall(0, Fade::process, this)
 {
     m_color = color;
     m_duration = duration;
@@ -20,7 +21,7 @@ void Fade::start()
 
 void Fade::process(void *object)
 {
-    Fade *fade = static_cast<Fade*>(object);
+    Fade *fade = static_cast<Fade *>(object);
     fade->process();
 }
 

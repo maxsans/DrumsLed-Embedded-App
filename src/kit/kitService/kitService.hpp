@@ -11,58 +11,58 @@
 class KitService
 {
     private:
-        /**
-         * @brief The type of the kit service.
-         */
-        KitServiceType m_serviceType;
+    /**
+     * @brief The type of the kit service.
+     */
+    KitServiceType m_serviceType;
 
-        /**
-         * @brief The master client for communication.
-         */
-        Client m_masterClient;
+    /**
+     * @brief The master client for communication.
+     */
+    Client m_masterClient;
 
     protected:
-        /**
-         * @brief Constructor for KitService.
-         * @param serviceType The type of the kit service.
-         * @note This constructor is protected to prevent direct instantiation of KitService.
-         */
-        KitService(KitServiceType serviceType);
+    /**
+     * @brief Constructor for KitService.
+     * @param serviceType The type of the kit service.
+     * @note This constructor is protected to prevent direct instantiation of KitService.
+     */
+    KitService(KitServiceType serviceType);
 
-        /**
-         * @brief Get the master client for communication.
-         */
-        Client getMasterClient() const;
+    /**
+     * @brief Get the master client for communication.
+     */
+    Client getMasterClient() const;
 
-        /**
-         * @brief Called when the kit service is started.
-         * @note This method can be overridden by derived classes to perform additional initialization.
-         * @note By default, it does nothing.
-         */
-        virtual void onStart() {};
+    /**
+     * @brief Called when the kit service is started.
+     * @note This method can be overridden by derived classes to perform additional initialization.
+     * @note By default, it does nothing.
+     */
+    virtual void onStart() {};
 
-        /**
-         * @brief Called when the kit service is stopped.
-         * @note This method can be overridden by derived classes to perform additional cleanup.
-         * @note By default, it does nothing.
-         */
-        virtual void onStop() {};
+    /**
+     * @brief Called when the kit service is stopped.
+     * @note This method can be overridden by derived classes to perform additional cleanup.
+     * @note By default, it does nothing.
+     */
+    virtual void onStop() {};
 
     public:
-        KitService() = delete; // Prevent default constructor
+    KitService() = delete; // Prevent default constructor
 
-        /**
-         * @brief Start the kit service.
-         * @param masterClient The master client for communication.
-         * @note This method should be called when the communication with the master client is established.
-         */
-        void start(Client masterClient);
+    /**
+     * @brief Start the kit service.
+     * @param masterClient The master client for communication.
+     * @note This method should be called when the communication with the master client is established.
+     */
+    void start(Client masterClient);
 
-        /**
-         * @brief Stop the kit service.
-         * @note This method should be called when the communication with the master client is lost.
-         */
-        void stop();
+    /**
+     * @brief Stop the kit service.
+     * @note This method should be called when the communication with the master client is lost.
+     */
+    void stop();
 };
 
 #endif // __KIT_SERVICE_HPP__

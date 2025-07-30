@@ -11,32 +11,32 @@
 class AnimationManager
 {
     private:
-        std::vector<Animation*> m_animations;
+    std::vector<Animation *> m_animations;
 
     public:
-        AnimationManager();
-        ~AnimationManager();
+    AnimationManager();
+    ~AnimationManager();
 
-        /**
-         * @brief Add an animation.
-         *
-         * @param anim A pointer to the animation object to add.
-         */
-        void addAnimation(Animation* anim);
+    /**
+     * @brief Add an animation.
+     *
+     * @param anim A pointer to the animation object to add.
+     */
+    void addAnimation(Animation *anim);
 
-        /**
-         * @brief Remove an animation.
-         *
-         * @param index The index of the animation to remove.
-         */
-        void removeAnimation(uint32_t index);
+    /**
+     * @brief Remove an animation.
+     *
+     * @param index The index of the animation to remove.
+     */
+    void removeAnimation(uint32_t index);
 
-        /**
-         * @brief Remove an animation.
-         *
-         * @param anim A pointer to the animation object to remove.
-         */
-        void removeAnimation(Animation* anim);
+    /**
+     * @brief Remove an animation.
+     *
+     * @param anim A pointer to the animation object to remove.
+     */
+    void removeAnimation(Animation *anim);
 };
 
 #endif

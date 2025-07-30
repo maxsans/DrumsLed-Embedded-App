@@ -1,13 +1,11 @@
 #include "kitType.hpp"
 
 // Definition of static constexpr array
-constexpr const char* KitType::typeStrings[KitType::Type::Count];
+constexpr const char *KitType::typeStrings[KitType::Type::Count];
 
-KitType::KitType(Type type)
-    : m_type(type)
+KitType::KitType(Type type) : m_type(type)
 {
 }
-
 
 std::string KitType::toString() const
 {

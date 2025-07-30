@@ -4,7 +4,9 @@
 
 #include <cassert>
 
-InterMsgGeneric::InterMsgGeneric(Client client, InterMsgData data, SendType sendType)
+InterMsgGeneric::InterMsgGeneric(Client client,
+                                 InterMsgData data,
+                                 SendType sendType)
     : InterMsg(client, data, sendType)
 {
     assert(data.getHeader().getPrivSize() <= MAX_PRIV_DATA_SIZE);
@@ -15,12 +17,14 @@ InterMsgGeneric::InterMsgGeneric(Client client, InterMsgData data, SendType send
 }
 
 InterMsgGeneric::InterMsgGeneric(Client client, char *rawData, uint32_t size)
-    : InterMsg(client, InterMsgData(rawData, size, m_data.privData), InterMsg::SendType::None)
+    : InterMsg(client,
+               InterMsgData(rawData, size, m_data.privData),
+               InterMsg::SendType::None)
 {
     assert(size <= MAX_PRIV_DATA_SIZE);
 }
 
-const char* InterMsgGeneric::getPrivData() const
+const char *InterMsgGeneric::getPrivData() const
 {
     return m_data.privData;
 }

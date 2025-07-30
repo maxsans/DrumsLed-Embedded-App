@@ -6,7 +6,9 @@ volatile bool Async::m_locked = false;
 
 void Async::lock()
 {
-    while (Async::m_locked) { /* busy wait */ }
+    while (Async::m_locked)
+    { /* busy wait */
+    }
     Async::m_locked = true;
 }
 
@@ -20,7 +22,8 @@ void Async::process()
     std::vector<Async *> toProcess;
     {
         lock();
-        toProcess.swap(m_asyncOperations); // Take ownership and clear the shared list
+        toProcess.swap(
+            m_asyncOperations); // Take ownership and clear the shared list
         unlock();
     }
     for (auto it : toProcess)
@@ -38,8 +41,7 @@ void Async::process()
 }
 
 Async::Async(AsyncCallback callback, bool mustDelete)
-    : m_callback(callback),
-      m_mustDelete(mustDelete)
+    : m_callback(callback), m_mustDelete(mustDelete)
 {
     lock();
     m_asyncOperations.push_back(this);
@@ -61,7 +63,9 @@ void Async::registerAsync(AsyncCallback callback)
 bool Async::isDone() const
 {
     lock();
-    bool done = std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this) == m_asyncOperations.end();
+    bool done
+        = std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this)
+          == m_asyncOperations.end();
     unlock();
     return done;
 }

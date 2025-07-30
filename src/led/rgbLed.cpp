@@ -1,7 +1,7 @@
 #include "rgbLed.hpp"
 
-#include <cmath>
 #include <assert.h>
+#include <cmath>
 
 RgbLed::RgbLed()
 {

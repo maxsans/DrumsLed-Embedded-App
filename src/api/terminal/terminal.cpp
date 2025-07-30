@@ -24,10 +24,13 @@ ApiTerminal::~ApiTerminal()
 
 void ApiTerminal::threadFunc()
 {
-    while (m_running) {
-        if (terminal_kbhit()) {
+    while (m_running)
+    {
+        if (terminal_kbhit())
+        {
             char c = terminal_getch();
-            if (m_onCharReceivedCallback) {
+            if (m_onCharReceivedCallback)
+            {
                 m_onCharReceivedCallback(c);
             }
         }

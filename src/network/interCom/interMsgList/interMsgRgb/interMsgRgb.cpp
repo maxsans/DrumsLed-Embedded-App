@@ -2,8 +2,14 @@
 
 #include "tools/logStream/logStream.hpp"
 
-InterMsgRgb::InterMsgRgb(Client client, uint8_t red, uint8_t green, uint8_t blue)
-    : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Rgb, sizeof(m_data)), (char *)&m_data), m_sendType)
+InterMsgRgb::InterMsgRgb(Client client,
+                         uint8_t red,
+                         uint8_t green,
+                         uint8_t blue)
+    : InterMsg(client,
+               InterMsgData(InterMsgHeader(InterMsgId::Rgb, sizeof(m_data)),
+                            (char *)&m_data),
+               m_sendType)
 {
     m_data.red = red;
     m_data.green = green;
@@ -15,7 +21,7 @@ InterMsgRgb::InterMsgRgb(Client client, char *rawData, uint32_t size)
 {
 }
 
-const char* InterMsgRgb::getPrivData() const
+const char *InterMsgRgb::getPrivData() const
 {
     return (const char *)&m_data;
 }
@@ -37,8 +43,7 @@ uint8_t InterMsgRgb::getBlue() const
 
 std::string InterMsgRgb::toString() const
 {
-    return "InterMsgRgb: RGB(" + std::to_string(m_data.red) +
-           ", " + std::to_string(m_data.green) +
-           ", " + std::to_string(m_data.blue) +
-           ", client = " + getClient().getIP().getIpString();
+    return "InterMsgRgb: RGB(" + std::to_string(m_data.red) + ", "
+           + std::to_string(m_data.green) + ", " + std::to_string(m_data.blue)
+           + ", client = " + getClient().getIP().getIpString();
 }

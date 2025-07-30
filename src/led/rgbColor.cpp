@@ -27,7 +27,9 @@ void RgbColor::setColor(RawColor raw)
     m_rawColor = raw;
 }
 
-void RgbColor::getColor(uint8_t *redValue, uint8_t *greenValue, uint8_t *blueValue)
+void RgbColor::getColor(uint8_t *redValue,
+                        uint8_t *greenValue,
+                        uint8_t *blueValue)
 {
     *redValue = m_rawColor.r;
     *greenValue = m_rawColor.g;
@@ -56,9 +58,7 @@ uint8_t RgbColor::getBlue()
 
 RgbColor RgbColor::operator*(float value)
 {
-    return RgbColor(
-        static_cast<uint8_t>(value * m_rawColor.r),
-        static_cast<uint8_t>(value * m_rawColor.g),
-        static_cast<uint8_t>(value * m_rawColor.b)
-    );
+    return RgbColor(static_cast<uint8_t>(value * m_rawColor.r),
+                    static_cast<uint8_t>(value * m_rawColor.g),
+                    static_cast<uint8_t>(value * m_rawColor.b));
 }

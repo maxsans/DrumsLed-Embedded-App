@@ -1,7 +1,7 @@
 #include "interMsgData.hpp"
 
-#include <cstring>
 #include <cassert>
+#include <cstring>
 
 InterMsgData::InterMsgData(InterMsgHeader header, char *privData)
     : m_header(header), m_privData(privData)
@@ -30,7 +30,8 @@ InterMsgData::InterMsgData(char *rawData, uint32_t rawSize, char *privData)
 uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
 {
     assert(data != nullptr && "Data pointer cannot be null.");
-    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
+    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE
+           && "Private data size exceeds maximum allowed size.");
     std::memcpy(data, m_privData, m_header.getPrivSize());
     return m_header.getPrivSize();
 }
@@ -38,7 +39,8 @@ uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
 uint32_t InterMsgData::getData(char data[MAX_PRIV_DATA_SIZE]) const
 {
     assert(data != nullptr && "Data pointer cannot be null.");
-    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE && "Private data size exceeds maximum allowed size.");
+    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE
+           && "Private data size exceeds maximum allowed size.");
     // Copy the header data to the output buffer
     uint32_t headerSize = m_header.getHeaderSize();
     std::memcpy(data, &m_header, headerSize);
@@ -48,7 +50,7 @@ uint32_t InterMsgData::getData(char data[MAX_PRIV_DATA_SIZE]) const
     return headerSize + m_header.getPrivSize();
 }
 
-const InterMsgHeader& InterMsgData::getHeader() const
+const InterMsgHeader &InterMsgData::getHeader() const
 {
     return m_header;
 }
@@ -65,7 +67,8 @@ bool InterMsgData::operator==(const InterMsgData &other) const
         return true; // Both have no private data, considered equal
     }
 
-    return std::memcmp(m_privData, other.m_privData, m_header.getPrivSize()) == 0;
+    return std::memcmp(m_privData, other.m_privData, m_header.getPrivSize())
+           == 0;
 }
 
 bool InterMsgData::operator!=(const InterMsgData &other) const

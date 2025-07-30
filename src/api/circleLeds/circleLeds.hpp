@@ -1,7 +1,6 @@
 #ifndef __CIRCLE_LEDS_HPP__
 #define __CIRCLE_LEDS_HPP__
 
-
 #include <cstdint>
 
 /**
@@ -43,6 +42,9 @@ void circleLedsSetPixel(uint32_t index, uint32_t color);
  * @param green The green component of the color (0-255).
  * @param blue The blue component of the color (0-255).
  */
-void circleLedsSetPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue);
+void circleLedsSetPixel(uint32_t index,
+                        uint8_t red,
+                        uint8_t green,
+                        uint8_t blue);
 
 #endif // __CIRCLE_LEDS_HPP__

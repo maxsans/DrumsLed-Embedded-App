@@ -12,15 +12,15 @@
 
 #include "wifi.hpp"
 
-#include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
+#include "esp_event.h"
 #include "esp_log.h"
 #include "esp_netif.h"
-#include "esp_event.h"
+#include "esp_system.h"
 #include "esp_wifi.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "freertos/task.h"
+#include <string.h>
 
 #include "api/logs/logs.hpp"
 
@@ -45,14 +45,17 @@ static char g_ssid[SSID_MAX_LENGTH];
 static char g_password[PASSWORD_MAX_LENGTH];
 static bool g_connected = false;
 
-static void event_handler(void *arg, esp_event_base_t event_base,
-                          int32_t event_id, void *event_data)
+static void event_handler(void *arg,
+                          esp_event_base_t event_base,
+                          int32_t event_id,
+                          void *event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
     {
         esp_wifi_connect();
     }
-    else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
+    else if (event_base == WIFI_EVENT
+             && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
         esp_wifi_connect();
         log("retry to connect to the AP\n");
@@ -60,8 +63,7 @@ static void event_handler(void *arg, esp_event_base_t event_base,
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        log("got ip: %s \n",
-            ip4addr_ntoa(&event->ip_info.ip));
+        log("got ip: %s \n", ip4addr_ntoa(&event->ip_info.ip));
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
@@ -79,8 +81,10 @@ static void wifi_connect_task(void *pvParameters)
         wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
         ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-        ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
-        ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
+        ESP_ERROR_CHECK(esp_event_handler_register(
+            WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+        ESP_ERROR_CHECK(esp_event_handler_register(
+            IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
 
         wifi_config_t wifi_config;
         memset(&wifi_config, 0, sizeof(wifi_config));
@@ -96,13 +100,17 @@ static void wifi_connect_task(void *pvParameters)
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_start());
 
-        log("wifi_init_sta finished. Trying to connect to AP (ssid : %s, password : %s)\n", wifi_config.sta.ssid, wifi_config.sta.password);
+        log("wifi_init_sta finished. Trying to connect to AP (ssid : %s, "
+            "password : %s)\n",
+            wifi_config.sta.ssid,
+            wifi_config.sta.password);
 
-        EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                               WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                               pdFALSE,
-                                               pdFALSE,
-                                               portMAX_DELAY);
+        EventBits_t bits
+            = xEventGroupWaitBits(s_wifi_event_group,
+                                  WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
+                                  pdFALSE,
+                                  pdFALSE,
+                                  portMAX_DELAY);
 
         if (bits & WIFI_CONNECTED_BIT)
         {
@@ -110,14 +118,20 @@ static void wifi_connect_task(void *pvParameters)
             g_connected = true;
             // Attendre la d�connexion
             xEventGroupClearBits(s_wifi_event_group, WIFI_FAIL_BIT);
-            xEventGroupWaitBits(s_wifi_event_group, WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+            xEventGroupWaitBits(s_wifi_event_group,
+                                WIFI_FAIL_BIT,
+                                pdFALSE,
+                                pdFALSE,
+                                portMAX_DELAY);
             log("WiFi disconnected, will try to reconnect...\n");
             g_connected = false;
         }
         else if (bits & WIFI_FAIL_BIT)
         {
             g_connected = false;
-            log("Failed to connect to SSID: %s, password: %s\n", g_ssid, g_password);
+            log("Failed to connect to SSID: %s, password: %s\n",
+                g_ssid,
+                g_password);
             vTaskDelay(RECONNECT_DELAY_MS / portTICK_PERIOD_MS);
         }
         else
@@ -126,8 +140,10 @@ static void wifi_connect_task(void *pvParameters)
             log("UNEXPECTED EVENT\n");
         }
 
-        ESP_ERROR_CHECK(esp_event_handler_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
-        ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
+        ESP_ERROR_CHECK(esp_event_handler_unregister(
+            IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
+        ESP_ERROR_CHECK(esp_event_handler_unregister(
+            WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
         vEventGroupDelete(s_wifi_event_group);
     }
     vTaskDelete(NULL);

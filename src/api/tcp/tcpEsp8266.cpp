@@ -1,14 +1,14 @@
+#include "esp_system.h"
+#include "esp_wifi.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+#include "freertos/task.h"
 #include "tcp.hpp"
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <string.h>
 #include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include <unistd.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/semphr.h"
-#include "esp_wifi.h"
-#include "esp_system.h"
 
 #define TCP_RECV_BUF_SIZE 2048
 
@@ -36,7 +36,8 @@ static void tcp_recv_task(void *pvParameters)
         // Accept a new client if not connected
         if (client_sock < 0)
         {
-            client_sock = accept(listen_sock, (struct sockaddr *)&client_addr, &addr_len);
+            client_sock = accept(
+                listen_sock, (struct sockaddr *)&client_addr, &addr_len);
             if (client_sock < 0)
             {
                 vTaskDelay(pdMS_TO_TICKS(100));
@@ -91,7 +92,12 @@ void tcp_init()
         setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
         bind(listen_sock, (struct sockaddr *)&server_addr, sizeof(server_addr));
         listen(listen_sock, 1); // Only allow 1 client for simplicity
-        xTaskCreate(tcp_recv_task, "tcp_recv_task", 4096, NULL, 5, &tcp_recv_task_handle);
+        xTaskCreate(tcp_recv_task,
+                    "tcp_recv_task",
+                    4096,
+                    NULL,
+                    5,
+                    &tcp_recv_task_handle);
     }
     else
     {
@@ -217,7 +223,12 @@ void tcp_get_host_mac(char *mac)
 {
     uint8_t mac_addr[6];
     esp_wifi_get_mac(WIFI_IF_STA, mac_addr);
-    sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X",
-            mac_addr[0], mac_addr[1], mac_addr[2],
-            mac_addr[3], mac_addr[4], mac_addr[5]);
+    sprintf(mac,
+            "%02X:%02X:%02X:%02X:%02X:%02X",
+            mac_addr[0],
+            mac_addr[1],
+            mac_addr[2],
+            mac_addr[3],
+            mac_addr[4],
+            mac_addr[5]);
 }

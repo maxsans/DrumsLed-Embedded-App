@@ -11,34 +11,34 @@
 class KitConfigGenerator
 {
     private:
-        /**
-         * @brief The kit configuration of the current slave target.
-         */
-        static KitConfig m_kitConfig;
+    /**
+     * @brief The kit configuration of the current slave target.
+     */
+    static KitConfig m_kitConfig;
 
     public:
-        /**
-         * @brief Constructor is private to prevent instantiation.
-         */
-        KitConfigGenerator() = delete;
+    /**
+     * @brief Constructor is private to prevent instantiation.
+     */
+    KitConfigGenerator() = delete;
 
-        /**
-         * @brief Initialize the kit configuration generator.
-         */
-        static void init();
+    /**
+     * @brief Initialize the kit configuration generator.
+     */
+    static void init();
 
-        /**
-         * @brief Get the kit configuration of the current slave target.
-         * @return The kit configuration of the current slave target.
-         */
-        static KitConfig getKitConfig();
+    /**
+     * @brief Get the kit configuration of the current slave target.
+     * @return The kit configuration of the current slave target.
+     */
+    static KitConfig getKitConfig();
 
-        /**
-         * @brief Generate a list of kit services for the current slave target.
-         * @return A vector of pointers to KitService objects.
-         * @note The caller is responsible for managing the lifetime of the KitService objects.
-         */
-        static std::vector<KitService *> generateKitServices();
+    /**
+     * @brief Generate a list of kit services for the current slave target.
+     * @return A vector of pointers to KitService objects.
+     * @note The caller is responsible for managing the lifetime of the KitService objects.
+     */
+    static std::vector<KitService *> generateKitServices();
 };
 
 #endif // __KIT_CONFIG_GENERATOR_HPP__

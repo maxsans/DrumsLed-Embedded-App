@@ -8,12 +8,13 @@ const timeMs KitSrvcLevelAdcSend::m_bufferTime = timeMs(100);
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
-      m_sendPeriodicCall(m_sendInterval, &KitSrvcLevelAdcSend::periodicSendCallback, this),
-      m_measurePeriodicCall(m_measureInterval, &KitSrvcLevelAdcSend::periodicMeasureCallback, this),
-      m_currentIndex(0),
-      m_currentSize(0),
-      m_circularBuffer(new adc_measure_t[getBufferSize()]),
-      m_bufferSum(0)
+      m_sendPeriodicCall(
+          m_sendInterval, &KitSrvcLevelAdcSend::periodicSendCallback, this),
+      m_measurePeriodicCall(m_measureInterval,
+                            &KitSrvcLevelAdcSend::periodicMeasureCallback,
+                            this),
+      m_currentIndex(0), m_currentSize(0),
+      m_circularBuffer(new adc_measure_t[getBufferSize()]), m_bufferSum(0)
 {
     // For now the communication isn't established with the master client
     m_sendPeriodicCall.enable(false);
@@ -60,7 +61,8 @@ void KitSrvcLevelAdcSend::periodicMeasureCallback()
     adc_measure_t level = measureAdcLevel();
 
     // Update the circular buffer with the new measurement
-    m_bufferSum -= m_circularBuffer[m_currentIndex]; // Remove the oldest measurement from the sum
+    m_bufferSum -= m_circularBuffer
+        [m_currentIndex]; // Remove the oldest measurement from the sum
     m_circularBuffer[m_currentIndex] = level; // Add the new measurement
     m_bufferSum += level; // Update the sum with the new measurement
 

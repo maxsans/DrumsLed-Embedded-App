@@ -1,7 +1,11 @@
 #include "termCommand.hpp"
 
-TermCommand::TermCommand(TermAction action, std::string keyword, std::string description)
-    : m_action(action), m_keyword(keyword), m_description(description) {}
+TermCommand::TermCommand(TermAction action,
+                         std::string keyword,
+                         std::string description)
+    : m_action(action), m_keyword(keyword), m_description(description)
+{
+}
 
 void TermCommand::execute(TermParameters parameters)
 {

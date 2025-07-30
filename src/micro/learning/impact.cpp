@@ -2,5 +2,4 @@
 
 Impact::Impact()
 {
-
 }
