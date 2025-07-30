@@ -27,6 +27,7 @@ PRESET_NAMES=()
 
 for PRESET in $PRESETS; do
     BUILD_DIR="build/$PRESET"
+    mkdir -p "$BUILD_DIR"
     LOG_FILE="$BUILD_DIR/build_${PRESET}.log"
     echo "=== Building with preset: $PRESET ==="
     (
