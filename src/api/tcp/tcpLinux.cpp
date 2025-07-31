@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <netdb.h>
@@ -38,10 +39,14 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
 
 uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
-    // Listen on TCP_DEFAULT_PORT and accept one connection
     int listen_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (listen_sock < 0)
         return 0;
+
+    // Set socket to non-blocking
+    int flags = fcntl(listen_sock, F_GETFL, 0);
+    if (flags != -1)
+        fcntl(listen_sock, F_SETFL, flags | O_NONBLOCK);
 
     sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -64,6 +69,20 @@ uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
 
     listen(listen_sock, 1);
 
+    // Use select to check for pending connections (non-blocking)
+    fd_set rfds;
+    FD_ZERO(&rfds);
+    FD_SET(listen_sock, &rfds);
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+    int sel = select(listen_sock + 1, &rfds, NULL, NULL, &tv);
+    if (sel <= 0)
+    {
+        close(listen_sock);
+        return 0;
+    }
+
     sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
     int client_sock
@@ -74,12 +93,23 @@ uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
         return 0;
     }
 
+    // Set client socket non-blocking
+    flags = fcntl(client_sock, F_GETFL, 0);
+    if (flags != -1)
+        fcntl(client_sock, F_SETFL, flags | O_NONBLOCK);
+
     if (ip)
         inet_ntop(AF_INET, &client_addr.sin_addr, ip, INET_ADDRSTRLEN);
     if (port)
         *port = ntohs(client_addr.sin_port);
 
-    ssize_t rlen = recv(client_sock, data, len, 0);
+    // Use select to check if data is available to read (non-blocking)
+    FD_ZERO(&rfds);
+    FD_SET(client_sock, &rfds);
+    sel = select(client_sock + 1, &rfds, NULL, NULL, &tv);
+    ssize_t rlen = 0;
+    if (sel > 0)
+        rlen = recv(client_sock, data, len, 0);
 
     // Optionally get MAC address (not possible from TCP socket directly)
     if (mac)

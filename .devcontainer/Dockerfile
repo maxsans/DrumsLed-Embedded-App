@@ -19,7 +19,9 @@ RUN apt-get update && \
     ninja-build \
     gdb \
     jq \
-    clang-format
+    clang-format \
+    net-tools \
+    iproute2
 
 # Create an alias for python3
 RUN ln -s /usr/bin/python3 /usr/bin/python

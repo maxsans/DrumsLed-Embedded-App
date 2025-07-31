@@ -3,6 +3,7 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
+    "runArgs": ["--network", "host"],
     "extensions": [
         "ms-vscode.cpptools-extension-pack",
         "ms-python.python",

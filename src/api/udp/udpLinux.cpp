@@ -52,14 +52,17 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
                SO_BROADCAST,
                &broadcastEnable,
                sizeof(broadcastEnable));
-    udp_addr.sin_port = htons(port);
-    udp_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
+    struct sockaddr_in bcast_addr;
+    memset(&bcast_addr, 0, sizeof(bcast_addr));
+    bcast_addr.sin_family = AF_INET;
+    bcast_addr.sin_port = htons(port);
+    bcast_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST); // 255.255.255.255
     sendto(udp_socket,
            data,
            len,
            0,
-           (struct sockaddr *)&udp_addr,
-           sizeof(udp_addr));
+           (struct sockaddr *)&bcast_addr,
+           sizeof(bcast_addr));
 }
 
 uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
@@ -94,6 +97,10 @@ uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
                     hwaddr[5]);
         }
         close(s);
+    }
+    else
+    {
+        recv_len = 0;
     }
     return recv_len;
 }
