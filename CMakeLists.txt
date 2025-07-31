@@ -53,14 +53,14 @@ add_sources(
     network/interCom/interMsgList/interMsgAlive/interMsgAlive.cpp
 
     led/rgbColor.cpp
-    )
+)
 
 ####################################################################################################
 # Common include directories for all targets (from src directory)
 ####################################################################################################
 add_include_dirs(
     .
-    )
+)
 
 # Import the specific cmake file
 include(cmake/targets/${TARGET_CMAKE_NAME}/${TARGET_CMAKE_NAME}.cmake)

@@ -35,7 +35,7 @@ add_sources(
     tools/term/termParameter/termParameter.cpp
 
     api/terminal/terminal.cpp
-    )
+)
 
 # Add sources from platform-specific files
 include(${CMAKE_CURRENT_LIST_DIR}/master_custom/${CUSTOM_CMAKE_NAME}.cmake)
@@ -45,7 +45,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/master_custom/${CUSTOM_CMAKE_NAME}.cmake)
 ####################################################################################################
 add_include_dirs(
     master
-    )
+)
 
 # Print the sources and include directories
 print_app_info()

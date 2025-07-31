@@ -3,6 +3,7 @@ import serial
 import argparse
 import time
 
+
 def set_esp_reset(ser, bootloader=False):
     """
     Contrôle les lignes DTR/RTS pour resetter l'ESP.
@@ -27,11 +28,24 @@ def set_esp_reset(ser, bootloader=False):
         ser.rts = False
     time.sleep(0.05)
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Moniteur série minimaliste avec contrôle DTR/RTS")
-    parser.add_argument('-p', '--port', required=True, help='Port série (ex: /dev/ttyUSB0)')
-    parser.add_argument('-b', '--baud', type=int, default=115200, help='Vitesse (baudrate), défaut: 115200')
-    parser.add_argument('--boot', action='store_true', help='Forcer le bootloader au reset')
+    parser = argparse.ArgumentParser(
+        description="Moniteur série minimaliste avec contrôle DTR/RTS"
+    )
+    parser.add_argument(
+        "-p", "--port", required=True, help="Port série (ex: /dev/ttyUSB0)"
+    )
+    parser.add_argument(
+        "-b",
+        "--baud",
+        type=int,
+        default=115200,
+        help="Vitesse (baudrate), défaut: 115200",
+    )
+    parser.add_argument(
+        "--boot", action="store_true", help="Forcer le bootloader au reset"
+    )
     args = parser.parse_args()
 
     try:
@@ -42,7 +56,7 @@ def main():
                 line = ser.readline()
                 if line:
                     try:
-                        print(line.decode('utf-8', errors='replace'), end='')
+                        print(line.decode("utf-8", errors="replace"), end="")
                     except Exception:
                         print(line)
     except KeyboardInterrupt:
@@ -51,5 +65,6 @@ def main():
         print(f"Erreur: {e}")
         sys.exit(1)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

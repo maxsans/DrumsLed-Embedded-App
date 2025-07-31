@@ -5,7 +5,7 @@ add_sources(
     api/tcp/tcpLinux.cpp
     api/time/timeLinux.cpp
     api/terminal/terminalLinux.cpp
-    )
+)
 
 add_libraries(
     pthread

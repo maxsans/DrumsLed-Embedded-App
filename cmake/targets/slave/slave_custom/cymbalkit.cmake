@@ -9,10 +9,10 @@ add_sources(
     api/adc/adcEsp8266.cpp
     api/circleLeds/circleLedsCymbalKit.cpp
     kit/kitConfigGenerator/kitConfigGeneratorCymbalKit.cpp
-    )
+)
 
 ####################################################################################################
 # CymbalKit include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
-    )
+)

@@ -12,9 +12,9 @@ if(NOT DEFINED ENV{PATH})
 else()
     string(FIND "$ENV{PATH}" "xtensa-lx106-elf/bin" PATH_INDEX)
     if(PATH_INDEX EQUAL -1)
-    # Add the default path to the PATH environment variable
-    set(ENV{PATH} "$ENV{HOME}/esp/xtensa-lx106-elf/bin:$ENV{PATH}")
-    message(WARNING "xtensa-lx106-elf/bin is not in the PATH. Adding default path: $ENV{IDF_PATH}/xtensa-lx106-elf/bin")
+        # Add the default path to the PATH environment variable
+        set(ENV{PATH} "$ENV{HOME}/esp/xtensa-lx106-elf/bin:$ENV{PATH}")
+        message(WARNING "xtensa-lx106-elf/bin is not in the PATH. Adding default path: $ENV{IDF_PATH}/xtensa-lx106-elf/bin")
     endif()
 endif()
 

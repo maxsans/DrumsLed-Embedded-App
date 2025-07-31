@@ -9,10 +9,10 @@ add_sources(
     api/adc/adcEsp8266.cpp
     api/circleLeds/circleLedsDrumKit.cpp
     kit/kitConfigGenerator/kitConfigGeneratorDrumKit.cpp
-    )
+)
 
 ####################################################################################################
 # DrumKit include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
-    )
+)

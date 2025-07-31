@@ -23,14 +23,14 @@ add_sources(
     kit/kitService/kitService.cpp
     kit/kitService/srvcAliveSend/srvcAliveSend.cpp
     kit/kit.cpp
-    )
+)
 
 ####################################################################################################
 # Slaves include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
     slaves
-    )
+)
 
 # Add the specific cmake file for the target
 include(${CMAKE_CURRENT_LIST_DIR}/slave_custom/${CUSTOM_CMAKE_NAME}.cmake)
