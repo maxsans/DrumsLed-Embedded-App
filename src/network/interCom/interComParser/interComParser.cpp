@@ -12,22 +12,28 @@ std::map<std::pair<Client, InterMsgId>, InterComParser::CallbackInfo>
     InterComParser::m_clientCallbacks = {};
 
 InterComParser::InterComParser()
-    : m_periodicCall(
-          PERIODIC_CALL_INTERVAL_MS, InterComParser::periodicCallBack, this)
 {
+    // Initialize the TCP and UDP connections
+    udp_init([this](const char *data,
+                    int16_t len,
+                    const char *ip,
+                    int16_t port,
+                    const char *mac) {
+        this->processMessage(data, len, ip, port, mac);
+    });
 }
 
-void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE],
-                                    uint32_t msgSize,
-                                    const char *ipAddress,
-                                    uint16_t port,
-                                    const char *macAddress)
+void InterComParser::processMessage(const char *data,
+                                    int16_t len,
+                                    const char *ip,
+                                    int16_t port,
+                                    const char *mac)
 {
     // Create an generic InterMsg from the received data
-    Ipv4 l_ip(ipAddress);
-    MacAddr l_mac(macAddress);
+    Ipv4 l_ip(ip);
+    MacAddr l_mac(mac);
     Client l_client(l_ip, l_mac);
-    InterMsgGeneric l_msgGeneric(l_client, msg, msgSize);
+    InterMsgGeneric l_msgGeneric(l_client, const_cast<char*>(data), len);
     // Get the message ID
     InterMsgId l_msgId = l_msgGeneric.getId();
 
@@ -57,46 +63,6 @@ void InterComParser::processMessage(char msg[MAX_MESSAGE_SIZE],
         LogStream::cout << "No callback registered for message ID: "
                         << l_msgId.rawValue() << LogStream::endl;
     }
-}
-
-void InterComParser::checkIncomingMessages()
-{
-    // Try to receive messages from UDP and TCP
-    // Udp
-    char l_udpData[MAX_MESSAGE_SIZE];
-    char l_udpIp[16];  // Buffer for IP address
-    char l_udpMac[18]; // Buffer for MAC address
-    int16_t l_udpPort;
-    uint32_t l_udpBytesReceived
-        = udp_recv(l_udpData, MAX_MESSAGE_SIZE, l_udpIp, &l_udpPort, l_udpMac);
-    if (l_udpBytesReceived > 0)
-    {
-        processMessage(
-            l_udpData, l_udpBytesReceived, l_udpIp, l_udpPort, l_udpMac);
-    }
-    // Tcp
-    char l_tcpData[MAX_MESSAGE_SIZE];
-    char l_tcpIp[16];  // Buffer for IP address
-    char l_tcpMac[18]; // Buffer for MAC address
-    int16_t l_tcpPort;
-    uint32_t l_tcpBytesReceived
-        = tcp_recv(l_tcpData, MAX_MESSAGE_SIZE, l_tcpIp, &l_tcpPort, l_tcpMac);
-    if (l_tcpBytesReceived > 0)
-    {
-        processMessage(
-            l_tcpData, l_tcpBytesReceived, l_tcpIp, l_tcpPort, l_tcpMac);
-    }
-}
-
-void InterComParser::periodicCall()
-{
-    checkIncomingMessages();
-}
-
-void InterComParser::periodicCallBack(void *object)
-{
-    InterComParser *parser = static_cast<InterComParser *>(object);
-    parser->periodicCall();
 }
 
 void InterComParser::registerCallback(InterMsgId msgId,

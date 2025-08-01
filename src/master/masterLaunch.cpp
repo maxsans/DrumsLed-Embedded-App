@@ -21,7 +21,6 @@ void launch()
     Term::init();
 
     // Initialize the udp and tcp api
-    udp_init();
     tcp_init();
 
     // Print the host IP address and MAC address
