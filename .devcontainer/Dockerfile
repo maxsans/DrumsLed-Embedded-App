@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
@@ -21,7 +23,13 @@ RUN apt-get update && \
     jq \
     clang-format \
     net-tools \
-    iproute2
+    iproute2 \
+    debconf-utils \
+    tcpdump
+
+# Install wireshark and set it up to allow non-root users to capture packets
+RUN echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
+RUN apt install -y wireshark tshark
 
 # Create an alias for python3
 RUN ln -s /usr/bin/python3 /usr/bin/python

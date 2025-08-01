@@ -3,7 +3,11 @@
     "build": {
         "dockerfile": "Dockerfile"
     },
-    "runArgs": ["--network", "host"],
+    "runArgs": [
+        "--network", "host"
+        "--cap-add=NET_ADMIN",
+        "--cap-add=NET_RAW"
+    ],
     "extensions": [
         "ms-vscode.cpptools-extension-pack",
         "ms-python.python",
