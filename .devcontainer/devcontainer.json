@@ -6,7 +6,9 @@
     "runArgs": [
         "--network", "host",
         "--cap-add=NET_ADMIN",
-        "--cap-add=NET_RAW"
+        "--cap-add=NET_RAW",
+        "--privileged",
+        "--device=/dev/bus/usb:/dev/bus/usb"
     ],
     "extensions": [
         "ms-vscode.cpptools-extension-pack",

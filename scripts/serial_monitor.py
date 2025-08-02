@@ -1,7 +1,60 @@
 import sys
 import serial
+import serial.tools.list_ports
 import argparse
 import time
+
+
+def find_serial_ports():
+    """
+    Trouve automatiquement les ports série disponibles.
+    Retourne une liste des ports trouvés.
+    """
+    ports = serial.tools.list_ports.comports()
+    available_ports = []
+    
+    for port in ports:
+        # Prioriser les ports USB/ESP communs
+        if any(keyword in port.device.lower() for keyword in ['usb', 'tty', 'com']):
+            available_ports.append(port.device)
+    
+    return available_ports
+
+
+def select_port(specified_port=None):
+    """
+    Sélectionne le port à utiliser.
+    Si specified_port est fourni, l'utilise directement.
+    Sinon, détecte automatiquement les ports disponibles.
+    """
+    if specified_port:
+        return specified_port
+    
+    ports = find_serial_ports()
+    
+    if not ports:
+        print("Aucun port série détecté.")
+        return None
+    
+    if len(ports) == 1:
+        print(f"Port détecté automatiquement: {ports[0]}")
+        return ports[0]
+    
+    # Plusieurs ports disponibles, demander à l'utilisateur
+    print("Plusieurs ports détectés:")
+    for i, port in enumerate(ports):
+        print(f"  {i+1}. {port}")
+    
+    try:
+        choice = int(input("Choisissez un port (numéro): ")) - 1
+        if 0 <= choice < len(ports):
+            return ports[choice]
+        else:
+            print("Choix invalide.")
+            return None
+    except (ValueError, KeyboardInterrupt):
+        print("\nAnnulé par l'utilisateur.")
+        return None
 
 
 def set_esp_reset(ser, bootloader=False):
@@ -34,7 +87,7 @@ def main():
         description="Moniteur série minimaliste avec contrôle DTR/RTS"
     )
     parser.add_argument(
-        "-p", "--port", required=True, help="Port série (ex: /dev/ttyUSB0)"
+        "-p", "--port", help="Port série (ex: /dev/ttyUSB0). Si non spécifié, détection automatique."
     )
     parser.add_argument(
         "-b",
@@ -48,10 +101,15 @@ def main():
     )
     args = parser.parse_args()
 
+    # Sélectionner le port
+    port = select_port(args.port)
+    if not port:
+        sys.exit(1)
+
     try:
-        with serial.Serial(args.port, args.baud, timeout=0.1) as ser:
+        with serial.Serial(port, args.baud, timeout=0.1) as ser:
             set_esp_reset(ser, bootloader=args.boot)
-            print(f"Connecté à {args.port} ({args.baud} bauds). Ctrl+C pour quitter.")
+            print(f"Connecté à {port} ({args.baud} bauds). Ctrl+C pour quitter.")
             while True:
                 line = ser.readline()
                 if line:
