@@ -61,25 +61,23 @@ def set_esp_reset(ser, bootloader=False):
     """
     Contrôle les lignes DTR/RTS pour resetter l'ESP.
     bootloader=True : mode flash
-    bootloader=False : exécution normale
+    bootloader=False : exécution normale (redémarrage)
     """
+    print("Redémarrage de l'ESP8266...")
     if bootloader:
         # DTR=0, RTS=1 : bootloader
         ser.dtr = False
         ser.rts = True
     else:
-        # DTR=1, RTS=0 : run
-        ser.dtr = True
-        ser.rts = False
-    time.sleep(0.1)
-    # Relâcher le reset (laisser RTS à 0)
-    if bootloader:
+        # DTR=1, RTS=0 puis DTR=0, RTS=0 : redémarrage normal
         ser.dtr = False
-        ser.rts = False
-    else:
-        ser.dtr = True
-        ser.rts = False
-    time.sleep(0.05)
+        ser.rts = True
+    time.sleep(0.1)
+    # Relâcher le reset
+    ser.dtr = False
+    ser.rts = False
+    time.sleep(0.2)  # Attendre que l'ESP redémarre
+    print("Redémarrage terminé.")
 
 
 def main():
@@ -99,6 +97,9 @@ def main():
     parser.add_argument(
         "--boot", action="store_true", help="Forcer le bootloader au reset"
     )
+    parser.add_argument(
+        "--no-reset", action="store_true", help="Ne pas redémarrer l'ESP au démarrage"
+    )
     args = parser.parse_args()
 
     # Sélectionner le port
@@ -108,7 +109,10 @@ def main():
 
     try:
         with serial.Serial(port, args.baud, timeout=0.1) as ser:
-            set_esp_reset(ser, bootloader=args.boot)
+            # Redémarrer l'ESP sauf si --no-reset est spécifié
+            if not args.no_reset:
+                set_esp_reset(ser, bootloader=args.boot)
+            
             print(f"Connecté à {port} ({args.baud} bauds). Ctrl+C pour quitter.")
             while True:
                 line = ser.readline()
