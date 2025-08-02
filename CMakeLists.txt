@@ -10,7 +10,7 @@ set(PROJECT_NAME ${TARGET_CMAKE_NAME}-${CUSTOM_CMAKE_NAME})
 project(${PROJECT_NAME} CXX)
 
 # Set SRC_DIR to the source directory
-set(SRC_DIR src)
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # Set TARGET to the project name for use in add_executable
 set(TARGET ${PROJECT_NAME})

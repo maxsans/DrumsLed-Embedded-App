@@ -1,4 +1,3 @@
-
 # Make sure the IDF_PATH environment variable is set
 if(NOT DEFINED ENV{IDF_PATH})
     # Use the default path if the IDF_PATH environment variable is not set
@@ -41,4 +40,6 @@ set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 0 CACHE BOOL "Enable dev warnings")
 set(CMAKE_SUPPRESS_DEPRECATED_WARNINGS 0 CACHE BOOL "Enable deprecated warnings")
 
 # Main component directory
-set(EXTRA_COMPONENT_DIRS "./src")
+set(EXTRA_COMPONENT_DIRS "${CMAKE_SOURCE_DIR}/src")
+
+project(${PROJECT_NAME} CXX)
