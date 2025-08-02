@@ -42,6 +42,23 @@
             },
             "problemMatcher": [],
             "detail": "Build all CMake presets using build_all.sh"
+        },
+        {
+            "type": "shell",
+            "label": "configure-windows",
+            "command": "scripts/configure_windows.ps1",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe",
+                    "args": ["-ExecutionPolicy", "Bypass", "-File"]
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Configure Windows firewall rules"
         }
     ]
 }
