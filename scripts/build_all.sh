@@ -30,8 +30,41 @@ for PRESET in $PRESETS; do
     mkdir -p "$BUILD_DIR"
     LOG_FILE="$BUILD_DIR/build_${PRESET}.log"
     echo "=== Building with preset: $PRESET ==="
+    
+    # Extract environment variables from preset if any
+    ENV_VARS=$(jq -r --arg preset "$PRESET" '.configurePresets[] | select(.name == $preset) | .environment // {} | to_entries[] | "\(.key)=\(.value)"' "$PRESET_FILE")
+    
     (
-        cmake --preset "$PRESET" &> "$LOG_FILE"
+        # Export environment variables for slave builds
+        if [[ -n "$ENV_VARS" ]]; then
+            while IFS= read -r env_var; do
+                if [[ -n "$env_var" ]]; then
+                    export "$env_var"
+                    echo "Exported: $env_var" >> "$LOG_FILE"
+                fi
+            done <<< "$ENV_VARS"
+        fi
+        
+        # Ensure IDF_PATH is set for ESP8266 builds
+        if [[ "$PRESET" == *"Kit" ]] || [[ "$PRESET" == *"slave"* ]]; then
+            if [[ -z "$IDF_PATH" ]]; then
+                export IDF_PATH="/home/esp/ESP8266_RTOS_SDK"
+                echo "Set IDF_PATH=$IDF_PATH" >> "$LOG_FILE"
+            fi
+            
+            # Ensure the toolchain is in PATH
+            if [[ ":$PATH:" != *":/home/esp/xtensa-lx106-elf/bin:"* ]]; then
+                export PATH="/home/esp/xtensa-lx106-elf/bin:$PATH"
+                echo "Updated PATH to include xtensa toolchain" >> "$LOG_FILE"
+            fi
+        fi
+        
+        # Print environment for debugging
+        echo "=== Environment Variables ===" >> "$LOG_FILE"
+        env | grep -E "^(IDF_PATH|PATH)=" >> "$LOG_FILE" || true
+        echo "============================" >> "$LOG_FILE"
+        
+        cmake --preset "$PRESET" &>> "$LOG_FILE"
         cmake --build "$BUILD_DIR" &>> "$LOG_FILE"
     ) &
     PIDS+=($!)
@@ -42,11 +75,11 @@ done
 for i in "${!PIDS[@]}"; do
     PID=${PIDS[$i]}
     PRESET=${PRESET_NAMES[$i]}
-    LOG_FILE="build_${PRESET}.log"
+    LOG_FILE="build/${PRESET}/build_${PRESET}.log"
     if wait $PID; then
         echo "[SUCCESS] $PRESET"
     else
-        echo "[FAILED]  $PRESET (see $LOG_FILE)"
+        echo "[FAILED]  $PRESET (see ${LOG_FILE})"
     fi
 done
 

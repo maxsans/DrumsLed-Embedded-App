@@ -1,8 +1,13 @@
 # Make sure the IDF_PATH environment variable is set
 if(NOT DEFINED ENV{IDF_PATH})
     # Use the default path if the IDF_PATH environment variable is not set
-    set(ENV{IDF_PATH} "$ENV{HOME}/esp/ESP8266_RTOS_SDK")
+    set(ENV{IDF_PATH} "/home/esp/ESP8266_RTOS_SDK")
     message(WARNING "IDF_PATH environment variable is not set. Using default path: $ENV{IDF_PATH}")
+endif()
+
+# Verify IDF_PATH directory exists
+if(NOT EXISTS "$ENV{IDF_PATH}")
+    message(FATAL_ERROR "IDF_PATH directory does not exist: $ENV{IDF_PATH}")
 endif()
 
 # Make sure .../xtensa-lx106-elf/bin is in the PATH
@@ -13,7 +18,7 @@ else()
     if(PATH_INDEX EQUAL -1)
         # Add the default path to the PATH environment variable
         set(ENV{PATH} "$ENV{HOME}/esp/xtensa-lx106-elf/bin:$ENV{PATH}")
-        message(WARNING "xtensa-lx106-elf/bin is not in the PATH. Adding default path: $ENV{IDF_PATH}/xtensa-lx106-elf/bin")
+        message(WARNING "xtensa-lx106-elf/bin is not in the PATH. Adding default path: $ENV{HOME}/esp/xtensa-lx106-elf/bin")
     endif()
 endif()
 
@@ -49,6 +54,10 @@ if(NOT CMAKE_CXX_FLAGS MATCHES "-Wno-deprecated")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated")
 endif()
 
+# Explicitly set IDF_PATH as a CMake variable to ensure it's available to all tools
+set(IDF_PATH "$ENV{IDF_PATH}" CACHE STRING "Path to ESP-IDF" FORCE)
+message(STATUS "Using IDF_PATH: ${IDF_PATH}")
+
 # Include the project.cmake file from the IDF_PATH
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
@@ -59,4 +68,5 @@ set(CMAKE_SUPPRESS_DEPRECATED_WARNINGS 0 CACHE BOOL "Enable deprecated warnings"
 # Main component directory
 set(EXTRA_COMPONENT_DIRS "${CMAKE_SOURCE_DIR}/src")
 
+project(${PROJECT_NAME} CXX)
 project(${PROJECT_NAME} CXX)
