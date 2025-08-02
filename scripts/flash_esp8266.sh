@@ -13,3 +13,5 @@ APP_BIN_PATH="$BUILD_DIR/$APP_BIN"
 0x0 "$BOOTLOADER_PATH" \
 0x8000 "$PARTITION_TABLE_PATH" \
 0x10000 "$APP_BIN_PATH"
+
+python3 scripts/serial_monitor.py --port /dev/ttyUSB0 --baud 115200
