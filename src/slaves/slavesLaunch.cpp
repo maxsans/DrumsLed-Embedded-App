@@ -46,9 +46,8 @@ void launch()
         bool l_newWifiState = is_wifi_connected();
         if (!l_lastWifiStatus && l_newWifiState)
         {
-            udp_init();
             tcp_init();
-            LogStream::cout << "Udp Initialized" << LogStream::endl;
+            LogStream::cout << "Tcp Initialized" << LogStream::endl;
         }
         l_lastWifiStatus = l_newWifiState;
     }

@@ -3,6 +3,7 @@
 #include "api/udp/udp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/async/async.hpp"
 
 #include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
 
@@ -19,7 +20,12 @@ InterComParser::InterComParser()
                     const char *ip,
                     int16_t port,
                     const char *mac) {
-        this->processMessage(data, len, ip, port, mac);
+        // Call the processMessage method with the received data
+        // Asynchronously process the message to avoid blocking the UDP task
+        // And memory access issues
+        Async::registerAsync([this, data, len, ip, port, mac]() {
+            this->processMessage(data, len, ip, port, mac);
+        });
     });
 }
 
