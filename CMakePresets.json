@@ -43,7 +43,9 @@
             },
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "/home/esp/ESP8266_RTOS_SDK/tools/cmake/toolchain-esp8266.cmake",
-                "TARGET_CMAKE_NAME": "slave"
+                "TARGET_CMAKE_NAME": "slave",
+                "SDKCONFIG": "${sourceDir}/sdkconfig",
+                "SDKCONFIG_DEFAULTS": "${sourceDir}/sdkconfig.default"
             }
         },
         {

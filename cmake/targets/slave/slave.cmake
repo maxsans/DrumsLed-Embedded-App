@@ -1,5 +1,8 @@
-
 include(cmake/tools.cmake)
+include(cmake/targets/slave/setup_sdkconfig.cmake)
+
+# Setup sdkconfig for ESP8266 slave builds
+setup_sdkconfig_for_esp8266()
 
 # Preprocessor definitions
 add_compile_options(-D__TARGET_SLAVES)

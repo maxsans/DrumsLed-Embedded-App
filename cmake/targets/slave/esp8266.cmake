@@ -17,6 +17,23 @@ else()
     endif()
 endif()
 
+# Setup sdkconfig from sdkconfig.default for slave builds
+set(SDKCONFIG_PATH "${CMAKE_SOURCE_DIR}/sdkconfig")
+set(SDKCONFIG_DEFAULT_PATH "${CMAKE_SOURCE_DIR}/sdkconfig.default")
+
+if(NOT EXISTS "${SDKCONFIG_PATH}")
+    if(EXISTS "${SDKCONFIG_DEFAULT_PATH}")
+        message(STATUS "Copying sdkconfig.default to sdkconfig for slave build")
+        configure_file("${SDKCONFIG_DEFAULT_PATH}" "${SDKCONFIG_PATH}" COPYONLY)
+    else()
+        message(WARNING "sdkconfig.default not found, using ESP-IDF defaults")
+    endif()
+endif()
+
+# Set the SDKCONFIG variable for ESP-IDF to use our sdkconfig file
+set(SDKCONFIG "${SDKCONFIG_PATH}")
+set(SDKCONFIG_DEFAULTS "${SDKCONFIG_DEFAULT_PATH}")
+
 if(POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif()
