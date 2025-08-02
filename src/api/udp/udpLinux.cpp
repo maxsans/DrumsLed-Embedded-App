@@ -23,8 +23,6 @@
 static pthread_t udp_recv_thread;
 static udp_recv_callback_t udp_recv_callback = nullptr;
 
-static const char *udp_broadcast_ip = "192.168.1.255";
-
 static int udp_sock = -1;
 
 static void get_mac_from_ip(const char *ip, char *mac)
@@ -153,12 +151,6 @@ static void *udp_recv_loop(void *arg)
                 continue;
             }
             get_mac_from_ip(ip, mac);
-            printf("UDP packet received from %s:%d (%s): %.*s\n",
-                   ip,
-                   ntohs(src_addr.sin_port),
-                   mac,
-                   n,
-                   buf);
             udp_recv_callback(buf, n, ip, ntohs(src_addr.sin_port), mac);
         }
     }
@@ -203,7 +195,7 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    inet_pton(AF_INET, udp_broadcast_ip, &addr.sin_addr);
+    addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     sendto(sock, data, len, 0, (struct sockaddr *)&addr, sizeof(addr));
     close(sock);
 }
