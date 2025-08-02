@@ -139,19 +139,19 @@ static void *udp_recv_loop(void *arg)
             char mac[32] = {0};
             strcpy(ip, inet_ntoa(src_addr.sin_addr));
             // Ignore packets from any local IP (including bridge/docker)
-            // bool from_self = false;
-            // for (const auto &local_ip : local_ips)
-            // {
-            //     if (strcmp(ip, local_ip.c_str()) == 0)
-            //     {
-            //         from_self = true;
-            //         break;
-            //     }
-            // }
-            // if (from_self)
-            // {
-            //     continue;
-            // }
+            bool from_self = false;
+            for (const auto &local_ip : local_ips)
+            {
+                if (strcmp(ip, local_ip.c_str()) == 0)
+                {
+                    from_self = true;
+                    break;
+                }
+            }
+            if (from_self)
+            {
+                continue;
+            }
             get_mac_from_ip(ip, mac);
             printf("UDP packet received from %s:%d (%s): %.*s\n",
                    ip,
@@ -197,7 +197,6 @@ void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
 
 void udp_send_broadcast(const char *data, int16_t len, int16_t port)
 {
-    return; // Do not commit !
     int sock = socket(AF_INET, SOCK_DGRAM, 0);
     int opt = 1;
     setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &opt, sizeof(opt));
