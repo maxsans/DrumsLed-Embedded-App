@@ -23,8 +23,10 @@ InterComParser::InterComParser()
                     const char *ip,
                     int16_t port,
                     const char *mac) {
-        Async::registerAsync([this, data, len, ip, port, mac]() {
-            this->processMessage(data, len, ip, port, mac);
+        std::string ipCopy(ip);
+        std::string macCopy(mac);
+        Async::registerAsync([this, data, len, ipCopy, port, macCopy]() {
+            this->processMessage(data, len, ipCopy.c_str(), port, macCopy.c_str());
         });
     });
     tcp_init([this](const char *data,
@@ -32,8 +34,10 @@ InterComParser::InterComParser()
                     const char *ip,
                     int16_t port,
                     const char *mac) {
-        Async::registerAsync([this, data, len, ip, port, mac]() {
-            this->processMessage(data, len, ip, port, mac);
+        std::string ipCopy(ip);
+        std::string macCopy(mac);
+        Async::registerAsync([this, data, len, ipCopy, port, macCopy]() {
+            this->processMessage(data, len, ipCopy.c_str(), port, macCopy.c_str());
         });
     });
 }

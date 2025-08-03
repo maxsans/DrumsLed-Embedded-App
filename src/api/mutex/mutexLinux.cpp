@@ -20,16 +20,10 @@ Mutex::~Mutex()
 
 void Mutex::lock()
 {
-    if (m_privateData)
-    {
-        pthread_mutex_lock(static_cast<pthread_mutex_t*>(m_privateData));
-    }
+    pthread_mutex_lock(static_cast<pthread_mutex_t*>(m_privateData));
 }
 
 void Mutex::unlock()
 {
-    if (m_privateData)
-    {
-        pthread_mutex_unlock(static_cast<pthread_mutex_t*>(m_privateData));
-    }
+    pthread_mutex_unlock(static_cast<pthread_mutex_t*>(m_privateData));
 }

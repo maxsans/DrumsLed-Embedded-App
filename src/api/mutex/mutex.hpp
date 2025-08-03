@@ -11,7 +11,7 @@ class Mutex
     /**
      * @brief Private data for platform-specific mutex implementation
      */
-    void *m_privateData;
+    void *m_privateData = nullptr;
 
     public:
     /**
@@ -23,6 +23,10 @@ class Mutex
      * @brief Destructor - cleans up -specific resources
      */
     ~Mutex();
+
+    // Disable copy constructor and assignment operator for thread safety
+    Mutex(const Mutex&) = delete;
+    Mutex& operator=(const Mutex&) = delete;
 
     /**
      * @brief Lock the mutex
