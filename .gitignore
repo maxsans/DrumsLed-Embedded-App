@@ -1,9 +1,7 @@
-**/out
 **/build
 **/.vscode/.browse.c_cpp.db*
 **/.vscode/ipch
 **/.vscode/extensions.json
 **/.cache
-**/.devcontainer
 **/sdkconfig
 **/sdkconfig.old

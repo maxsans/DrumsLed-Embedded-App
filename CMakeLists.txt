@@ -1,39 +1,21 @@
 cmake_minimum_required(VERSION 3.5)
 
+# Args :
+#   TARGET_CMAKE_NAME : Name of the target cmake file (e.g., "slave", "master")
+#   CUSTOM_CMAKE_NAME : Custom name for the target (e.g., "drumkit", "cymbalkit", linux, windows)
+message(STATUS "Target CMake Name: ${TARGET_CMAKE_NAME}")
+message(STATUS "Custom CMake Name: ${CUSTOM_CMAKE_NAME}")
+
+set(PROJECT_NAME ${TARGET_CMAKE_NAME}-${CUSTOM_CMAKE_NAME})
+project(${PROJECT_NAME} CXX)
+
+# Set SRC_DIR to the source directory
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+# Set TARGET to the project name for use in add_executable
+set(TARGET ${PROJECT_NAME})
+
 include(cmake/tools.cmake)
-
-# List of possible targets
-set(POSSIBLE_TARGETS
-    "Master"
-    "DrumKit"
-    "CymbalKit"
-    )
-# List of targets that are slaves
-set(SLAVES_TARGETS "DrumKit" "CymbalKit")
-# Make sure TARGET is set and valid
-if(NOT DEFINED TARGET)
-    message(FATAL_ERROR "TARGET is not set.\n"
-                        "Please pass a valid target to the build system using -DTARGET=<target>\n"
-                        "Possible targets are: ${POSSIBLE_TARGETS}")
-elseif(NOT ${TARGET} IN_LIST POSSIBLE_TARGETS)
-    message(FATAL_ERROR "TARGET is invalid.\n"
-                        "Please pass a valid target to the build system using -DTARGET=<target>\n"
-                        "Possible targets are: ${POSSIBLE_TARGETS}")
-endif()
-
-# Set the SRC_PREFIX
-if(${TARGET} STREQUAL "Master")
-    set(SRC_PREFIX src)
-elseif(${TARGET} IN_LIST SLAVES_TARGETS)
-    set(SRC_PREFIX ".")
-    # Automatically copy sdkconfig.default to sdkconfig if sdkconfig does not exist
-    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/sdkconfig")
-        file(COPY "${CMAKE_SOURCE_DIR}/sdkconfig.default" DESTINATION "${CMAKE_BINARY_DIR}")
-        file(RENAME "${CMAKE_BINARY_DIR}/sdkconfig.default" "${CMAKE_BINARY_DIR}/sdkconfig")
-        file(COPY "${CMAKE_BINARY_DIR}/sdkconfig" DESTINATION "${CMAKE_SOURCE_DIR}")
-        file(REMOVE "${CMAKE_BINARY_DIR}/sdkconfig.default")
-    endif()
-endif()
 
 ####################################################################################################
 # Common source files for all targets (from src directory)
@@ -71,25 +53,14 @@ add_sources(
     network/interCom/interMsgList/interMsgAlive/interMsgAlive.cpp
 
     led/rgbColor.cpp
-    )
+)
 
 ####################################################################################################
 # Common include directories for all targets (from src directory)
 ####################################################################################################
 add_include_dirs(
     .
-    )
+)
 
-# Import the specific cmake file for each target
-if(${TARGET} STREQUAL "Master")
-    include(cmake/targets/master/master.cmake)
-elseif(${TARGET} IN_LIST SLAVES_TARGETS)
-    include(cmake/targets/slaves/slaves.cmake)
-else()
-    message(FATAL_ERROR "TARGET is invalid.\n"
-                        "Please pass a valid target to the build system using -DTARGET=<target>\n"
-                        "Possible targets are: ${POSSIBLE_TARGETS}")
-endif()
-
-project(${TARGET} CXX)
-project(${TARGET} CXX)
+# Import the specific cmake file
+include(cmake/targets/${TARGET_CMAKE_NAME}/${TARGET_CMAKE_NAME}.cmake)

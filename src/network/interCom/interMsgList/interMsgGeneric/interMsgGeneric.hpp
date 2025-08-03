@@ -11,22 +11,23 @@
 class InterMsgGeneric : public InterMsg
 {
     private:
-        static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 256; // Maximum size of private data
+    static constexpr const uint32_t MAX_PRIV_DATA_SIZE
+        = 256; // Maximum size of private data
 
-        struct Data
-        {
-            char privData[MAX_PRIV_DATA_SIZE]; // Private data of the message
-        } m_data;
+    struct Data
+    {
+        char privData[MAX_PRIV_DATA_SIZE]; // Private data of the message
+    } m_data;
 
     public:
-        InterMsgGeneric(Client client, InterMsgData data, SendType sendType);
-        InterMsgGeneric(Client client, char *rawData, uint32_t size);
+    InterMsgGeneric(Client client, InterMsgData data, SendType sendType);
+    InterMsgGeneric(Client client, char *rawData, uint32_t size);
 
-        /**
-         * @brief Get the raw specific data of the message.
-         * @return Pointer to the private data.
-         */
-        const char* getPrivData() const override;
+    /**
+     * @brief Get the raw specific data of the message.
+     * @return Pointer to the private data.
+     */
+    const char *getPrivData() const override;
 };
 
 #endif // __INTER_MSG_GENERIC_HPP__

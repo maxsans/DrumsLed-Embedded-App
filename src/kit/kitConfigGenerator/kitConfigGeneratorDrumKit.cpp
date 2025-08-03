@@ -1,7 +1,7 @@
-#include "kitConfigGenerator.hpp"
 #include "kit/kitService/srvcAliveSend/srvcAliveSend.hpp"
 #include "kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.hpp"
 #include "kit/kitService/srvcRgbListen/srvcRgbListen.hpp"
+#include "kitConfigGenerator.hpp"
 
 void KitConfigGenerator::init()
 {

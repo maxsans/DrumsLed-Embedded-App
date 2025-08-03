@@ -1,10 +1,10 @@
 #include "launch.hpp"
 
 #ifdef ESP_PLATFORM
-    extern "C" void app_main()
+extern "C" void app_main()
 #else
-    int main()
+int main()
 #endif
-    {
-        launch();
-    }
+{
+    launch();
+}

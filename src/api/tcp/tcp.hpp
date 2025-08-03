@@ -1,14 +1,25 @@
 #ifndef __TCP_HPP__
 #define __TCP_HPP__
 
+#include <functional>
 #include <stdint.h>
 
 #define TCP_DEFAULT_PORT 8888
 
 /**
- * @brief Function to initialize the TCP connection
+ * @brief Callback to call when a tcp packet is received
  */
-void tcp_init();
+using tcp_recv_callback_t = std::function<void(const char *data,
+                                               int16_t len,
+                                               const char *ip,
+                                               int16_t port,
+                                               const char *mac)>;
+
+/**
+ * @brief Function to initialize the TCP connection
+ * @param tcp_recv_callback Callback to call when a tcp packet is received
+ */
+void tcp_init(tcp_recv_callback_t tcp_recv_callback);
 
 /**
  * @brief Function to send data over TCP
@@ -19,19 +30,6 @@ void tcp_init();
  * @param port Port number of the receiver
  */
 void tcp_send(const char *data, int16_t len, const char *ip, int16_t port);
-
-/**
- * @brief Function to receive data over TCP
- *
- * @param data Buffer to store the received data
- * @param len Length of the buffer
- * @param ip IP address of the sender
- * @param port Port number of the sender
- * @param mac MAC address of the sender
- *
- * @return Number of bytes received
- */
-uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac);
 
 /**
  * @brief Function to get the IP address of the host

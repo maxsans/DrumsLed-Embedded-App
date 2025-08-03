@@ -1,16 +1,14 @@
-#include "launch.hpp"
 #include "api/target/common.hpp"
-#include "tools/logStream/logStream.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
-#include "tools/async/async.hpp"
 #include "api/wifi/wifi.hpp"
-#include "api/udp/udp.hpp"
-#include "api/tcp/tcp.hpp"
-#include "network/networkConfig.hpp"
+#include "kit/kit.hpp"
+#include "launch.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
+#include "network/networkConfig.hpp"
+#include "tools/async/async.hpp"
+#include "tools/logStream/logStream.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 #include "tools/timeTools/timeMs.hpp"
-#include "kit/kit.hpp"
 
 void launch()
 {
@@ -22,31 +20,23 @@ void launch()
     Kit::init();
     LogStream::cout << "Slaves started" << LogStream::endl;
 
-
     // Initialize the interComParser
     InterComParser l_interComParser;
-    InterComParser::registerCallback(InterMsgId::Example, [](const Client &client, InterMsg &msg, void *object) {
-        LogStream::cout << "Received Example message from " << client.getIP().getIpString()
-        << " with MAC: " << client.getMAC().getMacString()
-        << " and message data: " << ((InterMsgExample &)msg).getExampleData()
-        << LogStream::endl;
-    });
+    InterComParser::registerCallback(
+        InterMsgId::Example,
+        [](const Client &client, InterMsg &msg, void *object) {
+            LogStream::cout << "Received Example message from "
+                            << client.getIP().getIpString()
+                            << " with MAC: " << client.getMAC().getMacString()
+                            << " and message data: "
+                            << ((InterMsgExample &)msg).getExampleData()
+                            << LogStream::endl;
+        });
 
     while (1)
     {
         target_process();
         periodicCallsMs::processAll();
         Async::process();
-
-        // Init the udp/tcp only when WiFi becomes connected (rising edge)
-        static bool l_lastWifiStatus = false;
-        bool l_newWifiState = is_wifi_connected();
-        if (!l_lastWifiStatus && l_newWifiState)
-        {
-            udp_init();
-            tcp_init();
-            LogStream::cout << "Udp Initialized" << LogStream::endl;
-        }
-        l_lastWifiStatus = l_newWifiState;
     }
 }

@@ -1,5 +1,8 @@
-
 include(cmake/tools.cmake)
+include(cmake/targets/slave/setup_sdkconfig.cmake)
+
+# Setup sdkconfig for ESP8266 slave builds
+setup_sdkconfig_for_esp8266()
 
 # Preprocessor definitions
 add_compile_options(-D__TARGET_SLAVES)
@@ -11,6 +14,7 @@ add_sources(
     slaves/slavesLaunch.cpp
     kit/kit.hpp
     api/target/esp8266.cpp
+    api/mutex/mutexEsp8266.cpp
     api/logs/logsEsp8266.cpp
     api/udp/udpEsp8266.cpp
     api/tcp/tcpEsp8266.cpp
@@ -23,25 +27,20 @@ add_sources(
     kit/kitService/kitService.cpp
     kit/kitService/srvcAliveSend/srvcAliveSend.cpp
     kit/kit.cpp
-    )
+)
 
 ####################################################################################################
 # Slaves include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
     slaves
-    )
+)
 
 # Add the specific cmake file for the target
-message(STATUS "Target: ${TARGET}")
-if(${TARGET} STREQUAL "DrumKit")
-    include(cmake/targets/slaves/drumkit.cmake)
-elseif(${TARGET} STREQUAL "CymbalKit")
-    include(cmake/targets/slaves/cymbalkit.cmake)
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/slave_custom/${CUSTOM_CMAKE_NAME}.cmake)
 
 # Print the list of sources and include directories
-print_sources_and_include_dirs()
+print_app_info()
 
 # Add the specific cmake file for esp8266
-include(cmake/targets/slaves/esp8266.cmake)
+include(cmake/targets/slave/esp8266.cmake)

@@ -1,6 +1,8 @@
 #include "ipv4.hpp"
 #include "tools/logStream/logStream.hpp"
 
+#include <cassert>
+
 Ipv4::Ipv4()
 {
     m_ip[0] = 0;
@@ -66,7 +68,8 @@ uint32_t Ipv4::getIp() const
 
 std::string Ipv4::getIpString() const
 {
-    return std::to_string(m_ip[0]) + "." + std::to_string(m_ip[1]) + "." + std::to_string(m_ip[2]) + "." + std::to_string(m_ip[3]);
+    return std::to_string(m_ip[0]) + "." + std::to_string(m_ip[1]) + "."
+           + std::to_string(m_ip[2]) + "." + std::to_string(m_ip[3]);
 }
 
 void Ipv4::setIp1(uint8_t ip1)
@@ -113,10 +116,11 @@ void Ipv4::setIp(char *ip)
         return;
     }
     unsigned int ip1, ip2, ip3, ip4;
-    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 ||
-        ip1 > 255 || ip2 > 255 || ip3 > 255 || ip4 > 255)
+    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 || ip1 > 255
+        || ip2 > 255 || ip3 > 255 || ip4 > 255)
     {
-        LogStream::cout << "Error: Invalid IP address format: " << ip << LogStream::endl;
+        LogStream::cout << "Error: Invalid IP address format: " << ip
+                        << LogStream::endl;
         return;
     }
     m_ip[0] = static_cast<uint8_t>(ip1);
@@ -133,10 +137,11 @@ void Ipv4::setIp(const char *ip)
         return;
     }
     unsigned int ip1, ip2, ip3, ip4;
-    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 ||
-        ip1 > 255 || ip2 > 255 || ip3 > 255 || ip4 > 255)
+    if (sscanf(ip, "%u.%u.%u.%u", &ip1, &ip2, &ip3, &ip4) != 4 || ip1 > 255
+        || ip2 > 255 || ip3 > 255 || ip4 > 255)
     {
-        LogStream::cout << "Error: Invalid IP address format: " << ip << LogStream::endl;
+        LogStream::cout << "Error: Invalid IP address format: " << ip
+                        << LogStream::endl;
         return;
     }
     m_ip[0] = static_cast<uint8_t>(ip1);
@@ -160,7 +165,8 @@ void Ipv4::setIp(std::string &ip)
 
 bool Ipv4::operator==(const Ipv4 &ip) const
 {
-    return m_ip[0] == ip.m_ip[0] && m_ip[1] == ip.m_ip[1] && m_ip[2] == ip.m_ip[2] && m_ip[3] == ip.m_ip[3];
+    return m_ip[0] == ip.m_ip[0] && m_ip[1] == ip.m_ip[1]
+           && m_ip[2] == ip.m_ip[2] && m_ip[3] == ip.m_ip[3];
 }
 
 bool Ipv4::operator!=(const Ipv4 &ip) const

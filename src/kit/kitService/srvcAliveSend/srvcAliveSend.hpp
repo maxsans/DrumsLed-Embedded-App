@@ -7,37 +7,37 @@
 class KitSrvcAliveSend : public KitService
 {
     private:
-        /**
-         * @brief The interval in milliseconds for sending alive messages.
-         */
-        static const timeMs m_sendInterval;
+    /**
+     * @brief The interval in milliseconds for sending alive messages.
+     */
+    static const timeMs m_sendInterval;
 
-        /**
-         * @brief The periodic call for sending alive messages.
-         */
-        periodicCallsMs m_sendPeriodicCall;
+    /**
+     * @brief The periodic call for sending alive messages.
+     */
+    periodicCallsMs m_sendPeriodicCall;
 
-        /**
-         * @brief Callback function for periodic sending of ADC level data.
-         */
-        static void periodicSendCallback(void *object);
-        void periodicSendCallback();
+    /**
+     * @brief Callback function for periodic sending of ADC level data.
+     */
+    static void periodicSendCallback(void *object);
+    void periodicSendCallback();
 
-        /**
-         * @see KitService::onStart
-         */
-        void onStart() override;
+    /**
+     * @see KitService::onStart
+     */
+    void onStart() override;
 
-        /**
-         * @see KitService::onStop
-         */
-        void onStop() override;
+    /**
+     * @see KitService::onStop
+     */
+    void onStop() override;
 
     public:
-        /**
-         * @brief Constructor for KitSrvcAliveSend.
-         */
-        KitSrvcAliveSend();
+    /**
+     * @brief Constructor for KitSrvcAliveSend.
+     */
+    KitSrvcAliveSend();
 };
 
 #endif // __SRVC_ALIVE_SEND_HPP__

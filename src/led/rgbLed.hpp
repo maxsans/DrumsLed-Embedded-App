@@ -25,37 +25,36 @@ typedef enum
     COLOR_PRIORITY_COUNT,
 } colorPriority_t;
 
-
 /**
  * @brief Class to represent an RGB LED.
  */
 class RgbLed
 {
     private:
-        ColorOrder m_colorOrders[COLOR_PRIORITY_COUNT];
-        colorPriority_t m_priority;
-        uint64_t m_lastSetTime;
-        bool m_permColorSet;
+    ColorOrder m_colorOrders[COLOR_PRIORITY_COUNT];
+    colorPriority_t m_priority;
+    uint64_t m_lastSetTime;
+    bool m_permColorSet;
 
     public:
-        RgbLed();
-        /**
-         * @brief Set the color.
-         *
-         * @param color The color.
-         */
-        RgbColor getColor();
-        /**
-         * @brief Set the color.
-         *
-         * @param color The color.
-         */
-        void setColor(colorPriority_t priority, RgbColor color);
-        /**
-         * @brief Release the color.
-         * @warning Don't forget to release the color when you don't need it anymore.
-         */
-        void releaseColor(colorPriority_t priority);
+    RgbLed();
+    /**
+     * @brief Set the color.
+     *
+     * @param color The color.
+     */
+    RgbColor getColor();
+    /**
+     * @brief Set the color.
+     *
+     * @param color The color.
+     */
+    void setColor(colorPriority_t priority, RgbColor color);
+    /**
+     * @brief Release the color.
+     * @warning Don't forget to release the color when you don't need it anymore.
+     */
+    void releaseColor(colorPriority_t priority);
 };
 
 #endif

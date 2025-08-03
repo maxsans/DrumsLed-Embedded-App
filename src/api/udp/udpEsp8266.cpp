@@ -1,158 +1,198 @@
+#include "esp_system.h"
+#include "esp_wifi.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "lwip/netdb.h"
+#include "lwip/sockets.h"
+#include "string.h"
 #include "udp.hpp"
-#include <string.h>
-#include <lwip/sockets.h>
-#include <lwip/inet.h>
-#include <lwip/netdb.h>
-#include <esp_wifi.h>
-#include <esp_system.h>
 
-static int udp_sock = -1;
+static udp_recv_callback_t udp_recv_callback;
+static int udp_socket = -1;
+static bool udp_task_running = false;
+static bool udp_socket_initialized = false;
 
-void udp_init()
+static void udp_recv_task(void *pvParameters)
 {
-    // Create a UDP socket if not already created
-    if (udp_sock < 0)
+    char buffer[1024];
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_len = sizeof(client_addr);
+
+    while (udp_task_running)
     {
-        udp_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if (udp_sock >= 0)
+        // Wait for WiFi connection before initializing socket
+        if (!udp_socket_initialized)
         {
-            struct sockaddr_in local_addr;
-            memset(&local_addr, 0, sizeof(local_addr));
-            local_addr.sin_family = AF_INET;
-            local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-            local_addr.sin_port = htons(UDP_DEFAULT_PORT);
-            if (bind(udp_sock, (struct sockaddr *)&local_addr, sizeof(local_addr)) < 0)
+            wifi_ap_record_t ap_info;
+            if (esp_wifi_sta_get_ap_info(&ap_info) == ESP_OK)
             {
-                printf("UDP bind failed on port %d\n", UDP_DEFAULT_PORT);
-                close(udp_sock);
-                udp_sock = -1;
+                printf("WiFi connected, waiting for IP assignment...\n");
+                vTaskDelay(
+                    2000
+                    / portTICK_PERIOD_MS); // Wait 2 seconds for IP assignment
+
+                // Verify we have a valid IP address
+                tcpip_adapter_ip_info_t ip_info;
+                if (tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info)
+                        == ESP_OK
+                    && ip_info.ip.addr != 0)
+                {
+                    char ip_str[16];
+                    inet_ntoa_r(ip_info.ip, ip_str, 16);
+                    printf("IP address assigned: %s\n", ip_str);
+
+                    // WiFi is connected and IP assigned, initialize UDP socket
+                    udp_socket = socket(AF_INET, SOCK_DGRAM, 0);
+                    if (udp_socket >= 0)
+                    {
+                        struct sockaddr_in server_addr;
+                        memset(&server_addr, 0, sizeof(server_addr));
+                        server_addr.sin_family = AF_INET;
+                        server_addr.sin_addr.s_addr = INADDR_ANY;
+                        server_addr.sin_port = htons(UDP_DEFAULT_PORT);
+
+                        if (bind(udp_socket,
+                                 (struct sockaddr *)&server_addr,
+                                 sizeof(server_addr))
+                            >= 0)
+                        {
+                            udp_socket_initialized = true;
+                            printf("UDP socket created and bound after WiFi "
+                                   "connection\n");
+                        }
+                        else
+                        {
+                            close(udp_socket);
+                            udp_socket = -1;
+                        }
+                    }
+                }
+                else
+                {
+                    printf("No IP address assigned yet, retrying...\n");
+                }
             }
-            else
+
+            if (!udp_socket_initialized)
             {
-                printf("UDP socket bound to port %d\n", UDP_DEFAULT_PORT);
+                vTaskDelay(1000
+                           / portTICK_PERIOD_MS); // Wait 1 second before retry
+                continue;
             }
         }
-        else
+
+        int len = recvfrom(udp_socket,
+                           buffer,
+                           sizeof(buffer) - 1,
+                           0,
+                           (struct sockaddr *)&client_addr,
+                           &client_addr_len);
+
+        if (len > 0)
         {
-            printf("UDP socket creation failed\n");
+            buffer[len] = '\0';
+            char client_ip[16];
+            inet_ntoa_r(client_addr.sin_addr, client_ip, sizeof(client_ip));
+
+            if (udp_recv_callback)
+            {
+                // Dummy MAC address, not used on ESP8266
+                static const char dummy_mac[18] = "00:00:00:00:00:00";
+                udp_recv_callback(buffer,
+                                  len,
+                                  client_ip,
+                                  ntohs(client_addr.sin_port),
+                                  dummy_mac);
+            }
         }
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
+    vTaskDelete(NULL);
+}
+
+void udp_init(udp_recv_callback_t callback)
+{
+    udp_recv_callback = callback;
+
+    // Start receive task that will wait for WiFi and then initialize
+    udp_task_running = true;
+    xTaskCreate(udp_recv_task, "udp_recv", 2048, NULL, 5, NULL);
+
+    printf("UDP task started, waiting for WiFi connection\n");
 }
 
 void udp_send(const char *data, int16_t len, const char *ip, int16_t port)
 {
-    if (udp_sock < 0)
-    {
-        // udp_init() has not been called yet
+    if (udp_socket < 0 || !udp_socket_initialized)
         return;
-    }
+
     struct sockaddr_in dest_addr;
     memset(&dest_addr, 0, sizeof(dest_addr));
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(port);
-    dest_addr.sin_addr.s_addr = inet_addr(ip);
-    sendto(udp_sock, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+    inet_aton(ip, &dest_addr.sin_addr);
+
+    sendto(udp_socket,
+           data,
+           len,
+           0,
+           (struct sockaddr *)&dest_addr,
+           sizeof(dest_addr));
 }
 
 void udp_send_broadcast(const char *data, int16_t len, int16_t port)
 {
-    if (udp_sock < 0)
-    {
-        // udp_init() has not been called yet
+    if (udp_socket < 0 || !udp_socket_initialized)
         return;
-    }
-    int broadcastEnable = 1;
-    setsockopt(udp_sock, SOL_SOCKET, SO_BROADCAST, &broadcastEnable, sizeof(broadcastEnable));
-    struct sockaddr_in dest_addr;
-    memset(&dest_addr, 0, sizeof(dest_addr));
-    dest_addr.sin_family = AF_INET;
-    dest_addr.sin_port = htons(port);
-    dest_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
-    sendto(udp_sock, data, len, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-}
 
-uint32_t udp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
-{
-    if (udp_sock < 0)
-    {
-        // udp_init() has not been called yet
-        return 0; // Socket not available
-    }
-    if (udp_sock < 0)
-    {
-        printf("ERROR : UDP socket not initialized\n");
-        return 0; // Socket not available
-    }
+    // Enable broadcast
+    int broadcast = 1;
+    setsockopt(
+        udp_socket, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
 
-    struct sockaddr_in src_addr;
-    socklen_t addr_len = sizeof(src_addr);
+    struct sockaddr_in broadcast_addr;
+    memset(&broadcast_addr, 0, sizeof(broadcast_addr));
+    broadcast_addr.sin_family = AF_INET;
+    broadcast_addr.sin_port = htons(port);
+    broadcast_addr.sin_addr.s_addr = INADDR_BROADCAST;
 
-    // Set non-blocking mode using fcntl (correct for ESP-IDF)
-    int flags = fcntl(udp_sock, F_GETFL, 0);
-    if (!(flags & O_NONBLOCK))
-    {
-        fcntl(udp_sock, F_SETFL, flags | O_NONBLOCK);
-    }
-
-    int recv_len = recvfrom(udp_sock, data, len, 0, (struct sockaddr *)&src_addr, &addr_len);
-    if (recv_len > 0)
-    {
-        // printf("Received %d bytes from %s:%d\n", recv_len, inet_ntoa(src_addr.sin_addr), ntohs(src_addr.sin_port));
-        if (ip)
-        {
-            inet_ntop(AF_INET, &src_addr.sin_addr, ip, INET_ADDRSTRLEN);
-        }
-        else
-        {
-            printf("IP address buffer is NULL\n");
-        }
-        if (port)
-        {
-            *port = ntohs(src_addr.sin_port);
-        }
-        else
-        {
-            printf("Port buffer is NULL\n");
-        }
-        // The MAC address is not needed on esp8266 module
-        if (mac)
-        {
-            // So set it to a default value
-            strcpy(mac, "00:00:00:00:00:00");
-        }
-        return recv_len;
-    }
-    else if (recv_len < 0)
-    {
-        int error = errno;
-        if (error == EAGAIN || error == EWOULDBLOCK)
-        {
-            // No data received
-            // printf("No UDP data available (EAGAIN/EWOULDBLOCK)\n");
-            return 0;
-        }
-        else
-        {
-            printf("recvfrom() failed with error code : %d\n", error);
-            return 0;
-        }
-    }
-    // printf("udp_recv: recvfrom returned 0\n");
-    return 0;
+    sendto(udp_socket,
+           data,
+           len,
+           0,
+           (struct sockaddr *)&broadcast_addr,
+           sizeof(broadcast_addr));
 }
 
 void udp_get_host_ip(char *ip)
 {
     tcpip_adapter_ip_info_t ip_info;
-    tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info);
-    strcpy(ip, ip4addr_ntoa(&ip_info.ip));
+    if (tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info) == ESP_OK)
+    {
+        inet_ntoa_r(ip_info.ip, ip, 16);
+    }
+    else
+    {
+        strcpy(ip, "0.0.0.0");
+    }
 }
 
 void udp_get_host_mac(char *mac)
 {
     uint8_t mac_addr[6];
-    esp_wifi_get_mac(WIFI_IF_STA, mac_addr);
-    sprintf(mac, "%02X:%02X:%02X:%02X:%02X:%02X",
-            mac_addr[0], mac_addr[1], mac_addr[2],
-            mac_addr[3], mac_addr[4], mac_addr[5]);
+    if (esp_wifi_get_mac(WIFI_IF_STA, mac_addr) == ESP_OK)
+    {
+        sprintf(mac,
+                "%02X:%02X:%02X:%02X:%02X:%02X",
+                mac_addr[0],
+                mac_addr[1],
+                mac_addr[2],
+                mac_addr[3],
+                mac_addr[4],
+                mac_addr[5]);
+    }
+    else
+    {
+        strcpy(mac, "00:00:00:00:00:00");
+    }
 }

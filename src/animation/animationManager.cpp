@@ -8,13 +8,15 @@ AnimationManager::AnimationManager()
 
 AnimationManager::~AnimationManager()
 {
-    for (std::vector<Animation*>::iterator it = m_animations.begin(); it != m_animations.end(); ++it)
+    for (std::vector<Animation *>::iterator it = m_animations.begin();
+         it != m_animations.end();
+         ++it)
     {
         delete *it;
     }
 }
 
-void AnimationManager::addAnimation(Animation* anim)
+void AnimationManager::addAnimation(Animation *anim)
 {
     m_animations.push_back(anim);
     anim->start();
@@ -28,11 +30,11 @@ void AnimationManager::removeAnimation(uint32_t index)
     m_animations.erase(m_animations.begin() + index);
 }
 
-void AnimationManager::removeAnimation(Animation* anim)
+void AnimationManager::removeAnimation(Animation *anim)
 {
-    for(uint32_t l_index = 0; l_index < m_animations.size(); ++l_index)
+    for (uint32_t l_index = 0; l_index < m_animations.size(); ++l_index)
     {
-        if(m_animations[l_index] == anim)
+        if (m_animations[l_index] == anim)
         {
             removeAnimation(l_index);
         }

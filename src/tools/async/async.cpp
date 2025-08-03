@@ -2,53 +2,50 @@
 #include <algorithm>
 
 std::vector<Async *> Async::m_asyncOperations;
-volatile bool Async::m_locked = false;
-
-void Async::lock()
-{
-    while (Async::m_locked) { /* busy wait */ }
-    Async::m_locked = true;
-}
-
-void Async::unlock()
-{
-    Async::m_locked = false;
-}
+Mutex Async::m_mutex;
 
 void Async::process()
 {
     std::vector<Async *> toProcess;
     {
-        lock();
-        toProcess.swap(m_asyncOperations); // Take ownership and clear the shared list
-        unlock();
+        Mutex::LockGuard lock(m_mutex);
+        toProcess.swap(
+            m_asyncOperations); // Take ownership and clear the shared list
     }
+
     for (auto it : toProcess)
     {
-        if (it->m_callback)
         {
-            it->m_callback();
+            Mutex::LockGuard instanceLock(it->m_instanceMutex);
+            if (it->m_callback && !it->m_processed)
+            {
+                it->m_callback();
+                it->m_processed = true;
+            }
         }
+
         if (it->m_mustDelete)
         {
             delete it;
         }
     }
-    // No need to clear m_asyncOperations here, it's already swapped out
 }
 
 Async::Async(AsyncCallback callback, bool mustDelete)
-    : m_callback(callback),
-      m_mustDelete(mustDelete)
+    : m_callback(callback), m_mustDelete(mustDelete), m_processed(false)
 {
-    lock();
+    Mutex::LockGuard lock(m_mutex);
     m_asyncOperations.push_back(this);
-    unlock();
 }
 
-Async::Async(AsyncCallback callback)
-    : Async(callback, false) // Default to not delete after processing
+Async::Async(AsyncCallback callback) : Async(callback, false)
 {
+}
+
+bool Async::isDone() const
+{
+    Mutex::LockGuard instanceLock(m_instanceMutex);
+    return m_processed;
 }
 
 void Async::registerAsync(AsyncCallback callback)
@@ -56,12 +53,4 @@ void Async::registerAsync(AsyncCallback callback)
     // Create a new Async instance and do not keep a reference to it
     // Mark the instance for deletion
     new Async(callback, true);
-}
-
-bool Async::isDone() const
-{
-    lock();
-    bool done = std::find(m_asyncOperations.begin(), m_asyncOperations.end(), this) == m_asyncOperations.end();
-    unlock();
-    return done;
 }

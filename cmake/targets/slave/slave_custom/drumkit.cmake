@@ -1,18 +1,18 @@
 
 # Preprocessor definitions
-add_compile_options(-D__TARGET_CYMBALKIT)
+add_compile_options(-D__TARGET_DRUMKIT)
 
 ####################################################################################################
-# CymbalKit source files (from src directory)
+# DrumKit source files (from src directory)
 ####################################################################################################
 add_sources(
     api/adc/adcEsp8266.cpp
-    api/circleLeds/circleLedsCymbalKit.cpp
-    kit/kitConfigGenerator/kitConfigGeneratorCymbalKit.cpp
-    )
+    api/circleLeds/circleLedsDrumKit.cpp
+    kit/kitConfigGenerator/kitConfigGeneratorDrumKit.cpp
+)
 
 ####################################################################################################
-# CymbalKit include directories (from src directory)
+# DrumKit include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
-    )
+)

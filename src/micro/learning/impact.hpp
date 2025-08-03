@@ -6,11 +6,10 @@
 class Impact
 {
     private:
-
     public:
-        Impact();
-        float m_realImpact;
-        float m_ArtImpact;
+    Impact();
+    float m_realImpact;
+    float m_ArtImpact;
 };
 
 #endif

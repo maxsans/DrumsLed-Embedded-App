@@ -25,10 +25,12 @@ void Kit::onPing(const Client &client, InterMsg &msg)
     {
         // Update the master client
         m_masterClient = client;
-        LogStream::cout << "Master client registered: " << client.getMacAddress() << LogStream::endl;
+        LogStream::cout << "Master client registered: "
+                        << client.getIP().getIpString() << LogStream::endl;
         // Respond to the ping
         InterMsgInitModule(m_masterClient, getKitConfig()).send();
-        LogStream::cout << "Sent InitModule message to master client." << LogStream::endl;
+        LogStream::cout << "Sent InitModule message to master client."
+                        << LogStream::endl;
         // Start the services
         for (KitService *service : m_services)
         {
@@ -42,11 +44,13 @@ void Kit::onPing(const Client &client, InterMsg &msg)
 void Kit::init()
 {
     // Initialize the timeout checker
-    m_timeoutChecker = new periodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, nullptr);
+    m_timeoutChecker = new periodicCallsMs(
+        m_pingTimeoutDuration, &Kit::checkTimeouts, nullptr);
     // Register the ping callback
     InterComParser::registerCallback(InterMsgId::PingSlaves, Kit::onPing);
     // Log the initialization
-    LogStream::cout << "Kit initialized. Waiting for master client..." << LogStream::endl;
+    LogStream::cout << "Kit initialized. Waiting for master client..."
+                    << LogStream::endl;
     // Initialize the master client to an invalid state
     m_masterClient = Client();
     // Generate the kit configuration
@@ -68,7 +72,9 @@ void Kit::checkTimeouts(void *)
     // Check if the ping timeout has occurred
     if (m_pingTimeout.ring())
     {
-        LogStream::cout << "Ping timeout occurred. Master client is no longer valid." << LogStream::endl;
+        LogStream::cout
+            << "Ping timeout occurred. Master client is no longer valid."
+            << LogStream::endl;
         // Reset the master client
         m_masterClient = Client();
         // Stop all services

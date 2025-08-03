@@ -1,9 +1,9 @@
 #include "terminal.hpp"
+#include <chrono>
+#include <fcntl.h>
+#include <iostream>
 #include <termios.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <chrono>
-#include <iostream>
 
 static struct termios orig_termios;
 
@@ -27,7 +27,8 @@ bool terminal_kbhit()
     fcntl(STDIN_FILENO, F_SETFL, old_flags | O_NONBLOCK);
     int c = getchar();
     fcntl(STDIN_FILENO, F_SETFL, old_flags);
-    if (c != EOF) {
+    if (c != EOF)
+    {
         ungetc(c, stdin);
         return true;
     }

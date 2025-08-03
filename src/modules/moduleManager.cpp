@@ -1,16 +1,16 @@
 #include "moduleManager.hpp"
-#include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
-#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "tools/logStream/logStream.hpp"
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
+#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
+#include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
+#include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
 #include <sys/time.h>
 
 const timeMs ModuleManager::m_ringInterval = timeMs(500);
 
-ModuleManager::ModuleManager(bool active) :
-    m_ringPeriodicCalls(m_ringInterval, ringCallback, this)
+ModuleManager::ModuleManager(bool active)
+    : m_ringPeriodicCalls(m_ringInterval, ringCallback, this)
 {
     enable(active);
 
@@ -18,21 +18,19 @@ ModuleManager::ModuleManager(bool active) :
     m_modules.clear();
 
     // Register the callback to push back the module when a new module is detected
-    InterComParser::registerCallback(InterMsgId::InitModule,
-        [this](const Client &client, InterMsg &msg, void *object)
-        {
+    InterComParser::registerCallback(
+        InterMsgId::InitModule,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onNewModule(client, msg);
-        }
-    );
+        });
 
     // Register the callback to handle ADC messages
-    InterComParser::registerCallback(InterMsgId::Adc,
-        [this](const Client &client, InterMsg &msg, void *object)
-        {
+    InterComParser::registerCallback(
+        InterMsgId::Adc,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onAdcMsg(msg);
             return;
-        }
-    );
+        });
 }
 
 void ModuleManager::enable(bool e)
@@ -60,7 +58,8 @@ void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
     }
     else
     {
-        LogStream::cout << "Received InitModule message with invalid type: " << msg.toString() << LogStream::endl;
+        LogStream::cout << "Received InitModule message with invalid type: "
+                        << msg.toString() << LogStream::endl;
     }
 }
 
@@ -98,7 +97,8 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
             // Create a new module and add it to the list
             m_modules.push_back(new Module(kitConfig, client));
             // Log the addition of the module
-            LogStream::cout << "Module added: " << client.getIP().getIpString() << LogStream::endl;
+            LogStream::cout << "Module added: " << client.getIP().getIpString()
+                            << LogStream::endl;
         }
     }
     return nullptr;
@@ -167,7 +167,9 @@ void ModuleManager::ringModules()
         Module *l_module = m_modules[i];
         if (!l_module->isConnected())
         {
-            LogStream::cout << "Module " << l_module->getClient().getIP().getIpString() << " disconnected." << LogStream::endl;
+            LogStream::cout << "Module "
+                            << l_module->getClient().getIP().getIpString()
+                            << " disconnected." << LogStream::endl;
             // Remove the module from the list
             delete l_module;
             m_modules.erase(m_modules.begin() + i);
@@ -186,7 +188,7 @@ void ModuleManager::setMicro(Client client, uint8_t microValue)
 
     // Get the micro of the module
     Micro *l_micro = l_module->getMicro();
-    if(l_micro == nullptr)
+    if (l_micro == nullptr)
     {
         LogStream::cout << "No micro found for this module" << LogStream::endl;
         return;

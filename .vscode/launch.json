@@ -22,4 +22,5 @@
             "preLaunchTask": "build",
             "internalConsoleOptions": "openOnSessionStart"
         }
+    ]
 }

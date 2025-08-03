@@ -3,7 +3,10 @@
 #include "tools/logStream/logStream.hpp"
 
 InterMsgExample::InterMsgExample(Client client, int exampleData)
-    : InterMsg(client, InterMsgData(InterMsgHeader(InterMsgId::Example, sizeof(m_data)), (char *)&m_data), m_sendType)
+    : InterMsg(client,
+               InterMsgData(InterMsgHeader(InterMsgId::Example, sizeof(m_data)),
+                            (char *)&m_data),
+               m_sendType)
 {
     m_data.exampleData = exampleData;
 }
@@ -20,6 +23,7 @@ int InterMsgExample::getExampleData() const
 
 std::string InterMsgExample::toString() const
 {
-    return "InterMsgExample: exampleData = " + std::to_string(m_data.exampleData)
+    return "InterMsgExample: exampleData = "
+           + std::to_string(m_data.exampleData)
            + ", client = " + getClient().getIP().getIpString();
 }

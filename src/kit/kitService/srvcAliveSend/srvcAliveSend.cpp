@@ -5,7 +5,8 @@ const timeMs KitSrvcAliveSend::m_sendInterval = timeMs(500);
 
 KitSrvcAliveSend::KitSrvcAliveSend()
     : KitService(KitServiceType::AliveSend),
-      m_sendPeriodicCall(m_sendInterval, &KitSrvcAliveSend::periodicSendCallback, this)
+      m_sendPeriodicCall(
+          m_sendInterval, &KitSrvcAliveSend::periodicSendCallback, this)
 {
     // For now the communication isn't established with the master client
     m_sendPeriodicCall.enable(false);

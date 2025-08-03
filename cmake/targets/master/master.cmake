@@ -1,4 +1,3 @@
-
 include(cmake/tools.cmake)
 
 # Preprocessor definitions
@@ -36,39 +35,25 @@ add_sources(
     tools/term/termParameter/termParameter.cpp
 
     api/terminal/terminal.cpp
-    )
+)
 
-# Specific windows source files
-if(WIN32)
-    add_sources(
-        api/logs/logsWindows.cpp
-        api/udp/udpWindows.cpp
-        api/time/timeWindows.cpp
-        api/tcp/tcpWindows.cpp
-        api/terminal/terminalWindows.cpp
-        )
-endif()
-
-# Specific linux source files
-if(UNIX)
-    add_sources(
-        api/logs/logsLinux.cpp
-        api/udp/udpLinux.cpp
-        api/time/timeLinux.cpp
-        api/terminal/terminalLinux.cpp
-        )
-endif()
+# Add sources from platform-specific files
+include(${CMAKE_CURRENT_LIST_DIR}/master_custom/${CUSTOM_CMAKE_NAME}.cmake)
 
 ####################################################################################################
 # Master include directories (from src directory)
 ####################################################################################################
 add_include_dirs(
     master
-    )
+)
 
 # Print the sources and include directories
-print_sources_and_include_dirs()
+print_app_info()
 
+# Add .exe to the target name
+set(TARGET ${TARGET}.exe)
+
+# Create the executable target
 add_executable(${TARGET} ${SRCS})
 target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
 
@@ -76,15 +61,4 @@ target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
 # Link libraries
 ####################################################################################################
 
-# Common libraries
-
-# Windows libraries
-if(WIN32)
-    target_link_libraries(${TARGET} Ws2_32)
-    target_link_libraries(${TARGET} iphlpapi)
-endif()
-
-# Linux libraries
-if(UNIX)
-    target_link_libraries(${TARGET} pthread)
-endif()
+target_link_libraries(${TARGET} ${LIBS})

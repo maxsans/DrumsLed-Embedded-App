@@ -68,4 +68,3 @@ timeMs chronoMs::getElapsedTime()
 {
     return timeMs::nowMs() - m_start.get();
 }
-

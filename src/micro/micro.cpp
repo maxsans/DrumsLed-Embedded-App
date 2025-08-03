@@ -108,5 +108,5 @@ uint8_t Micro::getThreshold()
 bool Micro::isHit()
 {
     // Check if the micro is hit
-    return (m_microValueCorrected > (m_threshold*m_correction));
+    return (m_microValueCorrected > (m_threshold * m_correction));
 }

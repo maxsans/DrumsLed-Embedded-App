@@ -1,14 +1,12 @@
 #include "interMsg.hpp"
 
-#include "api/udp/udp.hpp"
 #include "api/tcp/tcp.hpp"
+#include "api/udp/udp.hpp"
 
 #include <cassert>
 #include <cstring>
 
-InterMsg::InterMsg(Client client,
-                   InterMsgData data,
-                   SendType sendType)
+InterMsg::InterMsg(Client client, InterMsgData data, SendType sendType)
     : m_client(client), m_data(data), m_sendType(sendType)
 {
 }
@@ -42,7 +40,7 @@ void InterMsg::send()
     }
 }
 
-const Client& InterMsg::getClient() const
+const Client &InterMsg::getClient() const
 {
     return m_client;
 }
@@ -54,14 +52,13 @@ InterMsgId InterMsg::getId() const
 
 bool InterMsg::operator==(const InterMsg *other) const
 {
-    return (m_client == other->m_client &&
-            m_data == other->m_data);
+    return (m_client == other->m_client && m_data == other->m_data);
 }
 
 std::string InterMsg::toString() const
 {
-    return "InterMsg: " + m_client.getIP().getIpString() +
-           ", ID: " + std::to_string(m_data.getHeader().getId().rawValue()) +
-           ", PrivSize: " + std::to_string(m_data.getHeader().getPrivSize()) +
-           ", SendType: " + std::to_string(static_cast<int>(m_sendType));
+    return "InterMsg: " + m_client.getIP().getIpString()
+           + ", ID: " + std::to_string(m_data.getHeader().getId().rawValue())
+           + ", PrivSize: " + std::to_string(m_data.getHeader().getPrivSize())
+           + ", SendType: " + std::to_string(static_cast<int>(m_sendType));
 }

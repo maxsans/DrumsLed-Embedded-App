@@ -1,5 +1,5 @@
-#include "circleLeds.hpp"
 #include "api/drivers/ws2812Esp8266/ws2812Esp8266.hpp"
+#include "circleLeds.hpp"
 #include <stdio.h>
 
 /**
@@ -41,10 +41,14 @@ void circleLedsFill(uint8_t red, uint8_t green, uint8_t blue)
 
 void circleLedsSetPixel(uint32_t index, uint32_t color)
 {
-    circleLedsSetPixel(index, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+    circleLedsSetPixel(
+        index, (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
 }
 
-void circleLedsSetPixel(uint32_t index, uint8_t red, uint8_t green, uint8_t blue)
+void circleLedsSetPixel(uint32_t index,
+                        uint8_t red,
+                        uint8_t green,
+                        uint8_t blue)
 {
     g_ledDriver.setPixelColor(index, red, green, blue);
 }

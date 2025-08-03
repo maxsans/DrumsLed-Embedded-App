@@ -10,7 +10,12 @@ MacAddr::MacAddr()
     m_mac[5] = 0;
 }
 
-MacAddr::MacAddr(uint8_t mac1, uint8_t mac2, uint8_t mac3, uint8_t mac4, uint8_t mac5, uint8_t mac6)
+MacAddr::MacAddr(uint8_t mac1,
+                 uint8_t mac2,
+                 uint8_t mac3,
+                 uint8_t mac4,
+                 uint8_t mac5,
+                 uint8_t mac6)
 {
     m_mac[0] = mac1;
     m_mac[1] = mac2;
@@ -71,17 +76,16 @@ uint8_t MacAddr::getMac6() const
 
 uint64_t MacAddr::getMac() const
 {
-    return (uint64_t)m_mac[0] << 40 | (uint64_t)m_mac[1] << 32 | (uint64_t)m_mac[2] << 24 | (uint64_t)m_mac[3] << 16 | (uint64_t)m_mac[4] << 8 | (uint64_t)m_mac[5];
+    return (uint64_t)m_mac[0] << 40 | (uint64_t)m_mac[1] << 32
+           | (uint64_t)m_mac[2] << 24 | (uint64_t)m_mac[3] << 16
+           | (uint64_t)m_mac[4] << 8 | (uint64_t)m_mac[5];
 }
 
 std::string MacAddr::getMacString() const
 {
-    return      std::to_string(m_mac[0])
-        + ":" + std::to_string(m_mac[1])
-        + ":" + std::to_string(m_mac[2])
-        + ":" + std::to_string(m_mac[3])
-        + ":" + std::to_string(m_mac[4])
-        + ":" + std::to_string(m_mac[5]);
+    return std::to_string(m_mac[0]) + ":" + std::to_string(m_mac[1]) + ":"
+           + std::to_string(m_mac[2]) + ":" + std::to_string(m_mac[3]) + ":"
+           + std::to_string(m_mac[4]) + ":" + std::to_string(m_mac[5]);
 }
 
 void MacAddr::setMac1(uint8_t mac1)
@@ -124,7 +128,12 @@ void MacAddr::setMac(uint64_t mac)
     m_mac[5] = mac & 0xFF;
 }
 
-void MacAddr::setMac(uint8_t mac1, uint8_t mac2, uint8_t mac3, uint8_t mac4, uint8_t mac5, uint8_t mac6)
+void MacAddr::setMac(uint8_t mac1,
+                     uint8_t mac2,
+                     uint8_t mac3,
+                     uint8_t mac4,
+                     uint8_t mac5,
+                     uint8_t mac6)
 {
     m_mac[0] = mac1;
     m_mac[1] = mac2;
@@ -136,7 +145,14 @@ void MacAddr::setMac(uint8_t mac1, uint8_t mac2, uint8_t mac3, uint8_t mac4, uin
 
 void MacAddr::setMac(const char *mac)
 {
-    sscanf(mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &m_mac[0], &m_mac[1], &m_mac[2], &m_mac[3], &m_mac[4], &m_mac[5]);
+    sscanf(mac,
+           "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+           &m_mac[0],
+           &m_mac[1],
+           &m_mac[2],
+           &m_mac[3],
+           &m_mac[4],
+           &m_mac[5]);
 }
 
 void MacAddr::setMac(const MacAddr &mac)
@@ -156,7 +172,9 @@ void MacAddr::setMac(const std::string &mac)
 
 bool MacAddr::operator==(const MacAddr &mac) const
 {
-    return m_mac[0] == mac.m_mac[0] && m_mac[1] == mac.m_mac[1] && m_mac[2] == mac.m_mac[2] && m_mac[3] == mac.m_mac[3] && m_mac[4] == mac.m_mac[4] && m_mac[5] == mac.m_mac[5];
+    return m_mac[0] == mac.m_mac[0] && m_mac[1] == mac.m_mac[1]
+           && m_mac[2] == mac.m_mac[2] && m_mac[3] == mac.m_mac[3]
+           && m_mac[4] == mac.m_mac[4] && m_mac[5] == mac.m_mac[5];
 }
 
 bool MacAddr::operator!=(const MacAddr &mac) const

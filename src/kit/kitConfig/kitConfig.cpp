@@ -1,7 +1,6 @@
 #include "kitConfig.hpp"
 
-KitConfig::KitConfig(KitType::Type type)
-    : m_type(type)
+KitConfig::KitConfig(KitType::Type type) : m_type(type)
 {
     // Initialize attribute types
     for (int i = 0; i < KitAttributeType::Count; ++i)
@@ -21,11 +20,13 @@ void KitConfig::setType(KitType::Type type)
     m_type = type;
 }
 
-void KitConfig::setAttribute(KitAttributeType attributeType, uint32_t nbAttributes)
+void KitConfig::setAttribute(KitAttributeType attributeType,
+                             uint32_t nbAttributes)
 {
     if (attributeType.getType() < KitAttributeType::Count)
     {
-        m_attributeTypes[attributeType.getType()] = KitAttributeType(attributeType.getType(), nbAttributes);
+        m_attributeTypes[attributeType.getType()]
+            = KitAttributeType(attributeType.getType(), nbAttributes);
     }
 }
 
@@ -46,7 +47,8 @@ bool KitConfig::hasAttributeType(KitAttributeType::Type attributeType) const
 {
     if (attributeType < KitAttributeType::Count)
     {
-        return m_attributeTypes[attributeType].getType() != KitAttributeType::Type::None;
+        return m_attributeTypes[attributeType].getType()
+               != KitAttributeType::Type::None;
     }
     return false;
 }
@@ -55,7 +57,8 @@ bool KitConfig::hasServiceType(KitServiceType::Type serviceType) const
 {
     if (serviceType < KitServiceType::Count)
     {
-        return m_serviceTypes[serviceType].getType() != KitServiceType::Type::None;
+        return m_serviceTypes[serviceType].getType()
+               != KitServiceType::Type::None;
     }
     return false;
 }

@@ -1,8 +1,8 @@
 #ifndef __RECORD_HPP__
 #define __RECORD_HPP__
 
-#include <vector>
 #include <stdint.h>
+#include <vector>
 
 /**
  * @brief A record is a slot of all micros values at a time
@@ -11,33 +11,33 @@
 class Record
 {
     private:
-        std::vector<uint8_t> m_record;
+    std::vector<uint8_t> m_record;
 
     public:
-        Record(uint32_t nbMicros);
+    Record(uint32_t nbMicros);
 
-        /**
-         * @brief Set a value to the record
-         *
-         * @param index the index of the micro to set
-         * @param value the value to add
-         */
-        void setValue(uint32_t index, uint8_t value);
+    /**
+     * @brief Set a value to the record
+     *
+     * @param index the index of the micro to set
+     * @param value the value to add
+     */
+    void setValue(uint32_t index, uint8_t value);
 
-        /**
-         * @brief Get the value at a specific index
-         *
-         * @param index the index of the micro to get
-         * @return the value of the micro
-         */
-        uint8_t getValue(uint32_t index);
+    /**
+     * @brief Get the value at a specific index
+     *
+     * @param index the index of the micro to get
+     * @return the value of the micro
+     */
+    uint8_t getValue(uint32_t index);
 
-        /**
-         * @brief Get the size of the record
-         *
-         * @return the size of the record
-         */
-        uint32_t getSize();
+    /**
+     * @brief Get the size of the record
+     *
+     * @return the size of the record
+     */
+    uint32_t getSize();
 };
 
 #endif

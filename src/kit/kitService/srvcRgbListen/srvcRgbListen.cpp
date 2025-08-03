@@ -1,24 +1,24 @@
 #include "srvcRgbListen.hpp"
-#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
-#include "network/interCom/interComParser/interComParser.hpp"
 #include "api/circleLeds/circleLeds.hpp"
+#include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/logStream/logStream.hpp"
 
-KitSrvcRgbListen::KitSrvcRgbListen()
-    : KitService(KitServiceType::RgbListen)
+KitSrvcRgbListen::KitSrvcRgbListen() : KitService(KitServiceType::RgbListen)
 {
     // Register the callback for RGB messages
-    InterComParser::registerCallback(InterMsgId::Rgb,
-        [this](const Client &client, InterMsg &msg, void *object)
-        {
+    InterComParser::registerCallback(
+        InterMsgId::Rgb,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onRgbMsg(client, msg);
-        }
-    );
+        });
 
     // By default, light up the led while the master isn't registered
     circleLedsInit();
     circleLedsFill(255, 255, 255);
-    LogStream::cout << "KitSrvcRgbListen initialized. Waiting for RGB messages..." << LogStream::endl;
+    LogStream::cout
+        << "KitSrvcRgbListen initialized. Waiting for RGB messages..."
+        << LogStream::endl;
 }
 
 void KitSrvcRgbListen::onStart()
@@ -36,7 +36,7 @@ void KitSrvcRgbListen::onStop()
 void KitSrvcRgbListen::onRgbMsg(const Client &client, InterMsg &msg)
 {
     // Cast the message to RGB message type
-    InterMsgRgb &rgbMsg = static_cast<InterMsgRgb&>(msg);
+    InterMsgRgb &rgbMsg = static_cast<InterMsgRgb &>(msg);
 
     // Update the circle LEDs with the RGB values
     circleLedsFill(rgbMsg.getRed(), rgbMsg.getGreen(), rgbMsg.getBlue());

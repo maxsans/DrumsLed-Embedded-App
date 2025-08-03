@@ -1,6 +1,6 @@
 #include "learning.hpp"
-#include "tools/logStream/logStream.hpp"
 #include "modules/moduleManager.hpp"
+#include "tools/logStream/logStream.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 
 #include <assert.h>
@@ -9,11 +9,13 @@ const timeMs Learning::m_timeBetweenMeasures = 20;
 const RgbColor Learning::m_learningColor = RgbColor(255, 255, 255);
 const RgbColor Learning::m_notLearningColor = RgbColor(0, 0, 0);
 
-Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(void *object), void *obj) :
-    m_moduleManager(moduleManager),
-    m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
-    m_learningDoneCallback(learningDoneCallback),
-    m_learningDoneCallbackObject(obj)
+Learning::Learning(ModuleManager *moduleManager,
+                   void (*learningDoneCallback)(void *object),
+                   void *obj)
+    : m_moduleManager(moduleManager),
+      m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
+      m_learningDoneCallback(learningDoneCallback),
+      m_learningDoneCallbackObject(obj)
 {
     // Initialize the micro record slots
     m_microRecordSlots.clear();
@@ -22,7 +24,8 @@ Learning::Learning(ModuleManager *moduleManager, void (*learningDoneCallback)(vo
     m_recordPeriodicCall.enable(false);
     // Add all the micros of the module manager to the impacts manager
     uint32_t l_nbModule = m_moduleManager->getModuleCount();
-    for (uint32_t l_moduleIndex = 0; l_moduleIndex < l_nbModule; l_moduleIndex++)
+    for (uint32_t l_moduleIndex = 0; l_moduleIndex < l_nbModule;
+         l_moduleIndex++)
     {
         Module *l_module = m_moduleManager->getModule(l_moduleIndex);
         if (l_module != nullptr)
@@ -47,7 +50,9 @@ void Learning::startLearning()
     // Check if the module manager is enabled
     if (!m_moduleManager->isActive())
     {
-        LogStream::cout << "Module manager is not enabled, cannot start learning" << LogStream::endl;
+        LogStream::cout
+            << "Module manager is not enabled, cannot start learning"
+            << LogStream::endl;
         if (m_learningDoneCallback != nullptr)
         {
             m_learningDoneCallback(m_learningDoneCallbackObject);
@@ -63,7 +68,8 @@ void Learning::startLearning()
         m_moduleManager->enable(false);
         // Start the learning process on the first micro
         // Add as much of micros as microsManager has in the vector of records
-        for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
+        for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros;
+             l_microIndex++)
         {
             m_microRecordSlots.push_back(new RecordSlot(l_nbMicros));
         }
@@ -90,11 +96,14 @@ void Learning::startLearning(int32_t microIndex)
     LogStream::cout << "Start learning on micro " << LogStream::endl;
 
     // Get the main micro of this learning
-    Micro *l_mainMicro = m_moduleManager->getImpactsManager()->getMicro(microIndex);
+    Micro *l_mainMicro
+        = m_moduleManager->getImpactsManager()->getMicro(microIndex);
 
     // highlight the module that the micro is associated with if it has leds
     // and put black the others
-    for(uint32_t l_moduleIndex = 0; l_moduleIndex < m_moduleManager->getModuleCount(); l_moduleIndex++)
+    for (uint32_t l_moduleIndex = 0;
+         l_moduleIndex < m_moduleManager->getModuleCount();
+         l_moduleIndex++)
     {
         Module *l_module = m_moduleManager->getModule(l_moduleIndex);
         if (l_module->getMicro() == l_mainMicro)
@@ -102,7 +111,7 @@ void Learning::startLearning(int32_t microIndex)
             // The module is associated with the micro
             // Turn on the leds
             RgbLed *l_led = l_module->getRgbLed();
-            if(l_led != nullptr)
+            if (l_led != nullptr)
             {
                 l_led->setColor(COLOR_PRIORITY_LEARNING, m_learningColor);
             }
@@ -112,7 +121,7 @@ void Learning::startLearning(int32_t microIndex)
             // The module is not associated with the micro
             // Turn off the leds
             RgbLed *l_led = l_module->getRgbLed();
-            if(l_led != nullptr)
+            if (l_led != nullptr)
             {
                 l_led->setColor(COLOR_PRIORITY_LEARNING, m_notLearningColor);
             }
@@ -123,9 +132,9 @@ void Learning::startLearning(int32_t microIndex)
     m_recordPeriodicCall.enable(true);
 }
 
-void Learning::recordCallback(void* object)
+void Learning::recordCallback(void *object)
 {
-    ((Learning*)object)->recordAllMic();
+    ((Learning *)object)->recordAllMic();
 }
 
 void Learning::recordAllMic()
@@ -133,10 +142,11 @@ void Learning::recordAllMic()
     // Record all the micros only if at least one micro is record something
     bool l_recordSomething = false;
     uint32_t l_nbMicros = m_moduleManager->getImpactsManager()->getMicroCount();
-    for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
+    for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the micro
-        Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
+        Micro *l_micro
+            = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
 
         // Get the micro's value
         uint8_t l_value = l_micro->getMicroValue();
@@ -152,11 +162,13 @@ void Learning::recordAllMic()
         // At least one micro has recorded something
         // Record all the micros
         Record l_record(l_nbMicros);
-        for(uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
+        for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros;
+             l_microIndex++)
         {
 
             // Get the micro
-            Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
+            Micro *l_micro
+                = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
 
             // Get the micro's value
             uint8_t l_value = l_micro->getMicroValue();
@@ -201,11 +213,13 @@ void Learning::stopLearning()
     else
     {
         // Turn off all the leds
-        for(uint32_t l_moduleIndex = 0; l_moduleIndex < 0/*ModuleManager::getModuleCount()*/; l_moduleIndex++)
+        for (uint32_t l_moduleIndex = 0;
+             l_moduleIndex < m_moduleManager->getModuleCount();
+             l_moduleIndex++)
         {
-            Module *l_module = 0;//ModuleManager::getModule(l_moduleIndex);
+            Module *l_module = m_moduleManager->getModule(l_moduleIndex);
             RgbLed *l_led = l_module->getRgbLed();
-            if(l_led != nullptr)
+            if (l_led != nullptr)
             {
                 l_led->releaseColor(COLOR_PRIORITY_LEARNING);
             }
@@ -213,19 +227,22 @@ void Learning::stopLearning()
         // All the micros have been learned
         // Stop the learning process
         m_recordPeriodicCall.enable(false);
-        LogStream::cout << LogStream::endl << "End of learning" << LogStream::endl;
+        LogStream::cout << LogStream::endl
+                        << "End of learning" << LogStream::endl;
 
         // Interpret the records
-        calculateCorrection();                   // Calculate the correction of each micro
-        calculateRealImpacts();                  // Calculate the real impacts of each micro
-        m_moduleManager->getImpactsManager()->calculateArtImpacts();  // Calculate the artificial impacts
-        calculateThreshold();                    // Calculate the threshold of each micro
+        calculateCorrection();  // Calculate the correction of each micro
+        calculateRealImpacts(); // Calculate the real impacts of each micro
+        m_moduleManager->getImpactsManager()
+            ->calculateArtImpacts(); // Calculate the artificial impacts
+        calculateThreshold();        // Calculate the threshold of each micro
 
         // Print the results
         printResults();
 
         // Free the memory
-        for (uint8_t l_microIndex = 0; l_microIndex < m_microRecordSlots.size(); l_microIndex++)
+        for (uint8_t l_microIndex = 0; l_microIndex < m_microRecordSlots.size();
+             l_microIndex++)
         {
             delete m_microRecordSlots[l_microIndex];
         }
@@ -252,13 +269,18 @@ void Learning::calculateCorrection()
     for (uint32_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the micro
-        Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
+        Micro *l_micro
+            = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
 
         // Get the maximum of the micro
         uint8_t l_max = 0;
-        for (uint8_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_microIndex]->getSize(); l_recordIndex++)
+        for (uint8_t l_recordIndex = 0;
+             l_recordIndex < m_microRecordSlots[l_microIndex]->getSize();
+             l_recordIndex++)
         {
-            uint8_t l_newValue = m_microRecordSlots[l_microIndex]->getRecord(l_recordIndex).getValue(l_microIndex);
+            uint8_t l_newValue = m_microRecordSlots[l_microIndex]
+                                     ->getRecord(l_recordIndex)
+                                     .getValue(l_microIndex);
             if (l_newValue > l_max)
             {
                 l_max = l_newValue;
@@ -277,7 +299,10 @@ void Learning::calculateCorrection()
             // The maximum is 0
             // It seems to be an error but let's admit that the correction is 1
             l_correction = 1;
-            LogStream::cout << "Error : The maximum of the micro " << l_microIndex << " is 0, seems to be impossible. Correction applied is 1.00" << LogStream::endl;
+            LogStream::cout
+                << "Error : The maximum of the micro " << l_microIndex
+                << " is 0, seems to be impossible. Correction applied is 1.00"
+                << LogStream::endl;
         }
         // Set the correction
         l_micro->setCorrection(l_correction);
@@ -291,7 +316,8 @@ void Learning::calculateRealImpacts()
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Calculate the impacts of the micro on all the records
-        m_microRecordSlots[l_microIndex]->calculateImpacts(m_moduleManager->getImpactsManager(), l_microIndex);
+        m_microRecordSlots[l_microIndex]->calculateImpacts(
+            m_moduleManager->getImpactsManager(), l_microIndex);
     }
 }
 
@@ -307,44 +333,61 @@ void Learning::calculateThreshold()
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the micro
-        Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
+        Micro *l_micro
+            = m_moduleManager->getImpactsManager()->getMicro(l_microIndex);
 
         // Reset the threshold
         l_micro->setThreshold(0);
     }
-    for(uint32_t l_learningIndex = 0; l_learningIndex < l_nbMicros; l_learningIndex++)
+    for (uint32_t l_learningIndex = 0; l_learningIndex < l_nbMicros;
+         l_learningIndex++)
     {
-        for(uint32_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
+        for (uint32_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros;
+             l_impactedMicro++)
         {
             if (l_impactedMicro != l_learningIndex)
             {
                 // Get the micro
-                Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(l_impactedMicro);
+                Micro *l_micro = m_moduleManager->getImpactsManager()->getMicro(
+                    l_impactedMicro);
 
                 // Apply the artificial impact on each record
-                for (uint32_t l_recordIndex = 0; l_recordIndex < m_microRecordSlots[l_learningIndex]->getSize(); l_recordIndex++)
+                for (uint32_t l_recordIndex = 0;
+                     l_recordIndex
+                     < m_microRecordSlots[l_learningIndex]->getSize();
+                     l_recordIndex++)
                 {
                     // Get the record
-                    Record l_record = m_microRecordSlots[l_learningIndex]->getRecord(l_recordIndex);
+                    Record l_record
+                        = m_microRecordSlots[l_learningIndex]->getRecord(
+                            l_recordIndex);
 
                     // Get the value of the micro
                     int32_t l_value = l_record.getValue(l_impactedMicro);
 
                     // Apply the artificial impact
-                    for (uint32_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
+                    for (uint32_t l_impactorMicro = 0;
+                         l_impactorMicro < l_nbMicros;
+                         l_impactorMicro++)
                     {
                         if (l_impactorMicro != l_impactedMicro)
                         {
                             // Get the artificial impact
-                            float l_artImpact = m_moduleManager->getImpactsManager()->getArtImpact(
-                                    m_moduleManager->getImpactsManager()->getMicro(l_impactorMicro),
-                                    m_moduleManager->getImpactsManager()->getMicro(l_impactedMicro));
+                            float l_artImpact
+                                = m_moduleManager->getImpactsManager()
+                                      ->getArtImpact(
+                                          m_moduleManager->getImpactsManager()
+                                              ->getMicro(l_impactorMicro),
+                                          m_moduleManager->getImpactsManager()
+                                              ->getMicro(l_impactedMicro));
 
                             // Get the value of the impactor micro
-                            uint8_t l_impactorValue = l_record.getValue(l_impactorMicro);
+                            uint8_t l_impactorValue
+                                = l_record.getValue(l_impactorMicro);
 
                             // Apply the artificial impact
-                            int32_t l_toSubstract = l_artImpact * l_impactorValue;
+                            int32_t l_toSubstract
+                                = l_artImpact * l_impactorValue;
                             l_value -= l_toSubstract;
                         }
                     }
@@ -368,32 +411,44 @@ void Learning::printResults()
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the correction
-        float l_correction = m_moduleManager->getImpactsManager()->getMicro(l_microIndex)->getCorrection();
+        float l_correction = m_moduleManager->getImpactsManager()
+                                 ->getMicro(l_microIndex)
+                                 ->getCorrection();
         LogStream::cout << l_correction << "    ";
     }
     // Display the impacts calculated as 2 matrix (real and artificial)
     LogStream::cout << "\n\nReal impacts :" << LogStream::endl;
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros;
+         l_impactorMicro++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros;
+             l_impactedMicro++)
         {
             // Get the real impact
-            float l_realImpact = m_moduleManager->getImpactsManager()->getRealImpact(
-                    m_moduleManager->getImpactsManager()->getMicro(l_impactorMicro),
-                    m_moduleManager->getImpactsManager()->getMicro(l_impactedMicro));
+            float l_realImpact
+                = m_moduleManager->getImpactsManager()->getRealImpact(
+                    m_moduleManager->getImpactsManager()->getMicro(
+                        l_impactorMicro),
+                    m_moduleManager->getImpactsManager()->getMicro(
+                        l_impactedMicro));
             LogStream::cout << l_realImpact << "    ";
         }
         LogStream::cout << LogStream::endl;
     }
     LogStream::cout << "\nArtificial impacts :" << LogStream::endl;
-    for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros; l_impactorMicro++)
+    for (uint8_t l_impactorMicro = 0; l_impactorMicro < l_nbMicros;
+         l_impactorMicro++)
     {
-        for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros; l_impactedMicro++)
+        for (uint8_t l_impactedMicro = 0; l_impactedMicro < l_nbMicros;
+             l_impactedMicro++)
         {
             // Get the artificial impact
-            float l_artImpact = m_moduleManager->getImpactsManager()->getArtImpact(
-                    m_moduleManager->getImpactsManager()->getMicro(l_impactorMicro),
-                    m_moduleManager->getImpactsManager()->getMicro(l_impactedMicro));
+            float l_artImpact
+                = m_moduleManager->getImpactsManager()->getArtImpact(
+                    m_moduleManager->getImpactsManager()->getMicro(
+                        l_impactorMicro),
+                    m_moduleManager->getImpactsManager()->getMicro(
+                        l_impactedMicro));
             LogStream::cout << l_artImpact << "    ";
         }
         LogStream::cout << "" << LogStream::endl;
@@ -402,7 +457,9 @@ void Learning::printResults()
     for (uint8_t l_microIndex = 0; l_microIndex < l_nbMicros; l_microIndex++)
     {
         // Get the threshold
-        uint8_t l_threshold = m_moduleManager->getImpactsManager()->getMicro(l_microIndex)->getThreshold();
+        uint8_t l_threshold = m_moduleManager->getImpactsManager()
+                                  ->getMicro(l_microIndex)
+                                  ->getThreshold();
         LogStream::cout << l_threshold << "    ";
     }
     LogStream::cout << LogStream::endl;

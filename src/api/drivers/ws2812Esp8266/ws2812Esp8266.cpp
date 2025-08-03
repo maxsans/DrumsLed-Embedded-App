@@ -1,6 +1,6 @@
 #include "ws2812Esp8266.hpp"
-#include "esp8266/gpio_struct.h"
 #include "driver/gpio.h"
+#include "esp8266/gpio_struct.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -13,32 +13,36 @@
 #define CYCLES_800 (F_CPU / 800000)      // 1.25us per bit
 #define WS2812_RESET_US 60
 
-#define WS2812_MAX_PIXELS 1024 // Maximum number of pixels supported by this implementation
+#define WS2812_MAX_PIXELS                                                      \
+    1024 // Maximum number of pixels supported by this implementation
 
 #define NB_GAMMA_CORRECTION 256
 
 #define _BV(i) (1U << (i))
 
-const uint8_t GAMMA_CORRECTION[NB_GAMMA_CORRECTION] =
-    {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2,
-        2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5,
-        5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10,
-        10, 10, 11, 11, 11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16,
-        17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 24, 24, 25,
-        25, 26, 27, 27, 28, 29, 29, 30, 31, 32, 32, 33, 34, 35, 35, 36,
-        37, 38, 39, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 50,
-        51, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 66, 67, 68,
-        69, 70, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83, 85, 86, 87, 89,
-        90, 92, 93, 95, 96, 98, 99, 101, 102, 104, 105, 107, 109, 110, 112, 114,
-        115, 117, 119, 120, 122, 124, 126, 127, 129, 131, 133, 135, 137, 138, 140, 142,
-        144, 146, 148, 150, 152, 154, 156, 158, 160, 162, 164, 167, 169, 171, 173, 175,
-        177, 180, 182, 184, 186, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213,
-        215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252, 255};
+const uint8_t GAMMA_CORRECTION[NB_GAMMA_CORRECTION] = {
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   1,   1,
+    1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   2,   2,   2,   2,
+    2,   2,   2,   2,   3,   3,   3,   3,   3,   3,   3,   4,   4,   4,   4,
+    4,   5,   5,   5,   5,   6,   6,   6,   6,   7,   7,   7,   7,   8,   8,
+    8,   9,   9,   9,   10,  10,  10,  11,  11,  11,  12,  12,  13,  13,  13,
+    14,  14,  15,  15,  16,  16,  17,  17,  18,  18,  19,  19,  20,  20,  21,
+    21,  22,  22,  23,  24,  24,  25,  25,  26,  27,  27,  28,  29,  29,  30,
+    31,  32,  32,  33,  34,  35,  35,  36,  37,  38,  39,  39,  40,  41,  42,
+    43,  44,  45,  46,  47,  48,  49,  50,  50,  51,  52,  54,  55,  56,  57,
+    58,  59,  60,  61,  62,  63,  64,  66,  67,  68,  69,  70,  72,  73,  74,
+    75,  77,  78,  79,  81,  82,  83,  85,  86,  87,  89,  90,  92,  93,  95,
+    96,  98,  99,  101, 102, 104, 105, 107, 109, 110, 112, 114, 115, 117, 119,
+    120, 122, 124, 126, 127, 129, 131, 133, 135, 137, 138, 140, 142, 144, 146,
+    148, 150, 152, 154, 156, 158, 160, 162, 164, 167, 169, 171, 173, 175, 177,
+    180, 182, 184, 186, 189, 191, 193, 196, 198, 200, 203, 205, 208, 210, 213,
+    215, 218, 220, 223, 225, 228, 231, 233, 236, 239, 241, 244, 247, 249, 252,
+    255};
 
-void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pin)
+void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels,
+                                       uint8_t *end,
+                                       uint8_t pin)
 {
     const uint32_t pinRegister = _BV(pin);
     uint8_t mask;
@@ -53,7 +57,8 @@ void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pi
         for (mask = 0x80; mask != 0; mask >>= 1)
         {
             // do the checks here while we are waiting on time to pass
-            uint32_t cyclesBit = ((subpix & mask)) ? CYCLES_800_T1H : CYCLES_800_T0H;
+            uint32_t cyclesBit
+                = ((subpix & mask)) ? CYCLES_800_T1H : CYCLES_800_T0H;
             uint32_t cyclesNext = cyclesStart;
 
             // after we have done as much work as needed for this next bit
@@ -80,7 +85,8 @@ void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels, uint8_t *end, uint8_t pi
     } while (pixels < end);
 }
 
-WS2812Esp8266::WS2812Esp8266(uint32_t num_leds, uint8_t pin) : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
+WS2812Esp8266::WS2812Esp8266(uint32_t num_leds, uint8_t pin)
+    : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
 {
     m_mutex = xSemaphoreCreateMutex();
     assert(m_mutex != nullptr);
@@ -93,7 +99,6 @@ WS2812Esp8266::~WS2812Esp8266()
         vSemaphoreDelete(m_mutex);
     }
 }
-
 
 void WS2812Esp8266::init()
 {
@@ -108,7 +113,10 @@ void WS2812Esp8266::init()
     startShowTask("ws2812_show_task", 8192, tskIDLE_PRIORITY + 1);
 }
 
-void WS2812Esp8266::setPixelColor(uint32_t index, uint8_t r, uint8_t g, uint8_t b)
+void WS2812Esp8266::setPixelColor(uint32_t index,
+                                  uint8_t r,
+                                  uint8_t g,
+                                  uint8_t b)
 {
     assert(index < m_num_leds);
     ws2812Esp8266Color_t color;
@@ -136,8 +144,12 @@ void WS2812Esp8266::fill(uint8_t r, uint8_t g, uint8_t b)
 
 void WS2812Esp8266::show()
 {
-    if (m_num_leds > WS2812_MAX_PIXELS) {
-        printf("WS2812: ERROR: m_num_leds (%d) exceeds WS2812_MAX_PIXELS (%d)\n", m_num_leds, WS2812_MAX_PIXELS);
+    if (m_num_leds > WS2812_MAX_PIXELS)
+    {
+        printf(
+            "WS2812: ERROR: m_num_leds (%d) exceeds WS2812_MAX_PIXELS (%d)\n",
+            m_num_leds,
+            WS2812_MAX_PIXELS);
         return;
     }
     uint8_t ws_buf[3 * WS2812_MAX_PIXELS];
@@ -165,7 +177,8 @@ void WS2812Esp8266::show()
 void WS2812Esp8266::showTask(void *pvParameters)
 {
     WS2812Esp8266 *instance = static_cast<WS2812Esp8266 *>(pvParameters);
-    if (!instance) {
+    if (!instance)
+    {
         printf("WS2812: showTask received null instance pointer!\n");
         vTaskDelete(NULL);
         return;
@@ -178,14 +191,14 @@ void WS2812Esp8266::showTask(void *pvParameters)
     }
 }
 
-void WS2812Esp8266::startShowTask(const char *taskName, uint16_t stackDepth, UBaseType_t priority)
+void WS2812Esp8266::startShowTask(const char *taskName,
+                                  uint16_t stackDepth,
+                                  UBaseType_t priority)
 {
-    xTaskCreate(
-        WS2812Esp8266::showTask,
-        taskName ? taskName : "ws2812_show",
-        stackDepth ? stackDepth : 2048,
-        this,
-        priority ? priority : tskIDLE_PRIORITY + 1,
-        NULL
-    );
+    xTaskCreate(WS2812Esp8266::showTask,
+                taskName ? taskName : "ws2812_show",
+                stackDepth ? stackDepth : 2048,
+                this,
+                priority ? priority : tskIDLE_PRIORITY + 1,
+                NULL);
 }
