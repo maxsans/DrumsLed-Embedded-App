@@ -5,6 +5,7 @@ add_sources(
     api/time/timeWindows.cpp
     api/tcp/tcpWindows.cpp
     api/terminal/terminalWindows.cpp
+    api/mutex/mutexWindows.cpp
 )
 
 add_libraries(

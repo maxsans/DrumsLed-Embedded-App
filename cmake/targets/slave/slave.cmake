@@ -14,6 +14,7 @@ add_sources(
     slaves/slavesLaunch.cpp
     kit/kit.hpp
     api/target/esp8266.cpp
+    api/mutex/mutexEsp8266.cpp
     api/logs/logsEsp8266.cpp
     api/udp/udpEsp8266.cpp
     api/tcp/tcpEsp8266.cpp
