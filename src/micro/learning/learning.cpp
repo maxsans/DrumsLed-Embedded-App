@@ -214,10 +214,10 @@ void Learning::stopLearning()
     {
         // Turn off all the leds
         for (uint32_t l_moduleIndex = 0;
-             l_moduleIndex < 0 /*ModuleManager::getModuleCount()*/;
+             l_moduleIndex < m_moduleManager->getModuleCount();
              l_moduleIndex++)
         {
-            Module *l_module = 0; //ModuleManager::getModule(l_moduleIndex);
+            Module *l_module = m_moduleManager->getModule(l_moduleIndex);
             RgbLed *l_led = l_module->getRgbLed();
             if (l_led != nullptr)
             {

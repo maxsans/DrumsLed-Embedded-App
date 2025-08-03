@@ -1,29 +1,25 @@
 #include "module.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgAlive/interMsgAlive.hpp"
+#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
 const timeMs Module::m_moduleTimeout = timeMs(5000);
+const timeMs Module::m_rgbSendInterval = timeMs(20);
 
 Module::Module(KitConfig kitConfig, Client client)
-    : m_kitConfig(kitConfig), m_client(client)
+    : m_kitConfig(kitConfig), m_client(client),
+      m_aliveRgbPeriodicCall(m_rgbSendInterval, &Module::sendRgb, this),
+      m_micro(nullptr), m_rgbLed(nullptr), m_lastSyncTime(timeMs::nowMs())
 {
     // Add the attributes based on the kit configuration
     if (kitConfig.hasAttributeType(KitAttributeType::Type::LevelAdc))
     {
         m_micro = new Micro();
     }
-    else
-    {
-        m_micro = nullptr;
-    }
     if (kitConfig.hasAttributeType(KitAttributeType::Type::Rgb))
     {
         m_rgbLed = new RgbLed();
-    }
-    else
-    {
-        m_rgbLed = nullptr;
     }
 
     // At start, the module is connected
@@ -36,6 +32,24 @@ Module::Module(KitConfig kitConfig, Client client)
             static_cast<Module *>(object)->onAliveMsg(msg);
         },
         this);
+}
+
+void Module::sendRgb(void *object)
+{
+    static_cast<Module *>(object)->sendRgb();
+}
+
+void Module::sendRgb()
+{
+    if (m_rgbLed)
+    {
+        // Send the RGB message to the kits
+        InterMsgRgb msgRgb(m_client,
+                           m_rgbLed->getColor().getRed(),
+                           m_rgbLed->getColor().getGreen(),
+                           m_rgbLed->getColor().getBlue());
+        msgRgb.send();
+    }
 }
 
 void Module::onAliveMsg(InterMsg &msg)
