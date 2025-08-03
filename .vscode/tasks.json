@@ -42,6 +42,65 @@
             },
             "problemMatcher": [],
             "detail": "Build all CMake presets using build_all.sh"
+        },
+        {
+            "type": "shell",
+            "label": "configure-windows",
+            "command": "scripts/configure_windows.ps1",
+            "options": {
+                "shell": {
+                    "executable": "powershell.exe",
+                    "args": ["-ExecutionPolicy", "Bypass", "-File"]
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Configure Windows firewall rules"
+        },
+        {
+            "type": "shell",
+            "label": "serial-monitor",
+            "command": "python3",
+            "args": [
+                "scripts/serial_monitor.py",
+                "--baud",
+                "115200"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Launch serial monitor with auto port detection"
+        },
+        {
+            "type": "shell",
+            "label": "serial-monitor-manual",
+            "command": "python3",
+            "args": [
+                "scripts/serial_monitor.py",
+                "--port",
+                "${input:serialPort}",
+                "--baud",
+                "115200"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Launch serial monitor with manual port selection"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "serialPort",
+            "description": "Serial port for ESP device",
+            "default": "/dev/ttyUSB0",
+            "type": "promptString"
         }
     ]
 }

@@ -1,6 +1,8 @@
 #include "ipv4.hpp"
 #include "tools/logStream/logStream.hpp"
 
+#include <cassert>
+
 Ipv4::Ipv4()
 {
     m_ip[0] = 0;

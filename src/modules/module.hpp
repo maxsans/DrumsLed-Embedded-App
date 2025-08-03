@@ -20,6 +20,11 @@ class Module
     static const timeMs m_moduleTimeout;
 
     /**
+     * @brief The RGB send interval.
+     */
+    static const timeMs m_rgbSendInterval;
+
+    /**
      * @brief The kit config of the module.
      */
     KitConfig m_kitConfig;
@@ -43,6 +48,13 @@ class Module
      * @brief RGB LEDs associated with the module.
      */
     RgbLed *m_rgbLed;
+
+    /**
+     * @brief Periodically send Rgb msg to the kits
+     */
+    periodicCallsMs m_aliveRgbPeriodicCall;
+    static void sendRgb(void *object);    
+    void sendRgb();
 
     /**
      * @brief Callback for Alive messages.

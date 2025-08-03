@@ -1,6 +1,5 @@
-#include "api/tcp/tcp.hpp"
-#include "api/udp/udp.hpp"
 #include "launch.hpp"
+#include "api/udp/udp.hpp"
 #include "micro/learning/learning.hpp"
 #include "modules/moduleManager.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
@@ -19,10 +18,6 @@ void launch()
 
     // Initialize the terminal
     Term::init();
-
-    // Initialize the udp and tcp api
-    udp_init();
-    tcp_init();
 
     // Print the host IP address and MAC address
     char l_ip[16];

@@ -26,7 +26,7 @@ void Kit::onPing(const Client &client, InterMsg &msg)
         // Update the master client
         m_masterClient = client;
         LogStream::cout << "Master client registered: "
-                        << client.getMacAddress() << LogStream::endl;
+                        << client.getIP().getIpString() << LogStream::endl;
         // Respond to the ping
         InterMsgInitModule(m_masterClient, getKitConfig()).send();
         LogStream::cout << "Sent InitModule message to master client."
