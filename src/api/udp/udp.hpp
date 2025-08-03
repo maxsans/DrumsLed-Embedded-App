@@ -15,8 +15,11 @@ using udp_recv_callback_t = std::function<void(const char *data,
                                                int16_t port,
                                                const char *mac)>;
 
-/**/
-    ***@brief ** / *@param udp_recv_callback Callback to call when an udp packet is received * / void udp_init(udp_recv_callback_t udp_recv_callback);
+/**
+ * @brief Function to initialize the UDP connection
+ * @param udp_recv_callback Callback to call when an udp packet is received
+ */
+void udp_init(udp_recv_callback_t udp_recv_callback);
 
 /**
  * @brief Function to send data over UDP
