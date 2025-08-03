@@ -12,5 +12,8 @@
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit"
-    }
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.tabCompletion": "on",
+    "files.defaultLanguage": "cpp"
 }
