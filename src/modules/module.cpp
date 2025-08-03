@@ -1,6 +1,5 @@
 #include "module.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
-#include "network/interCom/interMsgList/interMsgAlive/interMsgAlive.hpp"
 #include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
@@ -10,7 +9,7 @@ const timeMs Module::m_rgbSendInterval = timeMs(20);
 Module::Module(KitConfig kitConfig, Client client)
     : m_kitConfig(kitConfig), m_client(client),
       m_aliveRgbPeriodicCall(m_rgbSendInterval, &Module::sendRgb, this),
-      m_micro(nullptr), m_rgbLed(nullptr), m_lastSyncTime(timeMs::nowMs())
+      m_micro(nullptr), m_rgbLed(nullptr)
 {
     // Add the attributes based on the kit configuration
     if (kitConfig.hasAttributeType(KitAttributeType::Type::LevelAdc))
@@ -24,14 +23,6 @@ Module::Module(KitConfig kitConfig, Client client)
 
     // At start, the module is connected
     sync();
-
-    // Register the Alive message callback
-    InterComParser::registerCallback(
-        InterMsgId::Alive,
-        [](const Client &, InterMsg &msg, void *object) {
-            static_cast<Module *>(object)->onAliveMsg(msg);
-        },
-        this);
 }
 
 void Module::sendRgb(void *object)
@@ -50,12 +41,6 @@ void Module::sendRgb()
                            m_rgbLed->getColor().getBlue());
         msgRgb.send();
     }
-}
-
-void Module::onAliveMsg(InterMsg &msg)
-{
-    // The module is alive, update the last sync time
-    sync();
 }
 
 Micro *Module::getMicro()

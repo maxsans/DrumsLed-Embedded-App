@@ -36,16 +36,6 @@ ModuleManager::ModuleManager(bool active)
 void ModuleManager::enable(bool e)
 {
     m_active = e;
-    if (m_active)
-    {
-        // Start the periodic calls to ring the modules
-        m_ringPeriodicCalls.enable(true);
-    }
-    else
-    {
-        // Stop the periodic calls to ring the modules
-        m_ringPeriodicCalls.enable(false);
-    }
 }
 
 void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
@@ -92,13 +82,19 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
     if (m_active)
     {
         // Check if the module already exists
-        if (getModule(client) == nullptr)
+        Module *existingModule = getModule(client);
+        if (existingModule == nullptr)
         {
             // Create a new module and add it to the list
             m_modules.push_back(new Module(kitConfig, client));
             // Log the addition of the module
             LogStream::cout << "Module added: " << client.getIP().getIpString()
                             << LogStream::endl;
+        }
+        else
+        {
+            // Sync the existing module
+            existingModule->sync();
         }
     }
     return nullptr;
@@ -162,7 +158,7 @@ void ModuleManager::ringCallback(void *object)
 void ModuleManager::ringModules()
 {
     // Check if the modules are still connected
-    for (int32_t i = 0; i < m_modules.size(); i++)
+    for (int32_t i = m_modules.size() - 1; i >= 0; i--)
     {
         Module *l_module = m_modules[i];
         if (!l_module->isConnected())
@@ -173,7 +169,6 @@ void ModuleManager::ringModules()
             // Remove the module from the list
             delete l_module;
             m_modules.erase(m_modules.begin() + i);
-            i--;
         }
     }
     // Send a broadcast UDP packet to ring new modules

@@ -56,12 +56,6 @@ class Module
     static void sendRgb(void *object);
     void sendRgb();
 
-    /**
-     * @brief Callback for Alive messages.
-     * @param msg The message received.
-     */
-    void onAliveMsg(InterMsg &msg);
-
     public:
     Module(KitConfig kitConfig, Client client);
 

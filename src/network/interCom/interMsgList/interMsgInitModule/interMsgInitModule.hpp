@@ -7,7 +7,8 @@
 class InterMsgInitModule : public InterMsg
 {
     private:
-    static constexpr const SendType m_sendType = SendType::UnicastWithControl;
+    static constexpr const SendType m_sendType
+        = SendType::UnicastWithoutControl;
 
     struct Data
     {

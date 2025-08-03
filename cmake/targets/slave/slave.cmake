@@ -25,7 +25,6 @@ add_sources(
     kit/kitService/srvcLevelAdcSend/srvcLevelAdcSend.cpp
     kit/kitService/srvcRgbListen/srvcRgbListen.cpp
     kit/kitService/kitService.cpp
-    kit/kitService/srvcAliveSend/srvcAliveSend.cpp
     kit/kit.cpp
 )
 

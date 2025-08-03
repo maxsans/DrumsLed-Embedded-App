@@ -14,7 +14,6 @@ class KitServiceType
         None = 0,
 
         // Here are default services :
-        AliveSend, /** < Service to periodically send alive messages. */
 
         // Here are input services :
         LevelAdcSend, /** < Service to periodically send ADC level data. */
@@ -36,7 +35,7 @@ class KitServiceType
     Type m_type;
 
     constexpr static const char *m_typeStrings[Type::Count]
-        = {"None", "AliveSend", "LevelAdcSend", "RgbListen"};
+        = {"None", "LevelAdcSend", "RgbListen"};
 
     public:
     /**

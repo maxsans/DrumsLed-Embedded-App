@@ -27,8 +27,6 @@ void Kit::onPing(const Client &client, InterMsg &msg)
         m_masterClient = client;
         LogStream::cout << "Master client registered: "
                         << client.getIP().getIpString() << LogStream::endl;
-        // Respond to the ping
-        InterMsgInitModule(m_masterClient, getKitConfig()).send();
         LogStream::cout << "Sent InitModule message to master client."
                         << LogStream::endl;
         // Start the services
@@ -37,6 +35,8 @@ void Kit::onPing(const Client &client, InterMsg &msg)
             service->start(m_masterClient);
         }
     }
+    // Always respond to the ping to keep the connection alive
+    InterMsgInitModule(m_masterClient, getKitConfig()).send();
     // Restart chrono of ping timeout
     m_pingTimeout.restart();
 }
