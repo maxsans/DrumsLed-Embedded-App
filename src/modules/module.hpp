@@ -53,7 +53,7 @@ class Module
      * @brief Periodically send Rgb msg to the kits
      */
     periodicCallsMs m_aliveRgbPeriodicCall;
-    static void sendRgb(void *object);    
+    static void sendRgb(void *object);
     void sendRgb();
 
     /**

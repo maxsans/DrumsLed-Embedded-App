@@ -1,8 +1,8 @@
 #ifndef __ASYNC_HPP__
 #define __ASYNC_HPP__
 
-#include "tools/timeTools/periodicCallsMs.hpp"
 #include "api/mutex/mutex.hpp"
+#include "tools/timeTools/periodicCallsMs.hpp"
 #include <functional>
 #include <vector>
 

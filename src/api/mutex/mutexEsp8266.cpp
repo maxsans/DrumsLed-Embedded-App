@@ -19,7 +19,8 @@ void Mutex::lock()
 {
     if (m_privateData)
     {
-        xSemaphoreTake(static_cast<SemaphoreHandle_t>(m_privateData), portMAX_DELAY);
+        xSemaphoreTake(static_cast<SemaphoreHandle_t>(m_privateData),
+                       portMAX_DELAY);
     }
 }
 

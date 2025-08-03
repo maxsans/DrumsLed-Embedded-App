@@ -60,7 +60,7 @@ void Client::setMAC(MacAddr mac)
 
 bool Client::operator==(const Client &client) const
 {
-    return /*m_mac == client.getMAC() && */m_ip == client.getIP();
+    return /*m_mac == client.getMAC() && */ m_ip == client.getIP();
 }
 
 bool Client::operator!=(const Client &client) const

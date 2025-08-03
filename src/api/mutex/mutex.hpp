@@ -25,8 +25,8 @@ class Mutex
     ~Mutex();
 
     // Disable copy constructor and assignment operator for thread safety
-    Mutex(const Mutex&) = delete;
-    Mutex& operator=(const Mutex&) = delete;
+    Mutex(const Mutex &) = delete;
+    Mutex &operator=(const Mutex &) = delete;
 
     /**
      * @brief Lock the mutex

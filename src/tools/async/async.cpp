@@ -9,7 +9,8 @@ void Async::process()
     std::vector<Async *> toProcess;
     {
         Mutex::LockGuard lock(m_mutex);
-        toProcess.swap(m_asyncOperations); // Take ownership and clear the shared list
+        toProcess.swap(
+            m_asyncOperations); // Take ownership and clear the shared list
     }
 
     for (auto it : toProcess)
@@ -22,7 +23,7 @@ void Async::process()
                 it->m_processed = true;
             }
         }
-        
+
         if (it->m_mustDelete)
         {
             delete it;
@@ -37,8 +38,7 @@ Async::Async(AsyncCallback callback, bool mustDelete)
     m_asyncOperations.push_back(this);
 }
 
-Async::Async(AsyncCallback callback)
-    : Async(callback, false)
+Async::Async(AsyncCallback callback) : Async(callback, false)
 {
 }
 

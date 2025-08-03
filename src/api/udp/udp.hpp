@@ -1,21 +1,22 @@
 #ifndef __UDP_HPP__
 #define __UDP_HPP__
 
-#include <stdint.h>
 #include <functional>
+#include <stdint.h>
 
 #define UDP_DEFAULT_PORT 9999
 
 /**
  * @brief Callback to call when an udp packet is received
  */
-using udp_recv_callback_t = std::function<void(const char *data, int16_t len, const char *ip, int16_t port, const char *mac)>;
+using udp_recv_callback_t = std::function<void(const char *data,
+                                               int16_t len,
+                                               const char *ip,
+                                               int16_t port,
+                                               const char *mac)>;
 
-/**
- * @brief Function to initialize the UDP connection
- * @param udp_recv_callback Callback to call when an udp packet is received
- */
-void udp_init(udp_recv_callback_t udp_recv_callback);
+/**/
+    ***@brief ** / *@param udp_recv_callback Callback to call when an udp packet is received * / void udp_init(udp_recv_callback_t udp_recv_callback);
 
 /**
  * @brief Function to send data over UDP

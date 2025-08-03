@@ -18,7 +18,7 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
 {
     // Initialize the circular buffer to zero
     memset(m_circularBuffer, 0, getBufferSize() * sizeof(adc_measure_t));
-    
+
     // For now the communication isn't established with the master client
     m_sendPeriodicCall.enable(false);
 }
@@ -26,7 +26,8 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
 uint32_t KitSrvcLevelAdcSend::getBufferSize()
 {
     // Calculate the buffer size based on the buffer time and measurement interval
-    return (uint32_t)(m_bufferTime.get()) / (uint32_t)(m_measureInterval.get() + 1);
+    return (uint32_t)(m_bufferTime.get())
+           / (uint32_t)(m_measureInterval.get() + 1);
 }
 
 adc_measure_t KitSrvcLevelAdcSend::getAverageAdcLevel()
@@ -69,7 +70,7 @@ void KitSrvcLevelAdcSend::periodicMeasureCallback()
     {
         m_bufferSum -= m_circularBuffer[m_currentIndex];
     }
-    
+
     m_circularBuffer[m_currentIndex] = level; // Add the new measurement
     m_bufferSum += level; // Update the sum with the new measurement
 
