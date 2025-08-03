@@ -162,14 +162,6 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
     close(sock);
 }
 
-uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac)
-{
-    // This function is typically used for synchronous reception
-    // In this implementation, reception is handled asynchronously via callback
-    // Return 0 to indicate no data available in synchronous mode
-    return 0;
-}
-
 void tcp_get_host_ip(char *ip)
 {
     if (!ip) return;
