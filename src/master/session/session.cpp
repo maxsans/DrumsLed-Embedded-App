@@ -1,4 +1,5 @@
 #include "session.hpp"
+#include "animation/fade.hpp"
 #include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/term/term.hpp"
@@ -17,6 +18,28 @@ Session::Session(bool active)
         TermAction([this](const TermParameters &) { this->stopLearning(); }),
         "stop_learning",
         "Stops the learning process."));
+
+    Term::registerCommand(TermCommand(
+        TermAction([this](const TermParameters &) {
+            // Add an animation to all modules
+            for (int32_t i = 0; i < m_moduleManager.getModuleCount(); ++i)
+            {
+                Module *module = m_moduleManager.getModule(i);
+                if (module != nullptr)
+                {
+                    RgbLed *led = module->getRgbLed();
+                    Micro *micro = module->getMicro();
+                    if (led != nullptr && micro != nullptr)
+                    {
+                        // Create a fade animation
+                        Animation *anim
+                            = new Fade(micro, led, RgbColor(255, 0, 0), 1000);
+                    }
+                }
+            }
+        }),
+        "add_animation",
+        "Adds a fade animation to all modules."));
 }
 
 Session::~Session()
