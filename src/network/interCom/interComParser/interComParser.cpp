@@ -2,8 +2,8 @@
 #include "api/tcp/tcp.hpp"
 #include "api/udp/udp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/logStream/logStream.hpp"
 #include "tools/async/async.hpp"
+#include "tools/logStream/logStream.hpp"
 
 #include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
 
@@ -15,14 +15,23 @@ std::map<std::pair<Client, InterMsgId>, InterComParser::CallbackInfo>
 InterComParser::InterComParser()
 {
     // Initialize the TCP and UDP connections
+    // Call the processMessage method with the received data
+    // Asynchronously process the message to avoid blocking the UDP task
+    // And memory access issues
     udp_init([this](const char *data,
                     int16_t len,
                     const char *ip,
                     int16_t port,
                     const char *mac) {
-        // Call the processMessage method with the received data
-        // Asynchronously process the message to avoid blocking the UDP task
-        // And memory access issues
+        Async::registerAsync([this, data, len, ip, port, mac]() {
+            this->processMessage(data, len, ip, port, mac);
+        });
+    });
+    tcp_init([this](const char *data,
+                    int16_t len,
+                    const char *ip,
+                    int16_t port,
+                    const char *mac) {
         Async::registerAsync([this, data, len, ip, port, mac]() {
             this->processMessage(data, len, ip, port, mac);
         });
@@ -39,7 +48,7 @@ void InterComParser::processMessage(const char *data,
     Ipv4 l_ip(ip);
     MacAddr l_mac(mac);
     Client l_client(l_ip, l_mac);
-    InterMsgGeneric l_msgGeneric(l_client, const_cast<char*>(data), len);
+    InterMsgGeneric l_msgGeneric(l_client, const_cast<char *>(data), len);
     // Get the message ID
     InterMsgId l_msgId = l_msgGeneric.getId();
 

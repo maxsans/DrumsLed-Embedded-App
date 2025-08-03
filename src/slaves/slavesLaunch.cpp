@@ -1,6 +1,4 @@
 #include "api/target/common.hpp"
-#include "api/tcp/tcp.hpp"
-#include "api/udp/udp.hpp"
 #include "api/wifi/wifi.hpp"
 #include "kit/kit.hpp"
 #include "launch.hpp"
@@ -40,15 +38,5 @@ void launch()
         target_process();
         periodicCallsMs::processAll();
         Async::process();
-
-        // Init the udp/tcp only when WiFi becomes connected (rising edge)
-        static bool l_lastWifiStatus = false;
-        bool l_newWifiState = is_wifi_connected();
-        if (!l_lastWifiStatus && l_newWifiState)
-        {
-            tcp_init();
-            LogStream::cout << "Tcp Initialized" << LogStream::endl;
-        }
-        l_lastWifiStatus = l_newWifiState;
     }
 }

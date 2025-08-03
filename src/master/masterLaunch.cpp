@@ -1,5 +1,3 @@
-#include "api/tcp/tcp.hpp"
-#include "api/udp/udp.hpp"
 #include "launch.hpp"
 #include "micro/learning/learning.hpp"
 #include "modules/moduleManager.hpp"
@@ -19,9 +17,6 @@ void launch()
 
     // Initialize the terminal
     Term::init();
-
-    // Initialize the udp and tcp api
-    tcp_init();
 
     // Print the host IP address and MAC address
     char l_ip[16];
