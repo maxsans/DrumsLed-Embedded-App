@@ -191,7 +191,7 @@ void Learning::recordAllMic()
     }
 }
 
-void Learning::stopLearning()
+bool Learning::stopLearning()
 {
     // Check if a learning process is running
     if (!isLearning())
@@ -202,13 +202,14 @@ void Learning::stopLearning()
         {
             m_learningDoneCallback(m_learningDoneCallbackObject);
         }
-        return;
+        return true;
     }
     // If there are still micros to learn
     if (m_MicroInRecord < m_microRecordSlots.size() - 1)
     {
         // Start the learning process on the next micro
         startLearning(m_MicroInRecord + 1);
+        return false;
     }
     else
     {
@@ -255,6 +256,7 @@ void Learning::stopLearning()
         {
             m_learningDoneCallback(m_learningDoneCallbackObject);
         }
+        return true;
     }
 }
 

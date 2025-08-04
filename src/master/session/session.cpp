@@ -115,7 +115,11 @@ void Session::stopLearning()
         return;
     }
     // Stop the learning session
-    m_learning->stopLearning();
-    delete m_learning;
-    m_learning = nullptr;
+    if (m_learning->stopLearning())
+    {
+        // It was the last micro to learn
+        // Delete the learning session
+        delete m_learning;
+        m_learning = nullptr;
+    }
 }

@@ -140,9 +140,9 @@ class Learning
 
     /**
      * @brief Stop the learning process
-     *
+     * @return true if it was the last micro to learn, false if there are still micros to learn
      */
-    void stopLearning();
+    bool stopLearning();
 
     /**
      * @brief Print the results of the learning

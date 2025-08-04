@@ -79,11 +79,11 @@ bool ModuleManager::isActive()
 
 Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
 {
-    if (m_active)
+    // Check if the module already exists
+    Module *existingModule = getModule(client);
+    if (existingModule == nullptr)
     {
-        // Check if the module already exists
-        Module *existingModule = getModule(client);
-        if (existingModule == nullptr)
+        if (m_active)
         {
             // Create a new module and add it to the list
             m_modules.push_back(new Module(kitConfig, client));
@@ -91,11 +91,11 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
             LogStream::cout << "Module added: " << client.getIP().getIpString()
                             << LogStream::endl;
         }
-        else
-        {
-            // Sync the existing module
-            existingModule->sync();
-        }
+    }
+    else
+    {
+        // Sync the existing module
+        existingModule->sync();
     }
     return nullptr;
 }
