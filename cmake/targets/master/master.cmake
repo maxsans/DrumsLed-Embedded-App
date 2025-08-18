@@ -10,10 +10,13 @@ add_sources(
     master/masterLaunch.cpp
     master/session/session.cpp
 
-    animation/animation.cpp
-    animation/animationManager.cpp
-    animation/fade.cpp
-    animation/simpleColor.cpp
+    master/animation/animation.cpp
+    master/animation/animationManager.cpp
+    master/animation/fade.cpp
+    master/animation/simpleColor.cpp
+
+    master/modules/module.cpp
+    master/modules/moduleManager.cpp
 
     led/colorOrder.cpp
     led/rgbLed.cpp
@@ -24,9 +27,6 @@ add_sources(
     micro/learning/record.cpp
     micro/learning/recordSlot.cpp
     micro/micro.cpp
-
-    modules/module.cpp
-    modules/moduleManager.cpp
 
     tools/term/term.cpp
     tools/term/termCommand/termCommand.cpp
