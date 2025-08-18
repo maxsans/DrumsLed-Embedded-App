@@ -49,6 +49,13 @@ class Binary
     size_t size() const;
 
     /**
+     * @brief Allocate memory for the binary container.
+     * @param size Size in bytes to allocate.
+     * @note If the current size is larger than the requested size, the allocation will not change.
+     */
+    void alloc(size_t size);
+
+    /**
      * @brief Divide the binary container into consecutive chunks.
      * @param chunk_size Size of each chunk.
      * @return Vector of binary containers representing the chunks.
@@ -72,6 +79,18 @@ class Binary
      * @param chunk Binary container to add.
      */
     Binary &operator+=(const Binary &chunk);
+
+    /**
+     * @brief Get a pointer to the underlying data.
+     * @return Pointer to the data buffer.
+     */
+    uint8_t *data();
+
+    /**
+     * @brief Get a const pointer to the underlying data.
+     * @return Const pointer to the data buffer.
+     */
+    const uint8_t *data() const;
 };
 
 #endif // __BINARY_HPP__

@@ -23,6 +23,14 @@ size_t Binary::size() const
     return m_data.size();
 }
 
+void Binary::alloc(size_t size)
+{
+    if (size > m_data.size())
+    {
+        m_data.resize(size);
+    }
+}
+
 std::vector<Binary> Binary::chunk(size_t chunk_size) const
 {
     std::vector<Binary> chunks;
@@ -105,4 +113,14 @@ Binary &Binary::operator+=(const Binary &chunk)
 {
     m_data.insert(m_data.end(), chunk.m_data.begin(), chunk.m_data.end());
     return *this;
+}
+
+uint8_t *Binary::data()
+{
+    return m_data.data();
+}
+
+const uint8_t *Binary::data() const
+{
+    return m_data.data();
 }
