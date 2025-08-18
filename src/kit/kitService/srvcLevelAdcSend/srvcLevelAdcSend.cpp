@@ -3,8 +3,10 @@
 #include <cstring>
 
 const timeMs KitSrvcLevelAdcSend::m_sendInterval = timeMs(20);
-const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(5);
+const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(0);
 const timeMs KitSrvcLevelAdcSend::m_bufferTime = timeMs(100);
+const uint32_t KitSrvcLevelAdcSend::m_maxBufferSize
+    = 1000; // Large buffer for high-frequency measurements
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
@@ -14,10 +16,14 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
                             &KitSrvcLevelAdcSend::periodicMeasureCallback,
                             this),
       m_currentIndex(0), m_currentSize(0),
-      m_circularBuffer(new adc_measure_t[getBufferSize()]), m_bufferSum(0)
+      m_circularBuffer(new AdcMeasurement[m_maxBufferSize]), m_bufferSum(0)
 {
-    // Initialize the circular buffer to zero
-    memset(m_circularBuffer, 0, getBufferSize() * sizeof(adc_measure_t));
+    // Initialize the circular buffer properly
+    for (uint32_t i = 0; i < m_maxBufferSize; i++)
+    {
+        m_circularBuffer[i].value = 0;
+        m_circularBuffer[i].timestamp = timeMs(0);
+    }
 
     // For now the communication isn't established with the master client
     m_sendPeriodicCall.enable(false);
@@ -25,18 +31,46 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
 
 uint32_t KitSrvcLevelAdcSend::getBufferSize()
 {
-    // Calculate the buffer size based on the buffer time and measurement interval
-    return (uint32_t)(m_bufferTime.get())
-           / (uint32_t)(m_measureInterval.get() + 1);
+    return m_maxBufferSize;
+}
+
+uint32_t KitSrvcLevelAdcSend::getValidMeasurementCount()
+{
+    timeMs currentTime = timeMs::nowMs();
+    uint32_t validCount = 0;
+
+    for (uint32_t i = 0; i < m_currentSize; i++)
+    {
+        if ((currentTime - m_circularBuffer[i].timestamp) <= m_bufferTime)
+        {
+            validCount++;
+        }
+    }
+
+    return validCount;
 }
 
 adc_measure_t KitSrvcLevelAdcSend::getAverageAdcLevel()
 {
-    if (m_currentSize == 0)
+    timeMs currentTime = timeMs::nowMs();
+    uint32_t validSum = 0;
+    uint32_t validCount = 0;
+
+    // Calculate average only from measurements within the time window
+    for (uint32_t i = 0; i < m_currentSize; i++)
+    {
+        if ((currentTime - m_circularBuffer[i].timestamp) <= m_bufferTime)
+        {
+            validSum += m_circularBuffer[i].value;
+            validCount++;
+        }
+    }
+
+    if (validCount == 0)
     {
         return 0; // Avoid division by zero
     }
-    return m_bufferSum / m_currentSize;
+    return validSum / validCount;
 }
 
 void KitSrvcLevelAdcSend::periodicSendCallback(void *object)
@@ -63,20 +97,15 @@ void KitSrvcLevelAdcSend::periodicMeasureCallback(void *object)
 void KitSrvcLevelAdcSend::periodicMeasureCallback()
 {
     adc_measure_t level = measureAdcLevel();
+    timeMs currentTime = timeMs::nowMs();
 
-    // Update the circular buffer with the new measurement
-    // Only subtract if the buffer position already has a value (buffer is full)
-    if (m_currentSize == getBufferSize())
-    {
-        m_bufferSum -= m_circularBuffer[m_currentIndex];
-    }
-
-    m_circularBuffer[m_currentIndex] = level; // Add the new measurement
-    m_bufferSum += level; // Update the sum with the new measurement
+    // Add the new measurement with timestamp
+    m_circularBuffer[m_currentIndex].value = level;
+    m_circularBuffer[m_currentIndex].timestamp = currentTime;
 
     // Update the current index and size of the buffer
-    m_currentIndex = (m_currentIndex + 1) % getBufferSize();
-    if (m_currentSize < getBufferSize())
+    m_currentIndex = (m_currentIndex + 1) % m_maxBufferSize;
+    if (m_currentSize < m_maxBufferSize)
     {
         m_currentSize++;
     }
@@ -107,8 +136,12 @@ void KitSrvcLevelAdcSend::onStop()
 {
     // Stop the periodic calls for sending ADC level data
     m_sendPeriodicCall.enable(false);
-    // Clean up the circular buffer
-    memset(m_circularBuffer, 0, getBufferSize() * sizeof(adc_measure_t));
+    // Clean up the circular buffer properly
+    for (uint32_t i = 0; i < m_maxBufferSize; i++)
+    {
+        m_circularBuffer[i].value = 0;
+        m_circularBuffer[i].timestamp = timeMs(0);
+    }
     m_currentIndex = 0;
     m_currentSize = 0;
     m_bufferSum = 0;

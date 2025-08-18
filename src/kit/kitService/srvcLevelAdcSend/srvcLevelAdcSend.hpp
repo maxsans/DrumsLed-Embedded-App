@@ -5,6 +5,15 @@
 #include "kit/kitService/kitService.hpp"
 #include "tools/timeTools/periodicCallsMs.hpp"
 
+/**
+ * @brief Structure to hold ADC measurement with timestamp
+ */
+struct AdcMeasurement
+{
+    adc_measure_t value;
+    timeMs timestamp;
+};
+
 class KitSrvcLevelAdcSend : public KitService
 {
     private:
@@ -23,6 +32,11 @@ class KitSrvcLevelAdcSend : public KitService
      * @note This is used to determine how long the buffer should keep the measurements.
      */
     static const timeMs m_bufferTime;
+
+    /**
+     * @brief Maximum buffer size to accommodate high-frequency measurements.
+     */
+    static const uint32_t m_maxBufferSize;
 
     /**
      * @brief The periodic call for sending ADC level data.
@@ -47,10 +61,10 @@ class KitSrvcLevelAdcSend : public KitService
     uint32_t m_currentSize;
 
     /**
-     * @brief Circular buffer to store ADC measurements.
-     * @note This buffer will hold the last KitSrvcLevelAdcSend::getBufferSize() measurements.
+     * @brief Circular buffer to store ADC measurements with timestamps.
+     * @note This buffer will hold the last measurements within m_bufferTime.
      */
-    adc_measure_t *m_circularBuffer;
+    AdcMeasurement *m_circularBuffer;
 
     /**
      * @brief Sum of all measurements in the circular buffer.
@@ -86,6 +100,11 @@ class KitSrvcLevelAdcSend : public KitService
      * @return The measured ADC level.
      */
     adc_measure_t measureAdcLevel();
+
+    /**
+     * @brief Get the number of valid measurements in the circular buffer within the time window.
+     */
+    uint32_t getValidMeasurementCount();
 
     /**
      * @see KitService::onStart
