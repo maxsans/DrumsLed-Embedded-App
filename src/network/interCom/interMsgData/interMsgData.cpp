@@ -19,7 +19,7 @@ InterMsgData::InterMsgData(char *rawData, uint32_t rawSize, char *privData)
         uint32_t headerSize = m_header.getHeaderSize();
         uint32_t privSize = m_header.getPrivSize();
         // Ensure the private data size does not exceed the maximum allowed size
-        if (privSize <= MAX_PRIV_DATA_SIZE)
+        if (privSize <= InterMsgHeader::MAX_PRIV_DATA_SIZE)
         {
             // Copy the private data from the raw data buffer
             std::memcpy(privData, rawData + headerSize, privSize);
@@ -27,19 +27,21 @@ InterMsgData::InterMsgData(char *rawData, uint32_t rawSize, char *privData)
     }
 }
 
-uint32_t InterMsgData::getPrivData(char data[MAX_PRIV_DATA_SIZE]) const
+uint32_t InterMsgData::getPrivData(
+    char data[InterMsgHeader::MAX_PRIV_DATA_SIZE]) const
 {
     assert(data != nullptr && "Data pointer cannot be null.");
-    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE
+    assert(m_header.getPrivSize() <= InterMsgHeader::MAX_PRIV_DATA_SIZE
            && "Private data size exceeds maximum allowed size.");
     std::memcpy(data, m_privData, m_header.getPrivSize());
     return m_header.getPrivSize();
 }
 
-uint32_t InterMsgData::getData(char data[MAX_PRIV_DATA_SIZE]) const
+uint32_t InterMsgData::getData(
+    char data[InterMsgHeader::MAX_PRIV_DATA_SIZE]) const
 {
     assert(data != nullptr && "Data pointer cannot be null.");
-    assert(m_header.getPrivSize() <= MAX_PRIV_DATA_SIZE
+    assert(m_header.getPrivSize() <= InterMsgHeader::MAX_PRIV_DATA_SIZE
            && "Private data size exceeds maximum allowed size.");
     // Copy the header data to the output buffer
     uint32_t headerSize = m_header.getHeaderSize();

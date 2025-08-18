@@ -11,7 +11,7 @@
 
 #define TAG "TCP_ESP8266"
 #define MAX_CLIENTS 5
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 2048
 #define WIFI_CONNECTED_BIT BIT0
 
 static tcp_recv_callback_t tcp_recv_callback = nullptr;

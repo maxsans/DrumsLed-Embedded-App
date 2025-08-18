@@ -52,7 +52,7 @@ static void server_loop()
         if (client_socket < 0)
             continue;
 
-        char buffer[1024];
+        char buffer[2048];
         int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
 
         if (bytes_received > 0 && tcp_recv_callback)

@@ -13,7 +13,7 @@ class InterComParser
      * @brief Maximum size of a message that can be received.
      * @note This is the maximum size of the message buffer used to receive messages.
      */
-    static const constexpr uint32_t MAX_MESSAGE_SIZE = 1024;
+    static const constexpr uint32_t MAX_MESSAGE_SIZE = 2048;
 
     /**
      * @brief Type of callback to call if a message is received.

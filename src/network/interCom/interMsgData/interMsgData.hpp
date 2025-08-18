@@ -8,12 +8,6 @@
 
 class InterMsgData
 {
-    public:
-    /**
-     * @brief The maximum size of the private data that can be handled by the InterMsgData class.
-     */
-    static constexpr const uint32_t MAX_PRIV_DATA_SIZE = 1024;
-
     private:
     InterMsgHeader m_header;
 
@@ -27,7 +21,7 @@ class InterMsgData
      * @brief Construct a new Inter Msg Data from fields.
      * @param header The message header containing the message ID and private data size.
      * @param privData Pointer to the private message data.
-     * @note The private data size should not exceed MAX_PRIV_DATA_SIZE.
+     * @note The private data size should not exceed InterMsgHeader::MAX_PRIV_DATA_SIZE.
      */
     InterMsgData(InterMsgHeader header, char *privData);
 
@@ -43,10 +37,10 @@ class InterMsgData
      * @brief Get the private data of the message.
      * @param data Pointer to a buffer where the message data will be stored.
      * @note The buffer should be large enough to hold the message data.
-     * @see MAX_PRIV_DATA_SIZE for the maximum size of the private data.
+     * @see InterMsgHeader::MAX_PRIV_DATA_SIZE for the maximum size of the private data.
      * @return The size of the data written to the buffer.
      */
-    uint32_t getPrivData(char data[MAX_PRIV_DATA_SIZE]) const;
+    uint32_t getPrivData(char data[InterMsgHeader::MAX_PRIV_DATA_SIZE]) const;
 
     /**
      * @brief Get the raw data of the message.
@@ -55,7 +49,7 @@ class InterMsgData
      * @see MAX_PRIV_DATA_SIZE for the maximum size of the data.
      * @return The size of the data written to the buffer.
      */
-    uint32_t getData(char data[MAX_PRIV_DATA_SIZE]) const;
+    uint32_t getData(char data[InterMsgHeader::MAX_PRIV_DATA_SIZE]) const;
 
     /**
      * @brief Get the header of the message.

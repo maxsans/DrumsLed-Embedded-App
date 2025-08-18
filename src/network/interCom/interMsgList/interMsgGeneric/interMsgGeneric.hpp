@@ -11,12 +11,12 @@
 class InterMsgGeneric : public InterMsg
 {
     private:
-    static constexpr const uint32_t MAX_PRIV_DATA_SIZE
-        = 256; // Maximum size of private data
-
     struct Data
     {
-        char privData[MAX_PRIV_DATA_SIZE]; // Private data of the message
+        /**
+         * @brief Private data of the message.
+         */
+        char privData[InterMsgHeader::MAX_PRIV_DATA_SIZE];
     } m_data;
 
     public:

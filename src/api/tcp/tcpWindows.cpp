@@ -69,7 +69,7 @@ void tcp_server_worker()
 
         // Handle client in separate thread
         std::thread([client_socket, client_addr]() {
-            char buffer[1024];
+            char buffer[2048];
             int bytes_received;
             char client_ip[INET_ADDRSTRLEN];
             char client_mac[18];
