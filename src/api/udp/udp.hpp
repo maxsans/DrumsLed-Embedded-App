@@ -8,6 +8,7 @@
 
 /**
  * @brief Callback to call when an udp packet is received
+ * @warning The packet can be fragmented or contain multiple messages.
  */
 using udp_recv_callback_t = std::function<void(const char *data,
                                                int16_t len,

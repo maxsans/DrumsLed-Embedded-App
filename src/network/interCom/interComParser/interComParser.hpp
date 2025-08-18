@@ -1,10 +1,11 @@
 #ifndef __INTER_COM_PARSER_HPP__
 #define __INTER_COM_PARSER_HPP__
 
+#include "incompletMsg/incompletMsg.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-
 #include <functional>
 #include <map>
+#include <vector>
 
 class InterComParser
 {
@@ -51,13 +52,29 @@ class InterComParser
         m_clientCallbacks;
 
     /**
+     * @brief Vector of incomplete messages.
+     */
+    static std::vector<IncompletMsg> m_incompletMsgs;
+
+    /**
+     * @brief Process incoming data from UDP or TCP.
+     * @param data Pointer to the received data.
+     * @param len Length of the received data.
+     * @param ip IP address of the sender.
+     * @param port Port number of the sender.
+     * @param mac MAC address of the sender.
+     * @note This method is called when new data is received from UDP or TCP.
+     */
+    void processIncomingData(const char *data,
+                             int16_t len,
+                             const char *ip,
+                             int16_t port,
+                             const char *mac);
+
+    /**
      * @brief Process a single incoming message.
      */
-    void processMessage(const char *data,
-                        int16_t len,
-                        const char *ip,
-                        int16_t port,
-                        const char *mac);
+    void processMessage(const char *data, uint32_t len, const Client &client);
 
     public:
     InterComParser();

@@ -41,6 +41,7 @@ add_sources(
     network/client/macAddr.cpp
 
     network/interCom/interComParser/interComParser.cpp
+    network/interCom/interComParser/incompletMsg/incompletMsg.cpp
     network/interCom/interMsg/interMsg.cpp
     network/interCom/interMsgData/interMsgHeader/interMsgHeader.cpp
     network/interCom/interMsgData/interMsgData.cpp
