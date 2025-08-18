@@ -34,6 +34,7 @@ add_sources(
     tools/timeTools/periodicCallsMs.cpp
     tools/logStream/logStream.cpp
     tools/async/async.cpp
+    tools/containers/binary/binary.cpp
 
     network/client/client.cpp
     network/client/ipv4.cpp
