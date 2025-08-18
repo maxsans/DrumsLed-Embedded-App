@@ -15,5 +15,15 @@
     },
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.tabCompletion": "on",
-    "files.defaultLanguage": "cpp"
+    "files.defaultLanguage": "cpp",
+    "google-translate.firstLanguage": "fr",
+    "files.associations": {
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp"
+    }
 }
