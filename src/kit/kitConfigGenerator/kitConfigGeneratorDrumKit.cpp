@@ -13,6 +13,8 @@ void KitConfigGenerator::specificInit()
 
 std::vector<KitService *> KitConfigGenerator::generateKitServices()
 {
+    // Set the path of the program file
+    m_kitConfig.setProgramPath("DrumKit/slave-drumkit.bin");
     std::vector<KitService *> services;
     // Generate the kit services based on the kit configuration
     services.push_back(new KitSrvcLevelAdcSend());

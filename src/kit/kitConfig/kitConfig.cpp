@@ -38,6 +38,11 @@ void KitConfig::setProgramCrc32(uint32_t crc32)
     m_programCrc32 = crc32;
 }
 
+void KitConfig::setProgramPath(const std::string &path)
+{
+    m_programPath = path;
+}
+
 void KitConfig::setService(KitServiceType serviceType)
 {
     if (serviceType.getType() < KitServiceType::Count)
@@ -69,6 +74,16 @@ bool KitConfig::hasServiceType(KitServiceType::Type serviceType) const
                != KitServiceType::Type::None;
     }
     return false;
+}
+
+uint32_t KitConfig::getProgramCrc32() const
+{
+    return m_programCrc32;
+}
+
+const std::string &KitConfig::getProgramPath() const
+{
+    return m_programPath;
 }
 
 std::string KitConfig::toString() const

@@ -36,6 +36,12 @@ class KitConfig
      */
     uint32_t m_programCrc32;
 
+    /**
+     * @brief The path to the program file.
+     * @note This is used to locate the program binary on the filesystem.
+     */
+    std::string m_programPath;
+
     public:
     /**
      * @brief Constructor to create a KitConfig with a specific type.
@@ -69,6 +75,12 @@ class KitConfig
     void setProgramCrc32(uint32_t crc32);
 
     /**
+     * @brief Set the path to the program file.
+     * @param path The path to the program file.
+     */
+    void setProgramPath(const std::string &path);
+
+    /**
      * @brief Get the type of the kit.
      * @return The type of the kit.
      */
@@ -87,6 +99,18 @@ class KitConfig
      * @return true if the kit has the service type, false otherwise.
      */
     bool hasServiceType(KitServiceType::Type serviceType) const;
+
+    /**
+     * @brief Get the program CRC32 checksum.
+     * @return The CRC32 checksum of the program.
+     */
+    uint32_t getProgramCrc32() const;
+
+    /**
+     * @brief Get the path to the program file.
+     * @return The path to the program file.
+     */
+    const std::string &getProgramPath() const;
 
     /**
      * @brief Get a string representation of the kit configuration.

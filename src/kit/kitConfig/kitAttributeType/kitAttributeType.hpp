@@ -42,9 +42,6 @@ class KitAttributeType
      */
     uint32_t m_nbAttributes;
 
-    constexpr static const char *m_typeStrings[Type::Count]
-        = {"None", "Rgb", "RoundRgb", "LevelAdc"};
-
     public:
     KitAttributeType(Type type = Type::None, uint32_t nbAttributes = 0);
 
