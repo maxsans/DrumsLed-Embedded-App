@@ -15,7 +15,6 @@
  */
 class Program
 {
-    private:
     public:
     /**
      * @brief Get the binary of the program.
@@ -24,12 +23,26 @@ class Program
     static void getProgramBinary(Binary *binary);
 
     /**
-     * @brief Update the program of the slave target.
-     * @param binary Binary object containing the new program data.
-     * @warning This function will erase the current program.
-     * @note A reset will be triggered after the update.
+     * @brief Begin program update process.
+     * @param total_size Total size of the binary that will be written.
+     * @return true if successfully initialized, false otherwise.
      */
-    static void updateProgramBinary(const Binary &binary);
+    static bool beginProgramUpdate(size_t total_size);
+
+    /**
+     * @brief Update the program of the slave target with a chunk of data.
+     * @param binary Binary chunk containing part of the new program data.
+     * @return true if chunk was written successfully, false otherwise.
+     * @note Call beginProgramUpdate() first, then multiple calls to this function.
+     */
+    static bool updateProgramBinary(const Binary &binary);
+
+    /**
+     * @brief Finalize the program update and restart the system.
+     * @return true if finalization was successful, false otherwise.
+     * @note This function will trigger a system restart if successful.
+     */
+    static bool finalizeProgramUpdate();
 };
 
 #endif // __PROGRAM_HPP__

@@ -14,6 +14,10 @@
 static const char *TAG = "Program";
 static const char *PROGRAM_FILE_PATH = "/spiffs/program.bin";
 
+static esp_ota_handle_t s_update_handle = 0;
+static const esp_partition_t *s_update_partition = nullptr;
+static bool s_ota_in_progress = false;
+
 void Program::getProgramBinary(Binary *binary)
 {
     if (!binary)
@@ -64,69 +68,116 @@ void Program::getProgramBinary(Binary *binary)
              binary->size());
 }
 
-void Program::updateProgramBinary(const Binary &binary)
+bool Program::beginProgramUpdate(size_t total_size)
 {
-    if (binary.size() == 0)
+    if (s_ota_in_progress)
     {
-        ESP_LOGE(TAG, "Binary is empty, cannot update");
-        return;
+        ESP_LOGE(TAG, "OTA update already in progress");
+        return false;
     }
 
-    ESP_LOGI(
-        TAG, "Starting OTA update with binary size: %d bytes", binary.size());
+    if (total_size == 0)
+    {
+        ESP_LOGE(TAG, "Total size cannot be zero");
+        return false;
+    }
 
-    // Get the next OTA partition
-    const esp_partition_t *update_partition
-        = esp_ota_get_next_update_partition(NULL);
-    if (!update_partition)
+    ESP_LOGI(TAG, "Beginning OTA update with total size: %d bytes", total_size);
+
+    s_update_partition = esp_ota_get_next_update_partition(NULL);
+    if (!s_update_partition)
     {
         ESP_LOGE(TAG, "Failed to get OTA update partition");
-        return;
+        return false;
     }
 
     ESP_LOGI(TAG,
              "Writing to partition subtype %d at offset 0x%x",
-             update_partition->subtype,
-             update_partition->address);
+             s_update_partition->subtype,
+             s_update_partition->address);
 
-    // Begin OTA update
-    esp_ota_handle_t update_handle = 0;
     esp_err_t err
-        = esp_ota_begin(update_partition, binary.size(), &update_handle);
+        = esp_ota_begin(s_update_partition, total_size, &s_update_handle);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "esp_ota_begin failed: %s", esp_err_to_name(err));
-        return;
+        s_update_partition = nullptr;
+        s_update_handle = 0;
+        return false;
     }
 
-    // Write binary data to flash
-    err = esp_ota_write(update_handle, binary.data(), binary.size());
+    s_ota_in_progress = true;
+    ESP_LOGI(TAG, "OTA update initialized successfully");
+    return true;
+}
+
+bool Program::updateProgramBinary(const Binary &binary)
+{
+    if (!s_ota_in_progress)
+    {
+        ESP_LOGE(TAG,
+                 "No OTA update in progress. Call beginProgramUpdate() first");
+        return false;
+    }
+
+    if (binary.size() == 0)
+    {
+        ESP_LOGE(TAG, "Binary chunk is empty");
+        return false;
+    }
+
+    esp_err_t err
+        = esp_ota_write(s_update_handle, binary.data(), binary.size());
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "esp_ota_write failed: %s", esp_err_to_name(err));
-        esp_ota_end(update_handle);
-        return;
+        // Clean up on error
+        esp_ota_end(s_update_handle);
+        s_ota_in_progress = false;
+        s_update_handle = 0;
+        s_update_partition = nullptr;
+        return false;
     }
 
-    // Finalize the OTA update
-    err = esp_ota_end(update_handle);
+    ESP_LOGI(TAG, "Written %d bytes to OTA partition", binary.size());
+    return true;
+}
+
+bool Program::finalizeProgramUpdate()
+{
+    if (!s_ota_in_progress)
+    {
+        ESP_LOGE(TAG, "No OTA update in progress");
+        return false;
+    }
+
+    esp_err_t err = esp_ota_end(s_update_handle);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "esp_ota_end failed: %s", esp_err_to_name(err));
-        return;
+        s_ota_in_progress = false;
+        s_update_handle = 0;
+        s_update_partition = nullptr;
+        return false;
     }
 
-    // Set the new partition as boot partition
-    err = esp_ota_set_boot_partition(update_partition);
+    err = esp_ota_set_boot_partition(s_update_partition);
     if (err != ESP_OK)
     {
         ESP_LOGE(
             TAG, "esp_ota_set_boot_partition failed: %s", esp_err_to_name(err));
-        return;
+        s_ota_in_progress = false;
+        s_update_handle = 0;
+        s_update_partition = nullptr;
+        return false;
     }
 
-    ESP_LOGI(TAG, "OTA update completed successfully. Restarting...");
+    s_ota_in_progress = false;
+    s_update_handle = 0;
+    s_update_partition = nullptr;
 
-    // Restart the system to boot from the new partition
+    ESP_LOGI(TAG, "OTA update completed successfully. Restarting...");
     esp_restart();
+
+    return true; // This line won't be reached due to restart
 }
