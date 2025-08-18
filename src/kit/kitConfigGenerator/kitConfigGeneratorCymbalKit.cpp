@@ -2,7 +2,7 @@
 #include "kit/kitService/srvcRgbListen/srvcRgbListen.hpp"
 #include "kitConfigGenerator.hpp"
 
-void KitConfigGenerator::init()
+void KitConfigGenerator::specificInit()
 {
     m_kitConfig.setType(KitType::Type::Cymbal);
     m_kitConfig.setAttribute(KitAttributeType::Type::RoundRgb, 16);

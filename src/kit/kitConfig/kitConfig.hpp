@@ -30,6 +30,12 @@ class KitConfig
      */
     KitServiceType m_serviceTypes[KitServiceType::Count];
 
+    /**
+     * @brief CRC32 checksum of the program.
+     * @note This is used to check if an update is needed.
+     */
+    uint32_t m_programCrc32;
+
     public:
     /**
      * @brief Constructor to create a KitConfig with a specific type.
@@ -55,6 +61,12 @@ class KitConfig
      * @param serviceType The type of the service to add.
      */
     void setService(KitServiceType serviceType);
+
+    /**
+     * @brief Set the program CRC32 checksum.
+     * @param crc32 The CRC32 checksum of the program.
+     */
+    void setProgramCrc32(uint32_t crc32);
 
     /**
      * @brief Get the type of the kit.

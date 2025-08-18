@@ -13,6 +13,9 @@ KitConfig::KitConfig(KitType::Type type) : m_type(type)
     {
         m_serviceTypes[i] = KitServiceType(KitServiceType::Type::None);
     }
+
+    // Initialize program CRC32
+    m_programCrc32 = 0;
 }
 
 void KitConfig::setType(KitType::Type type)
@@ -28,6 +31,11 @@ void KitConfig::setAttribute(KitAttributeType attributeType,
         m_attributeTypes[attributeType.getType()]
             = KitAttributeType(attributeType.getType(), nbAttributes);
     }
+}
+
+void KitConfig::setProgramCrc32(uint32_t crc32)
+{
+    m_programCrc32 = crc32;
 }
 
 void KitConfig::setService(KitServiceType serviceType)
