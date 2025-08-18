@@ -1,4 +1,7 @@
 
+# Add .exe to the target name
+set(TARGET ${TARGET}.exe)
+
 add_sources(
     api/logs/logsWindows.cpp
     api/udp/udpWindows.cpp
