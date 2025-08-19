@@ -35,6 +35,7 @@ add_sources(
     tools/logStream/logStream.cpp
     tools/async/async.cpp
     tools/containers/binary/binary.cpp
+    tools/containers/binary/crc32.cpp
 
     network/client/client.cpp
     network/client/ipv4.cpp

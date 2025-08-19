@@ -5,10 +5,12 @@
  */
 
 #include "file.hpp"
+#include "tools/containers/binary/crc32.hpp"
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <vector>
 
 File::File() : m_handle(nullptr), m_isOpen(false)
 {
@@ -176,4 +178,39 @@ bool File::remove(const std::string &filepath)
 bool File::createDirectory(const std::string &dirpath)
 {
     return (mkdir(dirpath.c_str(), 0755) == 0 || errno == EEXIST);
+}
+
+uint32_t File::crc32(size_t bufferSize)
+{
+    if (!m_isOpen || !m_handle)
+    {
+        return 0;
+    }
+
+    // Save current position
+    int64_t originalPos = tell();
+    if (originalPos == -1)
+    {
+        return 0;
+    }
+
+    // Seek to beginning
+    if (seek(0, SeekOrigin::BEGIN) == -1)
+    {
+        return 0;
+    }
+
+    std::vector<uint8_t> buffer(bufferSize);
+    uint32_t crc = 0xFFFFFFFF;
+    int64_t bytesRead;
+
+    while ((bytesRead = read(buffer.data(), bufferSize)) > 0)
+    {
+        crc = CRC32::update(crc, buffer.data(), static_cast<size_t>(bytesRead));
+    }
+
+    // Restore original position
+    seek(originalPos, SeekOrigin::BEGIN);
+
+    return (bytesRead == -1) ? 0 : CRC32::finalize(crc);
 }

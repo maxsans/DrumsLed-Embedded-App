@@ -117,6 +117,13 @@ class File
     bool isOpen() const;
 
     /**
+     * @brief Calculate CRC32 checksum of the file
+     * @param bufferSize Buffer size for reading chunks (default: 64KB)
+     * @return CRC32 checksum, 0 on error
+     */
+    uint32_t crc32(size_t bufferSize = 65536);
+
+    /**
      * @brief Check if file exists
      * @param filepath Path to check
      * @return true if exists, false otherwise

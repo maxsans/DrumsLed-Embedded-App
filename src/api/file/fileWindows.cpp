@@ -5,6 +5,8 @@
  */
 
 #include "file.hpp"
+#include "tools/containers/binary/crc32.hpp"
+#include <vector>
 #include <windows.h>
 
 File::File() : m_handle(INVALID_HANDLE_VALUE), m_isOpen(false)
@@ -202,4 +204,39 @@ bool File::createDirectory(const std::string &dirpath)
 {
     return (CreateDirectoryA(dirpath.c_str(), nullptr) != 0
             || GetLastError() == ERROR_ALREADY_EXISTS);
+}
+
+uint32_t File::crc32(size_t bufferSize)
+{
+    if (!m_isOpen)
+    {
+        return 0;
+    }
+
+    // Save current position
+    int64_t originalPos = tell();
+    if (originalPos == -1)
+    {
+        return 0;
+    }
+
+    // Seek to beginning
+    if (seek(0, SeekOrigin::BEGIN) == -1)
+    {
+        return 0;
+    }
+
+    std::vector<uint8_t> buffer(bufferSize);
+    uint32_t crc = 0xFFFFFFFF;
+    int64_t bytesRead;
+
+    while ((bytesRead = read(buffer.data(), bufferSize)) > 0)
+    {
+        crc = CRC32::update(crc, buffer.data(), static_cast<size_t>(bytesRead));
+    }
+
+    // Restore original position
+    seek(originalPos, SeekOrigin::BEGIN);
+
+    return (bytesRead == -1) ? 0 : CRC32::finalize(crc);
 }
