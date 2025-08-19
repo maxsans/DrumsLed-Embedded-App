@@ -6,6 +6,7 @@ add_sources(
     api/time/timeLinux.cpp
     api/terminal/terminalLinux.cpp
     api/mutex/mutexLinux.cpp
+    api/file/fileLinux.cpp
 )
 
 add_libraries(
