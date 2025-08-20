@@ -4,13 +4,31 @@
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
-Client Kit::m_masterClient;
-chronoMs Kit::m_pingTimeout;
 const timeMs Kit::m_pingTimeoutDuration = 10000;
-periodicCallsMs *Kit::m_timeoutChecker = nullptr;
 
-// Definition of static member
-std::vector<KitService *> Kit::m_services;
+Kit::Kit()
+{
+    // Initialize the timeout checker
+    m_timeoutChecker
+        = new periodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, this);
+    // Register the ping callback
+    InterComParser::registerCallback(
+        InterMsgId::PingSlaves,
+        [this](const Client &client, InterMsg &msg, void *object) {
+            this->onPing(client, msg);
+        });
+    // Log the initialization
+    LogStream::cout << "Kit initialized. Waiting for master client..."
+                    << LogStream::endl;
+    // Initialize the master client to an invalid state
+    m_masterClient = Client();
+    // Generate the kit configuration
+    KitConfigGenerator::init();
+    // Generate the kit services
+    m_services = KitConfigGenerator::generateKitServices();
+    // Arm the ping timeout
+    m_pingTimeout.arm(m_pingTimeoutDuration);
+}
 
 bool Kit::isMasterValid()
 {
@@ -41,27 +59,15 @@ void Kit::onPing(const Client &client, InterMsg &msg)
     m_pingTimeout.restart();
 }
 
-void Kit::init()
+void Kit::checkTimeouts(void *obj)
 {
-    // Initialize the timeout checker
-    m_timeoutChecker = new periodicCallsMs(
-        m_pingTimeoutDuration, &Kit::checkTimeouts, nullptr);
-    // Register the ping callback
-    InterComParser::registerCallback(InterMsgId::PingSlaves, Kit::onPing);
-    // Log the initialization
-    LogStream::cout << "Kit initialized. Waiting for master client..."
-                    << LogStream::endl;
-    // Initialize the master client to an invalid state
-    m_masterClient = Client();
-    // Generate the kit configuration
-    KitConfigGenerator::init();
-    // Generate the kit services
-    m_services = KitConfigGenerator::generateKitServices();
-    // Arm the ping timeout
-    m_pingTimeout.arm(m_pingTimeoutDuration);
+    // Cast the object to Kit
+    Kit *kit = static_cast<Kit *>(obj);
+    // Call the member function to check timeouts
+    kit->checkTimeouts();
 }
 
-void Kit::checkTimeouts(void *)
+void Kit::checkTimeouts()
 {
     // Check if the master client is valid
     if (!isMasterValid())
