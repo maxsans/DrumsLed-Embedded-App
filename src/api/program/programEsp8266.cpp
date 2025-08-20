@@ -27,6 +27,9 @@ static esp_ota_handle_t s_update_handle = 0;
 static const esp_partition_t *s_update_partition = nullptr;
 static bool s_ota_in_progress = false;
 
+size_t Program::m_totalSize = 0;
+size_t Program::m_currentSize = 0;
+
 void Program::getProgramBinary(Binary *binary)
 {
     if (!binary)
@@ -115,6 +118,8 @@ bool Program::beginProgramUpdate(size_t total_size)
         return false;
     }
 
+    m_totalSize = total_size;
+
     s_ota_in_progress = true;
     ESP_LOGI(TAG, "OTA update initialized successfully");
     return true;
@@ -149,6 +154,8 @@ bool Program::updateProgramBinary(const Binary &binary)
     }
 
     ESP_LOGI(TAG, "Written %d bytes to OTA partition", binary.size());
+
+    m_currentSize += binary.size();
     return true;
 }
 
@@ -471,4 +478,9 @@ uint8_t Program::getCurrentBootAttempt()
     }
 
     return boot_count;
+}
+
+bool Program::isTotalSizeReached()
+{
+    return m_currentSize >= m_totalSize;
 }

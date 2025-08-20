@@ -9,6 +9,7 @@
 #define __INTERMSGOTASENDCHUNK_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
+#include "tools/containers/binary/binary.hpp"
 
 /**
  * @brief Message to send a chunk of OTA data
@@ -65,6 +66,12 @@ class InterMsgOtaSendChunk : public InterMsg
      * @return The chunk data
      */
     const char *getChunkData() const;
+
+    /**
+     * @brief Get the chunk size
+     * @return The chunk size
+     */
+    uint32_t getChunkSize() const;
 
     /**
      * @brief Get a description of the message.

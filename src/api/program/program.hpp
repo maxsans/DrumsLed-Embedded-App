@@ -15,6 +15,17 @@
  */
 class Program
 {
+    private:
+    /**
+     * @brief Total size of the program binary.
+     */
+    static size_t m_totalSize;
+
+    /**
+     * @brief Current size of the program binary.
+     */
+    static size_t m_currentSize;
+
     public:
     /**
      * @brief Get the binary of the program.
@@ -76,6 +87,12 @@ class Program
      * @return Current boot attempt number, 0 if not in OTA state.
      */
     static uint8_t getCurrentBootAttempt();
+
+    /**
+     * @brief Check if the total size of the program binary has been reached.
+     * @return true if total size is reached, false otherwise.
+     */
+    static bool isTotalSizeReached();
 };
 
 #endif // __PROGRAM_HPP__

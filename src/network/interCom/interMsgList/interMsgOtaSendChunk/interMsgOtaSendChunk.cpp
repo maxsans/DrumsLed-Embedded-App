@@ -36,6 +36,11 @@ const char *InterMsgOtaSendChunk::getChunkData() const
     return m_data.m_chunkData;
 }
 
+uint32_t InterMsgOtaSendChunk::getChunkSize() const
+{
+    return m_data.m_chunkSize;
+}
+
 std::string InterMsgOtaSendChunk::toString() const
 {
     return "InterMsgOtaSendChunk: client = "
