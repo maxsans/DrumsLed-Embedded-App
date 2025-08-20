@@ -15,14 +15,11 @@ PeriodicCallsMs::PeriodicCallsMs()
     m_enable = true;
 }
 
-PeriodicCallsMs::PeriodicCallsMs(TimeMs period,
-                                 void (*callback)(void *),
-                                 void *object)
+PeriodicCallsMs::PeriodicCallsMs(TimeMs period, std::function<void()> callback)
 {
     m_instances.push_back(this);
     m_chrono.arm(period);
     m_callback = callback;
-    m_object = object;
     m_enable = true;
 }
 
@@ -43,9 +40,9 @@ void PeriodicCallsMs::processAll()
 
 void PeriodicCallsMs::process()
 {
-    if ((m_chrono.ring()) && (m_enable))
+    if ((m_chrono.ring()) && (m_enable) && m_callback)
     {
-        m_callback(m_object);
+        m_callback();
         m_chrono.restart();
     }
 }
@@ -55,10 +52,9 @@ void PeriodicCallsMs::setPeriod(TimeMs period)
     m_chrono.arm(period);
 }
 
-void PeriodicCallsMs::setCallback(void (*callback)(void *), void *object)
+void PeriodicCallsMs::setCallback(std::function<void()> callback)
 {
     m_callback = callback;
-    m_object = object;
 }
 
 void PeriodicCallsMs::enable(bool enable)

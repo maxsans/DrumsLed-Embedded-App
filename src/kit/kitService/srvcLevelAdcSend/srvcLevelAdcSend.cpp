@@ -16,11 +16,10 @@ const uint32_t KitSrvcLevelAdcSend::m_maxBufferSize
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
-      m_sendPeriodicCall(
-          m_sendInterval, &KitSrvcLevelAdcSend::periodicSendCallback, this),
+      m_sendPeriodicCall(m_sendInterval,
+                         [this]() { this->periodicSendCallback(); }),
       m_measurePeriodicCall(m_measureInterval,
-                            &KitSrvcLevelAdcSend::periodicMeasureCallback,
-                            this),
+                            [this]() { this->periodicMeasureCallback(); }),
       m_currentIndex(0), m_currentSize(0),
       m_circularBuffer(new AdcMeasurement[m_maxBufferSize]), m_bufferSum(0)
 {
@@ -79,12 +78,6 @@ adc_measure_t KitSrvcLevelAdcSend::getAverageAdcLevel()
     return validSum / validCount;
 }
 
-void KitSrvcLevelAdcSend::periodicSendCallback(void *object)
-{
-    KitSrvcLevelAdcSend *service = static_cast<KitSrvcLevelAdcSend *>(object);
-    service->periodicSendCallback();
-}
-
 void KitSrvcLevelAdcSend::periodicSendCallback()
 {
     adc_measure_t averageLevel = getAverageAdcLevel();
@@ -92,12 +85,6 @@ void KitSrvcLevelAdcSend::periodicSendCallback()
     InterMsgAdc l_msgAdc(l_masterClient, averageLevel);
     // Send the ADC level message to the master client
     l_msgAdc.send();
-}
-
-void KitSrvcLevelAdcSend::periodicMeasureCallback(void *object)
-{
-    KitSrvcLevelAdcSend *service = static_cast<KitSrvcLevelAdcSend *>(object);
-    service->periodicMeasureCallback();
 }
 
 void KitSrvcLevelAdcSend::periodicMeasureCallback()

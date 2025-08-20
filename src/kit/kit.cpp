@@ -7,10 +7,9 @@
 const TimeMs Kit::m_pingTimeoutDuration = 10000;
 
 Kit::Kit()
+    : m_timeoutChecker(m_pingTimeoutDuration,
+                       [this]() { this->checkTimeouts(); })
 {
-    // Initialize the timeout checker
-    m_timeoutChecker
-        = new PeriodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, this);
     // Register the ping callback
     InterComParser::registerCallback(
         InterMsgId::PingSlaves,
@@ -57,14 +56,6 @@ void Kit::onPing(const Client &client, InterMsg &msg)
     InterMsgInitModule(m_masterClient, getKitConfig()).send();
     // Restart chrono of ping timeout
     m_pingTimeout.restart();
-}
-
-void Kit::checkTimeouts(void *obj)
-{
-    // Cast the object to Kit
-    Kit *kit = static_cast<Kit *>(obj);
-    // Call the member function to check timeouts
-    kit->checkTimeouts();
 }
 
 void Kit::checkTimeouts()

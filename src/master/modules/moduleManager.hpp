@@ -39,7 +39,6 @@ class ModuleManager
      * @note This is used to check if the modules are still connected.
      */
     PeriodicCallsMs m_ringPeriodicCalls;
-    static void ringCallback(void *object);
 
     /**
      * @brief The impacts manager.

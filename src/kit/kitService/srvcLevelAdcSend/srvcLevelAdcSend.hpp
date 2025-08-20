@@ -96,13 +96,11 @@ class KitSrvcLevelAdcSend : public KitService
     /**
      * @brief Callback function for periodic sending of ADC level data.
      */
-    static void periodicSendCallback(void *object);
     void periodicSendCallback();
 
     /**
      * @brief Callback function for periodic measuring of ADC level data.
      */
-    static void periodicMeasureCallback(void *object);
     void periodicMeasureCallback();
 
     /**

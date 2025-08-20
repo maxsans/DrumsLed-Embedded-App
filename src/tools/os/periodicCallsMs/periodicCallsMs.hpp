@@ -10,6 +10,7 @@
 
 #include "tools/timeTools/chronoMs.hpp"
 
+#include <functional>
 #include <stdbool.h>
 #include <vector>
 
@@ -20,16 +21,13 @@ class PeriodicCallsMs
 {
     private:
     ChronoMs m_chrono;
-    void (*m_callback)(void *);
-    void *m_object;
+    std::function<void()> m_callback;
     bool m_enable;
     static std::vector<PeriodicCallsMs *> m_instances;
 
     public:
     PeriodicCallsMs();
-    PeriodicCallsMs(TimeMs period,
-                    void (*callback)(void *object),
-                    void *object);
+    PeriodicCallsMs(TimeMs period, std::function<void()> callback);
     ~PeriodicCallsMs();
 
     /**
@@ -37,6 +35,7 @@ class PeriodicCallsMs
      * @note This function must be called in the main loop.
      */
     static void processAll();
+
     /**
      * @brief Process all the instances.
      * @note This will be automatically called by the processAll function.
@@ -49,14 +48,14 @@ class PeriodicCallsMs
      * @param period The period in milliseconds.
      */
     void setPeriod(TimeMs period);
+
     /**
-     * @brief Set the Callback objectSet the Callback object.
+     * @brief Set the Callback object.
      *
      * @param callback Callback function.
-     * @param object Pointer on the object.
-     * @note The object can be casted to the desired type in the callback function.
+     * @note Use lambdas or std::bind to capture object context if needed.
      */
-    void setCallback(void (*callback)(void *), void *object);
+    void setCallback(std::function<void()> callback);
 
     /**
      * @brief Enable or disable the periodic call.
@@ -64,6 +63,7 @@ class PeriodicCallsMs
      * @param enable True to enable, false to disable.
      */
     void enable(bool enable);
+
     /**
      * @brief Check if the periodic call is enabled.
      *

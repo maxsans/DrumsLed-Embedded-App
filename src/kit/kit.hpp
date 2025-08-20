@@ -38,8 +38,7 @@ class Kit
      * @brief A periodic call to check if the master kit is still connected.
      * @note This is used to ensure that the slave kit can communicate with the master kit.
      */
-    PeriodicCallsMs *m_timeoutChecker;
-    static void checkTimeouts(void *obj);
+    PeriodicCallsMs m_timeoutChecker;
     void checkTimeouts();
 
     /**

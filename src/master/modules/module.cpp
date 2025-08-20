@@ -8,7 +8,7 @@ const TimeMs Module::m_rgbSendInterval = TimeMs(20);
 
 Module::Module(KitConfig kitConfig, Client client)
     : m_kitConfig(kitConfig), m_client(client),
-      m_aliveRgbPeriodicCall(m_rgbSendInterval, &Module::sendRgb, this),
+      m_aliveRgbPeriodicCall(m_rgbSendInterval, [this]() { this->sendRgb(); }),
       m_micro(nullptr), m_rgbLed(nullptr)
 {
     // Add the attributes based on the kit configuration
@@ -23,11 +23,6 @@ Module::Module(KitConfig kitConfig, Client client)
 
     // At start, the module is connected
     sync();
-}
-
-void Module::sendRgb(void *object)
-{
-    static_cast<Module *>(object)->sendRgb();
 }
 
 void Module::sendRgb()

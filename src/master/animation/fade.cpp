@@ -9,7 +9,7 @@
 
 Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, TimeMs duration)
     : Animation(ANIMATION_TYPE_FADE, m, rgbLed),
-      m_periodicCall(0, Fade::process, this)
+      m_periodicCall(0, [this]() { this->process(); })
 {
     m_color = color;
     m_duration = duration;
@@ -23,12 +23,6 @@ Fade::~Fade()
 void Fade::start()
 {
     m_rgbLed->releaseColor(COLOR_PRIORITY_FADE);
-}
-
-void Fade::process(void *object)
-{
-    Fade *fade = static_cast<Fade *>(object);
-    fade->process();
 }
 
 void Fade::process()

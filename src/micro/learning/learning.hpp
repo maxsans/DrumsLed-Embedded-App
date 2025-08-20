@@ -88,13 +88,6 @@ class Learning
     void *m_learningDoneCallbackObject;
 
     /**
-     * @brief Callback to periodically call recordAllMic()
-     *
-     * @param object learning object (this)
-     */
-    static void recordCallback(void *object);
-
-    /**
      * @brief Record all the micros
      *
      */

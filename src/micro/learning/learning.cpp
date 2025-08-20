@@ -19,7 +19,8 @@ Learning::Learning(ModuleManager *moduleManager,
                    void (*learningDoneCallback)(void *object),
                    void *obj)
     : m_moduleManager(moduleManager),
-      m_recordPeriodicCall(m_timeBetweenMeasures, recordCallback, this),
+      m_recordPeriodicCall(m_timeBetweenMeasures,
+                           [this]() { this->recordAllMic(); }),
       m_learningDoneCallback(learningDoneCallback),
       m_learningDoneCallbackObject(obj)
 {
@@ -136,11 +137,6 @@ void Learning::startLearning(int32_t microIndex)
 
     // Start the learning process
     m_recordPeriodicCall.enable(true);
-}
-
-void Learning::recordCallback(void *object)
-{
-    ((Learning *)object)->recordAllMic();
 }
 
 void Learning::recordAllMic()

@@ -41,7 +41,6 @@ class Fade : public Animation
      */
     PeriodicCallsMs m_periodicCall;
 
-    static void process(void *object);
     void process();
 
     public:
