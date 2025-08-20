@@ -31,9 +31,10 @@ add_sources(
     tools/maths/matrix/matrix.cpp
     tools/timeTools/timeMs.cpp
     tools/timeTools/chronoMs.cpp
-    tools/timeTools/periodicCallsMs.cpp
+    tools/os/os.cpp
+    tools/os/periodicCallsMs/periodicCallsMs.cpp
+    tools/os/async/async.cpp
     tools/logStream/logStream.cpp
-    tools/async/async.cpp
 
     network/client/client.cpp
     network/client/ipv4.cpp

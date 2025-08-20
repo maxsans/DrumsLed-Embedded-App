@@ -6,7 +6,7 @@
 #include "micro/micro.hpp"
 #include "network/client/client.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 
 /**
  * @brief Class to represent a module.

@@ -11,10 +11,9 @@
 #include "network/interCom/interComParser/interComParser.hpp"
 #include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.hpp"
-#include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/os/os.hpp"
 #include "tools/term/term.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
 
 void launch()
 {
@@ -51,7 +50,6 @@ void launch()
 
     while (1)
     {
-        periodicCallsMs::processAll();
-        Async::process();
+        OS::process();
     }
 }

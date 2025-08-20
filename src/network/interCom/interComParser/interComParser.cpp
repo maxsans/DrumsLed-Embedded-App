@@ -2,8 +2,8 @@
 #include "api/tcp/tcp.hpp"
 #include "api/udp/udp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/os/async/async.hpp"
 
 #include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
 

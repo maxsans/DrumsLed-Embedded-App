@@ -5,7 +5,7 @@
  */
 
 #include "termAction.hpp"
-#include "tools/async/async.hpp"
+#include "tools/os/async/async.hpp"
 
 TermAction::TermAction(CommandCallback callback) : m_callback(callback)
 {

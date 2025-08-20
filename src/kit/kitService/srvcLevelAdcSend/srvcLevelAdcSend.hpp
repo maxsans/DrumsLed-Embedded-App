@@ -10,7 +10,7 @@
 
 #include "api/adc/adc.hpp"
 #include "kit/kitService/kitService.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 
 /**
  * @brief Structure to hold ADC measurement with timestamp

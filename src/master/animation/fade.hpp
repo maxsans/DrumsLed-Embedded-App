@@ -9,7 +9,7 @@
 #define __FADE_HPP__
 
 #include "animation.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
 #include <stdint.h>
