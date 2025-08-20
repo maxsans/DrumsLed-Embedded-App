@@ -28,6 +28,8 @@ class InterMsgId
         PingSlaves,
         Rgb,
         Adc,
+        OtaStart,
+        OtaSendChunk,
         // Add new message IDs here
 
         /**

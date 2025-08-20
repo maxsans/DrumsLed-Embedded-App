@@ -1,6 +1,10 @@
 #include "module.hpp"
+#include "api/file/file.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
+#include "network/interCom/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
+#include "network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
 #include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
+#include "tools/logStream/logStream.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
 const timeMs Module::m_moduleTimeout = timeMs(5000);
@@ -41,6 +45,74 @@ void Module::sendRgb()
                            m_rgbLed->getColor().getBlue());
         msgRgb.send();
     }
+}
+
+bool Module::isUpdateNeeded() const
+{
+    // Get the binary program from the path available in the kit config
+    std::string programPath = m_kitConfig.getProgramPath();
+    File programFile(programPath);
+    if (!programFile.exists(programPath))
+    {
+        return false; // Program file does not exist
+    }
+    programFile.open(programPath, FileMode::READ);
+    uint32_t programCrc32 = programFile.crc32();
+    // Check if the program CRC32 matches the one in the kit config
+    return (programCrc32 != m_kitConfig.getProgramCrc32());
+}
+
+bool Module::tryUpdate()
+{
+    if (!isUpdateNeeded())
+    {
+        LogStream::cout << "No update needed" << LogStream::endl;
+        return false; // No update needed
+    }
+
+    LogStream::cout << "Starting OTA update" << LogStream::endl;
+
+    // get the binary program from the path available in the kit config
+    const char *pathPrefix = "slave-bin/";
+    std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
+    File programFile(programPath);
+    if (!programFile.open(programPath, FileMode::READ))
+    {
+        LogStream::cout << "Failed to open the program file" << LogStream::endl;
+        return false; // Failed to open the program file
+    }
+
+    // Send the program chunk by chunk
+    const size_t chunkSize = 1024; // 1KB chunks
+    std::vector<char> buffer(chunkSize);
+    int64_t totalSize = programFile.size();
+    int64_t totalSent = 0;
+
+    // Send the start msg
+    InterMsgOtaStart startMsg(m_client, totalSize);
+    startMsg.send();
+
+    while (totalSent < totalSize)
+    {
+        int64_t bytesRead = programFile.read(buffer.data(), chunkSize);
+        if (bytesRead <= 0)
+        {
+            programFile.close();
+            LogStream::cout << "Failed to read the program file"
+                            << LogStream::endl;
+            return false; // Failed to read file
+        }
+
+        // Send the chunk
+        InterMsgOtaSendChunk chunkMsg(m_client, buffer.data(), bytesRead);
+        chunkMsg.send();
+
+        totalSent += bytesRead;
+    }
+
+    programFile.close();
+    LogStream::cout << "Finished sending OTA update" << LogStream::endl;
+    return true;
 }
 
 Micro *Module::getMicro()

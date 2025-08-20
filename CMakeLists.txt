@@ -53,6 +53,8 @@ add_sources(
     network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.cpp
     network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.cpp
     network/interCom/interMsgList/interMsgRgb/interMsgRgb.cpp
+    network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.cpp
+    network/interCom/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.cpp
 
     led/rgbColor.cpp
 )

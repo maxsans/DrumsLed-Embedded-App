@@ -56,8 +56,24 @@ class Module
     static void sendRgb(void *object);
     void sendRgb();
 
+    /**
+     * @brief Check if the module needs an update.
+     * @return true if an update is needed
+     * @return false if no update is needed
+     */
+    bool isUpdateNeeded() const;
+
     public:
     Module(KitConfig kitConfig, Client client);
+
+    /**
+     * @brief Try to update the module.
+     * @note This will check if the module needs an update and if so, it will
+     * update the module.
+     * @return true if the update was successful
+     * @return false if the update failed or no update was needed
+     */
+    bool tryUpdate();
 
     /**
      * @brief Get the micro of the module.
