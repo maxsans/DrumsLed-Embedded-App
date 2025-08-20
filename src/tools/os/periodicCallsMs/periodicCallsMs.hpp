@@ -16,21 +16,21 @@
 /**
  * @brief Periodic callback system for executing functions at regular millisecond intervals
  */
-class periodicCallsMs
+class PeriodicCallsMs
 {
     private:
-    chronoMs m_chrono;
+    ChronoMs m_chrono;
     void (*m_callback)(void *);
     void *m_object;
     bool m_enable;
-    static std::vector<periodicCallsMs *> m_instances;
+    static std::vector<PeriodicCallsMs *> m_instances;
 
     public:
-    periodicCallsMs();
-    periodicCallsMs(timeMs period,
+    PeriodicCallsMs();
+    PeriodicCallsMs(TimeMs period,
                     void (*callback)(void *object),
                     void *object);
-    ~periodicCallsMs();
+    ~PeriodicCallsMs();
 
     /**
      * @brief Process all the instances.
@@ -48,7 +48,7 @@ class periodicCallsMs
      *
      * @param period The period in milliseconds.
      */
-    void setPeriod(timeMs period);
+    void setPeriod(TimeMs period);
     /**
      * @brief Set the Callback objectSet the Callback object.
      *

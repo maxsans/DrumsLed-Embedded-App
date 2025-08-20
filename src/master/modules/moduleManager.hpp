@@ -20,7 +20,7 @@ class ModuleManager
     /**
      * @brief The interval in milliseconds to ping the modules.
      */
-    static const timeMs m_ringInterval;
+    static const TimeMs m_ringInterval;
 
     /**
      * @brief The list of modules.
@@ -38,7 +38,7 @@ class ModuleManager
      * @brief The periodic calls to ping the modules.
      * @note This is used to check if the modules are still connected.
      */
-    periodicCallsMs m_ringPeriodicCalls;
+    PeriodicCallsMs m_ringPeriodicCalls;
     static void ringCallback(void *object);
 
     /**

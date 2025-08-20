@@ -11,7 +11,7 @@
 
 #include <assert.h>
 
-const timeMs Learning::m_timeBetweenMeasures = 20;
+const TimeMs Learning::m_timeBetweenMeasures = 20;
 const RgbColor Learning::m_learningColor = RgbColor(255, 255, 255);
 const RgbColor Learning::m_notLearningColor = RgbColor(0, 0, 0);
 

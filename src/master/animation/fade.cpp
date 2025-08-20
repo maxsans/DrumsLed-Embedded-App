@@ -7,7 +7,7 @@
 #include "fade.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
-Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, timeMs duration)
+Fade::Fade(Micro *m, RgbLed *rgbLed, RgbColor color, TimeMs duration)
     : Animation(ANIMATION_TYPE_FADE, m, rgbLed),
       m_periodicCall(0, Fade::process, this)
 {
@@ -40,8 +40,8 @@ void Fade::process()
 
     if (m_hitTime != 0)
     {
-        timeMs currentTime = timeMs::nowMs();
-        timeMs elapsedTime = currentTime - m_hitTime;
+        TimeMs currentTime = TimeMs::nowMs();
+        TimeMs elapsedTime = currentTime - m_hitTime;
 
         if (elapsedTime <= m_duration)
         {

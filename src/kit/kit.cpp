@@ -4,13 +4,13 @@
 #include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
-const timeMs Kit::m_pingTimeoutDuration = 10000;
+const TimeMs Kit::m_pingTimeoutDuration = 10000;
 
 Kit::Kit()
 {
     // Initialize the timeout checker
     m_timeoutChecker
-        = new periodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, this);
+        = new PeriodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, this);
     // Register the ping callback
     InterComParser::registerCallback(
         InterMsgId::PingSlaves,

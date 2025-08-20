@@ -20,7 +20,7 @@ Micro::Micro()
     m_microValueCorrected = 0;
     m_correction = DEFAULT_CORRECTION;
     m_threshold = DEFAULT_THRESHOLD;
-    m_lastSyncTime = timeMs();
+    m_lastSyncTime = TimeMs();
 }
 
 void Micro::process()
@@ -37,13 +37,13 @@ void Micro::sync()
     {
         m_connected = true;
     }
-    m_lastSyncTime = timeMs();
+    m_lastSyncTime = TimeMs();
 }
 
 void Micro::checkTime()
 {
     // Check if the micro is still connected
-    if (timeMs() - m_lastSyncTime > MICRO_TIMEOUT)
+    if (TimeMs() - m_lastSyncTime > MICRO_TIMEOUT)
     {
         if (m_connected)
         {

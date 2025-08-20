@@ -10,6 +10,6 @@
 
 void OS::process()
 {
-    periodicCallsMs::processAll();
+    PeriodicCallsMs::processAll();
     Async::process();
 }

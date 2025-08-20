@@ -2,92 +2,92 @@
 
 #include "api/time/time.hpp"
 
-timeMs::timeMs()
+TimeMs::TimeMs()
 {
     m_timeMs = 0;
 }
 
-timeMs::timeMs(time_ms_t timeMs)
+TimeMs::TimeMs(time_ms_t TimeMs)
 {
-    m_timeMs = timeMs;
+    m_timeMs = TimeMs;
 }
 
-void timeMs::set(time_ms_t timeMs)
+void TimeMs::set(time_ms_t TimeMs)
 {
-    m_timeMs = timeMs;
+    m_timeMs = TimeMs;
 }
 
-void timeMs::setNow()
+void TimeMs::setNow()
 {
     m_timeMs = nowMs();
 }
 
-time_ms_t timeMs::nowMs()
+time_ms_t TimeMs::nowMs()
 {
     return time_ms();
 }
 
-time_ms_t timeMs::get() const
+time_ms_t TimeMs::get() const
 {
     return m_timeMs;
 }
 
-time_ms_t timeMs::toSeconds()
+time_ms_t TimeMs::toSeconds()
 {
     return m_timeMs / 1000;
 }
 
-time_ms_t timeMs::toMinutes()
+time_ms_t TimeMs::toMinutes()
 {
     return m_timeMs / 60000;
 }
 
-timeMs timeMs::operator+(const timeMs &time)
+TimeMs TimeMs::operator+(const TimeMs &time)
 {
-    return timeMs(m_timeMs + time.m_timeMs);
+    return TimeMs(m_timeMs + time.m_timeMs);
 }
 
-timeMs timeMs::operator-(const timeMs &time)
+TimeMs TimeMs::operator-(const TimeMs &time)
 {
-    return timeMs(m_timeMs - time.m_timeMs);
+    return TimeMs(m_timeMs - time.m_timeMs);
 }
 
-timeMs timeMs::operator*(const timeMs &time)
+TimeMs TimeMs::operator*(const TimeMs &time)
 {
-    return timeMs(m_timeMs * time.m_timeMs);
+    return TimeMs(m_timeMs * time.m_timeMs);
 }
 
-timeMs timeMs::operator/(const timeMs &time)
+TimeMs TimeMs::operator/(const TimeMs &time)
 {
-    return timeMs(m_timeMs / time.m_timeMs);
+    return TimeMs(m_timeMs / time.m_timeMs);
 }
 
-bool timeMs::operator==(const timeMs &time)
+bool TimeMs::operator==(const TimeMs &time)
 {
     return m_timeMs == time.m_timeMs;
 }
 
-bool timeMs::operator!=(const timeMs &time)
+bool TimeMs::operator!=(const TimeMs &time)
 {
     return m_timeMs != time.m_timeMs;
 }
 
-bool timeMs::operator>(const timeMs &time)
+bool TimeMs::operator>(const TimeMs &time)
 {
     return m_timeMs > time.m_timeMs;
 }
 
-bool timeMs::operator<(const timeMs &time)
+bool TimeMs::operator<(const TimeMs &time)
 {
     return m_timeMs < time.m_timeMs;
 }
 
-bool timeMs::operator>=(const timeMs &time)
+bool TimeMs::operator>=(const TimeMs &time)
 {
     return m_timeMs >= time.m_timeMs;
 }
 
-bool timeMs::operator<=(const timeMs &time)
+bool TimeMs::operator<=(const TimeMs &time)
 {
     return m_timeMs <= time.m_timeMs;
 }

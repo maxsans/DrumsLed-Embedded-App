@@ -17,12 +17,12 @@ class Module
     /**
      * @brief Timeout for the module to be considered disconnected.
      */
-    static const timeMs m_moduleTimeout;
+    static const TimeMs m_moduleTimeout;
 
     /**
      * @brief The RGB send interval.
      */
-    static const timeMs m_rgbSendInterval;
+    static const TimeMs m_rgbSendInterval;
 
     /**
      * @brief The kit config of the module.
@@ -37,7 +37,7 @@ class Module
     /**
      * @brief time of the last sync.
      */
-    timeMs m_lastSyncTime;
+    TimeMs m_lastSyncTime;
 
     /**
      * @brief Micro associated with the module.
@@ -52,7 +52,7 @@ class Module
     /**
      * @brief Periodically send Rgb msg to the kits
      */
-    periodicCallsMs m_aliveRgbPeriodicCall;
+    PeriodicCallsMs m_aliveRgbPeriodicCall;
     static void sendRgb(void *object);
     void sendRgb();
 

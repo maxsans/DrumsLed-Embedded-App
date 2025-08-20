@@ -18,7 +18,7 @@
 struct AdcMeasurement
 {
     adc_measure_t value;
-    timeMs timestamp;
+    TimeMs timestamp;
 };
 
 /**
@@ -30,18 +30,18 @@ class KitSrvcLevelAdcSend : public KitService
     /**
      * @brief The interval in milliseconds for sending ADC level data.
      */
-    static const timeMs m_sendInterval;
+    static const TimeMs m_sendInterval;
 
     /**
      * @brief The interval in milliseconds for measuring ADC level data.
      */
-    static const timeMs m_measureInterval;
+    static const TimeMs m_measureInterval;
 
     /**
      * @brief The time in milliseconds for the circular buffer to hold measurements.
      * @note This is used to determine how long the buffer should keep the measurements.
      */
-    static const timeMs m_bufferTime;
+    static const TimeMs m_bufferTime;
 
     /**
      * @brief Maximum buffer size to accommodate high-frequency measurements.
@@ -51,13 +51,13 @@ class KitSrvcLevelAdcSend : public KitService
     /**
      * @brief The periodic call for sending ADC level data.
      */
-    periodicCallsMs m_sendPeriodicCall;
+    PeriodicCallsMs m_sendPeriodicCall;
 
     /**
      * @brief The periodic call for measuring ADC level data.
      * @note This is used to measure the ADC level data periodically.
      */
-    periodicCallsMs m_measurePeriodicCall;
+    PeriodicCallsMs m_measurePeriodicCall;
 
     /**
      * @brief Current index in the circular buffer.

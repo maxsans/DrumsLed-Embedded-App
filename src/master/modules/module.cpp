@@ -3,8 +3,8 @@
 #include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/timeTools/timeMs.hpp"
 
-const timeMs Module::m_moduleTimeout = timeMs(5000);
-const timeMs Module::m_rgbSendInterval = timeMs(20);
+const TimeMs Module::m_moduleTimeout = TimeMs(5000);
+const TimeMs Module::m_rgbSendInterval = TimeMs(20);
 
 Module::Module(KitConfig kitConfig, Client client)
     : m_kitConfig(kitConfig), m_client(client),
@@ -55,7 +55,7 @@ RgbLed *Module::getRgbLed()
 
 bool Module::isConnected()
 {
-    return (m_lastSyncTime + m_moduleTimeout) > timeMs::nowMs();
+    return (m_lastSyncTime + m_moduleTimeout) > TimeMs::nowMs();
 }
 
 KitConfig Module::getConfig()
@@ -65,7 +65,7 @@ KitConfig Module::getConfig()
 
 void Module::sync()
 {
-    m_lastSyncTime = timeMs::nowMs();
+    m_lastSyncTime = TimeMs::nowMs();
 }
 
 Client Module::getClient()

@@ -24,7 +24,7 @@ class Micro
     uint8_t m_microValueCorrected;
     float m_correction;
     uint8_t m_threshold;
-    timeMs m_lastSyncTime;
+    TimeMs m_lastSyncTime;
     void checkTime();
 
     public:

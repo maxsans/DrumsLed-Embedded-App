@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-const timeMs ModuleManager::m_ringInterval = timeMs(500);
+const TimeMs ModuleManager::m_ringInterval = TimeMs(500);
 
 ModuleManager::ModuleManager(bool active)
     : m_ringPeriodicCalls(m_ringInterval, ringCallback, this)

@@ -3,25 +3,25 @@
 
 #include "timeMs.hpp"
 
-class chronoMs
+class ChronoMs
 {
     private:
-    timeMs m_start;
-    timeMs m_end;
+    TimeMs m_start;
+    TimeMs m_end;
     bool m_armed;
 
     public:
-    chronoMs();
+    ChronoMs();
     void start();
-    void setStart(timeMs start);
-    void arm(timeMs duration);
+    void setStart(TimeMs start);
+    void arm(TimeMs duration);
     bool ring();
     bool oneTimeRing();
     void restart();
 
-    timeMs getStart();
-    timeMs getEnd();
-    timeMs getElapsedTime();
+    TimeMs getStart();
+    TimeMs getEnd();
+    TimeMs getElapsedTime();
 };
 
 #endif

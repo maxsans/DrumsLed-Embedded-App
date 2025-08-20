@@ -31,14 +31,14 @@ class Kit
      * @brief The timeout for the ping to the master kit.
      * @note This is used to check if the master kit is still connected.
      */
-    chronoMs m_pingTimeout;
-    static const timeMs m_pingTimeoutDuration;
+    ChronoMs m_pingTimeout;
+    static const TimeMs m_pingTimeoutDuration;
 
     /**
      * @brief A periodic call to check if the master kit is still connected.
      * @note This is used to ensure that the slave kit can communicate with the master kit.
      */
-    periodicCallsMs *m_timeoutChecker;
+    PeriodicCallsMs *m_timeoutChecker;
     static void checkTimeouts(void *obj);
     void checkTimeouts();
 

@@ -1,5 +1,5 @@
 /**
- * @file periodicCallsMs.cpp
+ * @file PeriodicCallsMs.cpp
  * @author Cyprien Ménard
  * @date 2025-08-20
  */
@@ -7,15 +7,15 @@
 #include "periodicCallsMs.hpp"
 #include <algorithm>
 
-std::vector<periodicCallsMs *> periodicCallsMs::m_instances;
+std::vector<PeriodicCallsMs *> PeriodicCallsMs::m_instances;
 
-periodicCallsMs::periodicCallsMs()
+PeriodicCallsMs::PeriodicCallsMs()
 {
     m_instances.push_back(this);
     m_enable = true;
 }
 
-periodicCallsMs::periodicCallsMs(timeMs period,
+PeriodicCallsMs::PeriodicCallsMs(TimeMs period,
                                  void (*callback)(void *),
                                  void *object)
 {
@@ -26,22 +26,22 @@ periodicCallsMs::periodicCallsMs(timeMs period,
     m_enable = true;
 }
 
-periodicCallsMs::~periodicCallsMs()
+PeriodicCallsMs::~PeriodicCallsMs()
 {
     m_instances.erase(std::remove(m_instances.begin(), m_instances.end(), this),
                       m_instances.end());
 }
 
-void periodicCallsMs::processAll()
+void PeriodicCallsMs::processAll()
 {
     // Iterate through all instances and call their process method
-    for (periodicCallsMs *instance : m_instances)
+    for (PeriodicCallsMs *instance : m_instances)
     {
         instance->process();
     }
 }
 
-void periodicCallsMs::process()
+void PeriodicCallsMs::process()
 {
     if ((m_chrono.ring()) && (m_enable))
     {
@@ -50,23 +50,23 @@ void periodicCallsMs::process()
     }
 }
 
-void periodicCallsMs::setPeriod(timeMs period)
+void PeriodicCallsMs::setPeriod(TimeMs period)
 {
     m_chrono.arm(period);
 }
 
-void periodicCallsMs::setCallback(void (*callback)(void *), void *object)
+void PeriodicCallsMs::setCallback(void (*callback)(void *), void *object)
 {
     m_callback = callback;
     m_object = object;
 }
 
-void periodicCallsMs::enable(bool enable)
+void PeriodicCallsMs::enable(bool enable)
 {
     m_enable = enable;
 }
 
-bool periodicCallsMs::isEnabled()
+bool PeriodicCallsMs::isEnabled()
 {
     return m_enable;
 }
