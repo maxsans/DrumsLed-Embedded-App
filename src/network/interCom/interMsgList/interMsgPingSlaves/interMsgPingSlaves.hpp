@@ -33,8 +33,6 @@ class InterMsgPingSlaves : public InterMsg
      */
     InterMsgPingSlaves(Client client, char *rawData, uint32_t size);
 
-    const char *getPrivData() const override;
-
     /**
      * @brief Get a description of the message.
      */

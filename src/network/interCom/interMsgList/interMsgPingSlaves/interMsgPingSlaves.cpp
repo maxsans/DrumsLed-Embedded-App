@@ -25,11 +25,6 @@ InterMsgPingSlaves::InterMsgPingSlaves(Client client,
 {
 }
 
-const char *InterMsgPingSlaves::getPrivData() const
-{
-    return m_data;
-}
-
 std::string InterMsgPingSlaves::toString() const
 {
     return "InterMsgPingSlaves: client = " + getClient().getIP().getIpString();

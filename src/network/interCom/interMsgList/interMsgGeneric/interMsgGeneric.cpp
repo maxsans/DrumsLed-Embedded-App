@@ -24,8 +24,3 @@ InterMsgGeneric::InterMsgGeneric(Client client, char *rawData, uint32_t size)
 {
     assert(size <= InterMsgHeader::MAX_PRIV_DATA_SIZE);
 }
-
-const char *InterMsgGeneric::getPrivData() const
-{
-    return m_data.privData;
-}

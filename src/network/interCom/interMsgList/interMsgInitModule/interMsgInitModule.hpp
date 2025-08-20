@@ -18,11 +18,6 @@ class InterMsgInitModule : public InterMsg
         KitConfig m_kitConfig;
     } m_data;
 
-    /**
-     * @see InterMsg::getPrivData
-     */
-    const char *getPrivData() const override;
-
     public:
     /**
      * @brief Create an InterMsgInitModule with initialization parameters.

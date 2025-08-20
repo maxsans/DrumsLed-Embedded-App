@@ -21,11 +21,6 @@ InterMsgRgb::InterMsgRgb(Client client, char *rawData, uint32_t size)
 {
 }
 
-const char *InterMsgRgb::getPrivData() const
-{
-    return (const char *)&m_data;
-}
-
 uint8_t InterMsgRgb::getRed() const
 {
     return m_data.red;
