@@ -1,8 +1,18 @@
-#ifndef __INTER_MSG_EXAMPLE_HPP__
-#define __INTER_MSG_EXAMPLE_HPP__
+/**
+ * @file interMsgExample.hpp
+ * @brief Example inter-message structure for communication
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
+#ifndef __INTERMSGEXAMPLE_HPP__
+#define __INTERMSGEXAMPLE_HPP__
 
 #include "network/interCom/interMsg/interMsg.hpp"
 
+/**
+ * @brief Example inter-message structure for communication
+ */
 class InterMsgExample : public InterMsg
 {
     private:
@@ -39,4 +49,4 @@ class InterMsgExample : public InterMsg
     std::string toString() const override;
 };
 
-#endif // __INTER_MSG_EXAMPLE_HPP__
+#endif // __INTERMSGEXAMPLE_HPP__
