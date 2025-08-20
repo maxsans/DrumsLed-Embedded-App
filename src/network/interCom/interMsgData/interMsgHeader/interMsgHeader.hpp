@@ -1,8 +1,18 @@
+/**
+ * @file interMsgHeader.hpp
+ * @brief Header structure for inter-communication messages
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __INTER_MSG_HEADER_HPP__
 #define __INTER_MSG_HEADER_HPP__
 
 #include "network/interCom/interMsgId/interMsgId.hpp"
 
+/**
+ * @brief Header structure for inter-communication messages containing message ID and private data size
+ */
 class InterMsgHeader
 {
     public:

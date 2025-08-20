@@ -1,3 +1,10 @@
+/**
+ * @file impactsManager.hpp
+ * @brief Manager for microphone cross-impact analysis and correction
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __IMPACTS_MANAGER_HPP__
 #define __IMPACTS_MANAGER_HPP__
 
@@ -6,6 +13,9 @@
 
 #include <vector>
 
+/**
+ * @brief Manages real and artificial impacts between microphones for cross-talk correction
+ */
 class ImpactsManager
 {
     private:
@@ -119,4 +129,4 @@ class ImpactsManager
     uint32_t getMicroCount();
 };
 
-#endif
+#endif // __IMPACTS_MANAGER_HPP__

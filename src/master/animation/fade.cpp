@@ -1,3 +1,9 @@
+/**
+ * @file fade.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "fade.hpp"
 #include "tools/timeTools/timeMs.hpp"
 

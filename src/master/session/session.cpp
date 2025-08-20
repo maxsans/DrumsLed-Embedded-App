@@ -1,3 +1,9 @@
+/**
+ * @file session.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "session.hpp"
 #include "animation/fade.hpp"
 #include "tools/async/async.hpp"

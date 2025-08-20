@@ -1,3 +1,9 @@
+/**
+ * @file animationManager.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "animationManager.hpp"
 
 #include <assert.h>

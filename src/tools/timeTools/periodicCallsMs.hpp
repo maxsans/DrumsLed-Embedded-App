@@ -1,3 +1,10 @@
+/**
+ * @file periodicCallsMs.hpp
+ * @brief Periodic callback system for millisecond-based timed operations
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __PERIODIC_CALLS_MS_HPP__
 #define __PERIODIC_CALLS_MS_HPP__
 
@@ -7,7 +14,7 @@
 #include <vector>
 
 /**
- * @brief Class to call a function periodically.
+ * @brief Periodic callback system for executing functions at regular millisecond intervals
  */
 class periodicCallsMs
 {
@@ -65,4 +72,4 @@ class periodicCallsMs
     bool isEnabled();
 };
 
-#endif
+#endif // __PERIODIC_CALLS_MS_HPP__

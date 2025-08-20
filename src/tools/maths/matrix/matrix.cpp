@@ -1,3 +1,9 @@
+/**
+ * @file matrix.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "matrix.hpp"
 #include "tools/logStream/logStream.hpp"
 

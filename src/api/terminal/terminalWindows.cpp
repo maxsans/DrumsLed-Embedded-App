@@ -1,3 +1,9 @@
+/**
+ * @file terminalWindows.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "terminal.hpp"
 #include <chrono>
 #include <conio.h>

@@ -1,3 +1,9 @@
+/**
+ * @file async.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "async.hpp"
 #include <algorithm>
 

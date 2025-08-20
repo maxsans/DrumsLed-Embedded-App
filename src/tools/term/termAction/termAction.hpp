@@ -1,9 +1,19 @@
+/**
+ * @file termAction.hpp
+ * @brief Terminal command action handler
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __TERM_ACTION_HPP__
 #define __TERM_ACTION_HPP__
 
 #include "tools/term/termParameters/termParameters.hpp"
 #include <functional>
 
+/**
+ * @brief Handler for terminal command actions with callback functionality
+ */
 class TermAction
 {
     public:

@@ -1,3 +1,10 @@
+/**
+ * @file term.hpp
+ * @brief Terminal interface for command registration and processing
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __TERM_HPP__
 #define __TERM_HPP__
 
@@ -6,6 +13,9 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Terminal interface manager for command registration and processing
+ */
 class Term
 {
     private:

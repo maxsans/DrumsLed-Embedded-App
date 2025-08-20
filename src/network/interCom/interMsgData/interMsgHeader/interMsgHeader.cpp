@@ -1,3 +1,9 @@
+/**
+ * @file interMsgHeader.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "interMsgHeader.hpp"
 
 #include <cassert>

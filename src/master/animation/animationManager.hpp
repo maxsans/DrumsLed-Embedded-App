@@ -1,3 +1,10 @@
+/**
+ * @file animationManager.hpp
+ * @brief Manager for LED animations lifecycle and execution
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __ANIMATION_MANAGER_HPP__
 #define __ANIMATION_MANAGER_HPP__
 
@@ -6,7 +13,7 @@
 #include <vector>
 
 /**
- * @brief Manages animations.
+ * @brief Manages LED animation objects including creation, execution, and cleanup
  */
 class AnimationManager
 {
@@ -39,4 +46,4 @@ class AnimationManager
     void removeAnimation(Animation *anim);
 };
 
-#endif
+#endif // __ANIMATION_MANAGER_HPP__

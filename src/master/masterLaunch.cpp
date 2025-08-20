@@ -1,3 +1,9 @@
+/**
+ * @file masterLaunch.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "api/udp/udp.hpp"
 #include "launch.hpp"
 #include "micro/learning/learning.hpp"

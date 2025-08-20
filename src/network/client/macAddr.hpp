@@ -1,3 +1,10 @@
+/**
+ * @file macAddr.hpp
+ * @brief MAC address representation and manipulation
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __NETWORK_CLIENT_MACADDR_HPP__
 #define __NETWORK_CLIENT_MACADDR_HPP__
 
@@ -5,6 +12,9 @@
 #include <stdint.h>
 #include <string>
 
+/**
+ * @brief MAC address container with conversion and comparison operations
+ */
 class MacAddr
 {
     private:
@@ -52,4 +62,4 @@ class MacAddr
     bool operator!=(const MacAddr &mac) const;
 };
 
-#endif
+#endif // __NETWORK_CLIENT_MACADDR_HPP__

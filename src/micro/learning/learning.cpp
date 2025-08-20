@@ -1,3 +1,9 @@
+/**
+ * @file learning.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "learning.hpp"
 #include "modules/moduleManager.hpp"
 #include "tools/logStream/logStream.hpp"

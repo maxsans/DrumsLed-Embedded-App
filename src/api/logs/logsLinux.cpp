@@ -1,3 +1,9 @@
+/**
+ * @file logsLinux.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "logs.hpp"
 
 #include <stdarg.h>
