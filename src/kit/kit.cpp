@@ -7,13 +7,12 @@
 #include "network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
 #include "tools/logStream/logStream.hpp"
 
-const timeMs Kit::m_pingTimeoutDuration = 10000;
+const TimeMs Kit::m_pingTimeoutDuration = 10000;
 
 Kit::Kit()
+    : m_timeoutChecker(m_pingTimeoutDuration,
+                       [this]() { this->checkTimeouts(); })
 {
-    // Initialize the timeout checker
-    m_timeoutChecker
-        = new periodicCallsMs(m_pingTimeoutDuration, &Kit::checkTimeouts, this);
     // Register the ping callback
     InterComParser::registerCallback(
         InterMsgId::PingSlaves,
@@ -133,14 +132,6 @@ void Kit::onOtaChunk(const Client &client, InterMsg &msg)
         LogStream::cout << "Failed to update program with OTA chunk."
                         << LogStream::endl;
     }
-}
-
-void Kit::checkTimeouts(void *obj)
-{
-    // Cast the object to Kit
-    Kit *kit = static_cast<Kit *>(obj);
-    // Call the member function to check timeouts
-    kit->checkTimeouts();
 }
 
 void Kit::checkTimeouts()

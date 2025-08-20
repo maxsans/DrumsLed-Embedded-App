@@ -8,35 +8,34 @@
 #ifndef __PERIODIC_CALLS_MS_HPP__
 #define __PERIODIC_CALLS_MS_HPP__
 
-#include "chronoMs.hpp"
+#include "tools/timeTools/chronoMs.hpp"
 
+#include <functional>
 #include <stdbool.h>
 #include <vector>
 
 /**
  * @brief Periodic callback system for executing functions at regular millisecond intervals
  */
-class periodicCallsMs
+class PeriodicCallsMs
 {
     private:
-    chronoMs m_chrono;
-    void (*m_callback)(void *);
-    void *m_object;
+    ChronoMs m_chrono;
+    std::function<void()> m_callback;
     bool m_enable;
-    static std::vector<periodicCallsMs *> m_instances;
+    static std::vector<PeriodicCallsMs *> m_instances;
 
     public:
-    periodicCallsMs();
-    periodicCallsMs(timeMs period,
-                    void (*callback)(void *object),
-                    void *object);
-    ~periodicCallsMs();
+    PeriodicCallsMs();
+    PeriodicCallsMs(TimeMs period, std::function<void()> callback);
+    ~PeriodicCallsMs();
 
     /**
      * @brief Process all the instances.
      * @note This function must be called in the main loop.
      */
     static void processAll();
+
     /**
      * @brief Process all the instances.
      * @note This will be automatically called by the processAll function.
@@ -48,15 +47,15 @@ class periodicCallsMs
      *
      * @param period The period in milliseconds.
      */
-    void setPeriod(timeMs period);
+    void setPeriod(TimeMs period);
+
     /**
-     * @brief Set the Callback objectSet the Callback object.
+     * @brief Set the Callback object.
      *
      * @param callback Callback function.
-     * @param object Pointer on the object.
-     * @note The object can be casted to the desired type in the callback function.
+     * @note Use lambdas or std::bind to capture object context if needed.
      */
-    void setCallback(void (*callback)(void *), void *object);
+    void setCallback(std::function<void()> callback);
 
     /**
      * @brief Enable or disable the periodic call.
@@ -64,6 +63,7 @@ class periodicCallsMs
      * @param enable True to enable, false to disable.
      */
     void enable(bool enable);
+
     /**
      * @brief Check if the periodic call is enabled.
      *

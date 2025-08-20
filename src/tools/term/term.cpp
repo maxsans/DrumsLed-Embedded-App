@@ -6,8 +6,8 @@
 
 #include "term.hpp"
 
-#include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/os/async/async.hpp"
 
 ApiTerminal *Term::m_nativeTerminal;
 std::vector<TermCommand> Term::m_commands;

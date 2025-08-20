@@ -8,19 +8,18 @@
 #include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 #include <cstring>
 
-const timeMs KitSrvcLevelAdcSend::m_sendInterval = timeMs(20);
-const timeMs KitSrvcLevelAdcSend::m_measureInterval = timeMs(0);
-const timeMs KitSrvcLevelAdcSend::m_bufferTime = timeMs(100);
+const TimeMs KitSrvcLevelAdcSend::m_sendInterval = TimeMs(20);
+const TimeMs KitSrvcLevelAdcSend::m_measureInterval = TimeMs(0);
+const TimeMs KitSrvcLevelAdcSend::m_bufferTime = TimeMs(100);
 const uint32_t KitSrvcLevelAdcSend::m_maxBufferSize
     = 1000; // Large buffer for high-frequency measurements
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
-      m_sendPeriodicCall(
-          m_sendInterval, &KitSrvcLevelAdcSend::periodicSendCallback, this),
+      m_sendPeriodicCall(m_sendInterval,
+                         [this]() { this->periodicSendCallback(); }),
       m_measurePeriodicCall(m_measureInterval,
-                            &KitSrvcLevelAdcSend::periodicMeasureCallback,
-                            this),
+                            [this]() { this->periodicMeasureCallback(); }),
       m_currentIndex(0), m_currentSize(0),
       m_circularBuffer(new AdcMeasurement[m_maxBufferSize]), m_bufferSum(0)
 {
@@ -28,7 +27,7 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     for (uint32_t i = 0; i < m_maxBufferSize; i++)
     {
         m_circularBuffer[i].value = 0;
-        m_circularBuffer[i].timestamp = timeMs(0);
+        m_circularBuffer[i].timestamp = TimeMs(0);
     }
 
     // For now the communication isn't established with the master client
@@ -42,7 +41,7 @@ uint32_t KitSrvcLevelAdcSend::getBufferSize()
 
 uint32_t KitSrvcLevelAdcSend::getValidMeasurementCount()
 {
-    timeMs currentTime = timeMs::nowMs();
+    TimeMs currentTime = TimeMs::nowMs();
     uint32_t validCount = 0;
 
     for (uint32_t i = 0; i < m_currentSize; i++)
@@ -58,7 +57,7 @@ uint32_t KitSrvcLevelAdcSend::getValidMeasurementCount()
 
 adc_measure_t KitSrvcLevelAdcSend::getAverageAdcLevel()
 {
-    timeMs currentTime = timeMs::nowMs();
+    TimeMs currentTime = TimeMs::nowMs();
     uint32_t validSum = 0;
     uint32_t validCount = 0;
 
@@ -79,12 +78,6 @@ adc_measure_t KitSrvcLevelAdcSend::getAverageAdcLevel()
     return validSum / validCount;
 }
 
-void KitSrvcLevelAdcSend::periodicSendCallback(void *object)
-{
-    KitSrvcLevelAdcSend *service = static_cast<KitSrvcLevelAdcSend *>(object);
-    service->periodicSendCallback();
-}
-
 void KitSrvcLevelAdcSend::periodicSendCallback()
 {
     adc_measure_t averageLevel = getAverageAdcLevel();
@@ -94,16 +87,10 @@ void KitSrvcLevelAdcSend::periodicSendCallback()
     l_msgAdc.send();
 }
 
-void KitSrvcLevelAdcSend::periodicMeasureCallback(void *object)
-{
-    KitSrvcLevelAdcSend *service = static_cast<KitSrvcLevelAdcSend *>(object);
-    service->periodicMeasureCallback();
-}
-
 void KitSrvcLevelAdcSend::periodicMeasureCallback()
 {
     adc_measure_t level = measureAdcLevel();
-    timeMs currentTime = timeMs::nowMs();
+    TimeMs currentTime = TimeMs::nowMs();
 
     // Add the new measurement with timestamp
     m_circularBuffer[m_currentIndex].value = level;
@@ -146,7 +133,7 @@ void KitSrvcLevelAdcSend::onStop()
     for (uint32_t i = 0; i < m_maxBufferSize; i++)
     {
         m_circularBuffer[i].value = 0;
-        m_circularBuffer[i].timestamp = timeMs(0);
+        m_circularBuffer[i].timestamp = TimeMs(0);
     }
     m_currentIndex = 0;
     m_currentSize = 0;

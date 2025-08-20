@@ -6,7 +6,7 @@
 #include "micro/micro.hpp"
 #include "network/client/client.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "tools/timeTools/periodicCallsMs.hpp"
+#include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 
 /**
  * @brief Class to represent a module.
@@ -17,12 +17,12 @@ class Module
     /**
      * @brief Timeout for the module to be considered disconnected.
      */
-    static const timeMs m_moduleTimeout;
+    static const TimeMs m_moduleTimeout;
 
     /**
      * @brief The RGB send interval.
      */
-    static const timeMs m_rgbSendInterval;
+    static const TimeMs m_rgbSendInterval;
 
     /**
      * @brief The kit config of the module.
@@ -37,7 +37,7 @@ class Module
     /**
      * @brief time of the last sync.
      */
-    timeMs m_lastSyncTime;
+    TimeMs m_lastSyncTime;
 
     /**
      * @brief Micro associated with the module.
@@ -52,8 +52,7 @@ class Module
     /**
      * @brief Periodically send Rgb msg to the kits
      */
-    periodicCallsMs m_aliveRgbPeriodicCall;
-    static void sendRgb(void *object);
+    PeriodicCallsMs m_aliveRgbPeriodicCall;
     void sendRgb();
 
     /**

@@ -7,10 +7,11 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-const timeMs ModuleManager::m_ringInterval = timeMs(500);
+const TimeMs ModuleManager::m_ringInterval = TimeMs(500);
 
 ModuleManager::ModuleManager(bool active)
-    : m_ringPeriodicCalls(m_ringInterval, ringCallback, this)
+    : m_ringPeriodicCalls(m_ringInterval, [this]() { this->ringModules(); }),
+      m_active(active), m_impactsManager()
 {
     enable(active);
 
@@ -148,11 +149,6 @@ Module *ModuleManager::getModule(MacAddr mac)
 uint32_t ModuleManager::getModuleCount()
 {
     return m_modules.size();
-}
-
-void ModuleManager::ringCallback(void *object)
-{
-    ((ModuleManager *)object)->ringModules();
 }
 
 void ModuleManager::ringModules()

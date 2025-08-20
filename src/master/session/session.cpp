@@ -6,8 +6,8 @@
 
 #include "session.hpp"
 #include "animation/fade.hpp"
-#include "tools/async/async.hpp"
 #include "tools/logStream/logStream.hpp"
+#include "tools/os/async/async.hpp"
 #include "tools/term/term.hpp"
 
 Session::Session(bool active)

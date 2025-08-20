@@ -31,7 +31,7 @@ class Learning
      * @brief Time between each measure
      * @note Unit : ms
      */
-    static const timeMs m_timeBetweenMeasures;
+    static const TimeMs m_timeBetweenMeasures;
 
     /**
      * @brief Threshold to consider that a micro has recorded something
@@ -69,7 +69,7 @@ class Learning
      * @brief Periodic call to record all the micros
      * This periodic call is used to record all the micros at a regular interval.
      */
-    periodicCallsMs m_recordPeriodicCall;
+    PeriodicCallsMs m_recordPeriodicCall;
 
     /**
      * @brief Module manager on which the learning is done
@@ -86,13 +86,6 @@ class Learning
      */
     void (*m_learningDoneCallback)(void *object);
     void *m_learningDoneCallbackObject;
-
-    /**
-     * @brief Callback to periodically call recordAllMic()
-     *
-     * @param object learning object (this)
-     */
-    static void recordCallback(void *object);
 
     /**
      * @brief Record all the micros

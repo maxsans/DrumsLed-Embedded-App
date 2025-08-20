@@ -1,43 +1,43 @@
 #include "chronoMs.hpp"
 
-chronoMs::chronoMs()
+ChronoMs::ChronoMs()
 {
     m_armed = false;
 }
 
-void chronoMs::start()
+void ChronoMs::start()
 {
     m_start.setNow();
     m_armed = false;
 }
 
-void chronoMs::setStart(timeMs start)
+void ChronoMs::setStart(TimeMs start)
 {
     m_start = start;
     m_armed = false;
 }
 
-void chronoMs::arm(timeMs duration)
+void ChronoMs::arm(TimeMs duration)
 {
     m_end = m_start + duration;
     m_armed = true;
 }
 
-bool chronoMs::ring()
+bool ChronoMs::ring()
 {
     if (m_armed)
     {
-        return m_end.get() <= timeMs::nowMs();
+        return m_end.get() <= TimeMs::nowMs();
     }
 
     return false;
 }
 
-bool chronoMs::oneTimeRing()
+bool ChronoMs::oneTimeRing()
 {
     if (m_armed)
     {
-        if (m_end.get() <= timeMs::nowMs())
+        if (m_end.get() <= TimeMs::nowMs())
         {
             m_armed = false;
             return true;
@@ -47,24 +47,24 @@ bool chronoMs::oneTimeRing()
     return false;
 }
 
-void chronoMs::restart()
+void ChronoMs::restart()
 {
-    timeMs l_duration = m_end - m_start;
+    TimeMs l_duration = m_end - m_start;
     start();
     arm(l_duration);
 }
 
-timeMs chronoMs::getStart()
+TimeMs ChronoMs::getStart()
 {
     return m_start;
 }
 
-timeMs chronoMs::getEnd()
+TimeMs ChronoMs::getEnd()
 {
     return m_end;
 }
 
-timeMs chronoMs::getElapsedTime()
+TimeMs ChronoMs::getElapsedTime()
 {
-    return timeMs::nowMs() - m_start.get();
+    return TimeMs::nowMs() - m_start.get();
 }

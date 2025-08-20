@@ -9,21 +9,21 @@
  * @brief Represents a time in milliseconds.
  * @brief This class is also used to get the current time in milliseconds (from the start of the program).
  */
-class timeMs
+class TimeMs
 {
     private:
     time_ms_t m_timeMs;
 
     public:
-    timeMs();
-    timeMs(time_ms_t timeMs);
+    TimeMs();
+    TimeMs(time_ms_t TimeMs);
 
     /**
      * @brief Set the time.
      *
-     * @param timeMs The time in milliseconds.
+     * @param TimeMs The time in milliseconds.
      */
-    void set(time_ms_t timeMs);
+    void set(time_ms_t TimeMs);
     /**
      * @brief Set the time to the current time.
      */
@@ -57,19 +57,19 @@ class timeMs
     time_ms_t toMinutes();
 
     /**
-     * @brief Operators for timeMs.
+     * @brief Operators for TimeMs.
      */
-    timeMs operator+(const timeMs &time);
-    timeMs operator-(const timeMs &time);
-    timeMs operator*(const timeMs &time);
-    timeMs operator/(const timeMs &time);
+    TimeMs operator+(const TimeMs &time);
+    TimeMs operator-(const TimeMs &time);
+    TimeMs operator*(const TimeMs &time);
+    TimeMs operator/(const TimeMs &time);
 
-    bool operator==(const timeMs &time);
-    bool operator!=(const timeMs &time);
-    bool operator>(const timeMs &time);
-    bool operator<(const timeMs &time);
-    bool operator>=(const timeMs &time);
-    bool operator<=(const timeMs &time);
+    bool operator==(const TimeMs &time);
+    bool operator!=(const TimeMs &time);
+    bool operator>(const TimeMs &time);
+    bool operator<(const TimeMs &time);
+    bool operator>=(const TimeMs &time);
+    bool operator<=(const TimeMs &time);
 };
 
 #endif
