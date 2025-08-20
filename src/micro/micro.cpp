@@ -1,3 +1,9 @@
+/**
+ * @file micro.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "micro.hpp"
 #include "api/time/time.hpp"
 #include "tools/logStream/logStream.hpp"

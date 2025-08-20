@@ -1,3 +1,9 @@
+/**
+ * @file circleLedsDrumKit.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "api/drivers/ws2812Esp8266/ws2812Esp8266.hpp"
 #include "circleLeds.hpp"
 #include <stdio.h>

@@ -1,10 +1,17 @@
+/**
+ * @file matrix.hpp
+ * @brief Square matrix mathematical operations including inversion
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __MATRIX_HPP__
 #define __MATRIX_HPP__
 
 #include <stdint.h>
 
 /**
- * @brief Generic class to represent a matrix and perform operations on it.
+ * @brief Square matrix class with mathematical operations including Gauss-Jordan inversion
  *
  */
 class matrix
@@ -42,4 +49,4 @@ class matrix
     void invert();
 };
 
-#endif
+#endif // __MATRIX_HPP__

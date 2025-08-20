@@ -1,3 +1,10 @@
+/**
+ * @file recordSlot.hpp
+ * @brief Container for microphone measurement records during learning phase
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __RECORD_SLOT_HPP__
 #define __RECORD_SLOT_HPP__
 
@@ -8,9 +15,7 @@
 #include <vector>
 
 /**
- * @brief A record slot is the result of a learning on a instrument
- * (a list of records so)
- *
+ * @brief Container for storing and processing microphone measurement records for impact analysis
  */
 class RecordSlot
 {
@@ -53,4 +58,4 @@ class RecordSlot
                           uint32_t mainMicroIndex);
 };
 
-#endif
+#endif // __RECORD_SLOT_HPP__

@@ -1,3 +1,10 @@
+/**
+ * @file micro.hpp
+ * @brief Microphone sensor data processing and hit detection
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __MICRO_HPP__
 #define __MICRO_HPP__
 
@@ -6,7 +13,7 @@
 #include <stdint.h>
 
 /**
- * @brief Class to represent a microphone.
+ * @brief Microphone sensor with hit detection, correction factors, and threshold management
  */
 class Micro
 {
@@ -104,4 +111,4 @@ class Micro
     bool isHit();
 };
 
-#endif
+#endif // __MICRO_HPP__

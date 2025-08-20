@@ -1,3 +1,10 @@
+/**
+ * @file session.hpp
+ * @brief Master session manager for drum kit operations and learning
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __SESSION_HPP__
 #define __SESSION_HPP__
 
@@ -5,6 +12,9 @@
 #include "micro/learning/learning.hpp"
 #include "modules/moduleManager.hpp"
 
+/**
+ * @brief Master session controller managing modules, animations, and learning processes
+ */
 class Session
 {
     private:
@@ -65,4 +75,4 @@ class Session
     void stopLearning();
 };
 
-#endif
+#endif // __SESSION_HPP__

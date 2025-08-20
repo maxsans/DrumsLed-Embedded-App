@@ -1,3 +1,10 @@
+/**
+ * @file async.hpp
+ * @brief Asynchronous operation handler for main loop execution
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __ASYNC_HPP__
 #define __ASYNC_HPP__
 
@@ -7,8 +14,7 @@
 #include <vector>
 
 /**
- * @brief Class to handle asynchronous operations
- * @details The registered operations will be called on next main loop iteration.
+ * @brief Class to handle asynchronous operations that will be called on next main loop iteration
  */
 class Async
 {

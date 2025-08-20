@@ -1,3 +1,10 @@
+/**
+ * @file circleLeds.hpp
+ * @brief Hardware abstraction API for circular LED arrays
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __CIRCLE_LEDS_HPP__
 #define __CIRCLE_LEDS_HPP__
 

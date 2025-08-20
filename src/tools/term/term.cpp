@@ -1,3 +1,9 @@
+/**
+ * @file term.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "term.hpp"
 
 #include "tools/async/async.hpp"

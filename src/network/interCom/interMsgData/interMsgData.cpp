@@ -1,3 +1,9 @@
+/**
+ * @file interMsgData.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "interMsgData.hpp"
 
 #include <cassert>

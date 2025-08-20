@@ -1,3 +1,9 @@
+/**
+ * @file recordSlot.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "recordSlot.hpp"
 #include "impactsManager.hpp"
 

@@ -1,9 +1,19 @@
+/**
+ * @file terminal.hpp
+ * @brief Cross-platform terminal API for character input and screen control
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __TERMINAL_HPP__
 #define __TERMINAL_HPP__
 
 #include <atomic>
 #include <thread>
 
+/**
+ * @brief Cross-platform terminal interface with threaded character input handling
+ */
 class ApiTerminal
 {
     public:

@@ -1,3 +1,9 @@
+/**
+ * @file termAction.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "termAction.hpp"
 #include "tools/async/async.hpp"
 

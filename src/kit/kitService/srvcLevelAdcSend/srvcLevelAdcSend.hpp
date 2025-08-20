@@ -1,3 +1,10 @@
+/**
+ * @file srvcLevelAdcSend.hpp
+ * @brief Kit service for ADC level measurement and transmission to master
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __SRVC_LEVEL_ADC_SEND_HPP__
 #define __SRVC_LEVEL_ADC_SEND_HPP__
 
@@ -14,6 +21,9 @@ struct AdcMeasurement
     timeMs timestamp;
 };
 
+/**
+ * @brief Service for measuring ADC levels with circular buffering and sending averaged data to master
+ */
 class KitSrvcLevelAdcSend : public KitService
 {
     private:

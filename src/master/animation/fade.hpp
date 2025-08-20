@@ -1,3 +1,10 @@
+/**
+ * @file fade.hpp
+ * @brief Fade animation effect for RGB LEDs triggered by microphone hits
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __FADE_HPP__
 #define __FADE_HPP__
 
@@ -8,8 +15,7 @@
 #include <stdint.h>
 
 /**
- * @brief Fades the LED to a color.
- * @see animation.h for more information.
+ * @brief Fade animation that triggers on microphone hits and fades LED color over time
  */
 class Fade : public Animation
 {
@@ -45,4 +51,4 @@ class Fade : public Animation
     void stop();
 };
 
-#endif
+#endif // __FADE_HPP__

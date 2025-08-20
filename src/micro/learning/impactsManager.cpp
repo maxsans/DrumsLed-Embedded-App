@@ -1,3 +1,9 @@
+/**
+ * @file impactsManager.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #include "impactsManager.hpp"
 #include "tools/maths/matrix/matrix.hpp"
 

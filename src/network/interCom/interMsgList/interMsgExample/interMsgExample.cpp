@@ -1,5 +1,10 @@
-#include "interMsgExample.hpp"
+/**
+ * @file interMsgExample.cpp
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
 
+#include "interMsgExample.hpp"
 #include "tools/logStream/logStream.hpp"
 
 InterMsgExample::InterMsgExample(Client client, int exampleData)

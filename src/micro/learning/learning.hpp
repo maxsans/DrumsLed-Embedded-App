@@ -1,3 +1,10 @@
+/**
+ * @file learning.hpp
+ * @brief Machine learning system for microphone impact detection and calibration
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __LEARNING_HPP__
 #define __LEARNING_HPP__
 
@@ -8,6 +15,9 @@
 #include <stdint.h>
 #include <vector>
 
+/**
+ * @brief Machine learning system for microphone impact detection and calibration
+ */
 class Learning
 {
     private:

@@ -1,3 +1,10 @@
+/**
+ * @file interMsgData.hpp
+ * @brief Complete message data structure containing header and private data
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __INTER_MSG_DATA_HPP__
 #define __INTER_MSG_DATA_HPP__
 
@@ -6,6 +13,9 @@
 #include "interMsgHeader/interMsgHeader.hpp"
 #include "network/interCom/interMsgId/interMsgId.hpp"
 
+/**
+ * @brief Complete message data structure containing header and private data for inter-communication
+ */
 class InterMsgData
 {
     private:

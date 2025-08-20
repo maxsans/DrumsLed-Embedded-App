@@ -1,14 +1,11 @@
 /**
- * @file logs.h
+ * @file logs.hpp
+ * @brief Low-level logging API for different platforms
  * @author Cyprien Ménard
- * @brief
- * @version 0.1
  * @date 2025-01-12
  *
- * @copyright Copyright (c) 2025
- *
  * @note Don't use directly this file. Please use logStream instead.
- * @see logStream.h
+ * @see logStream.hpp
  */
 #ifndef __LOGS_HPP__
 #define __LOGS_HPP__

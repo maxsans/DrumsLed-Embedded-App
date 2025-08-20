@@ -1,3 +1,10 @@
+/**
+ * @file ipv4.hpp
+ * @brief IPv4 address representation and manipulation
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
 #ifndef __NETWORK_CLIENT_IPV4_HPP__
 #define __NETWORK_CLIENT_IPV4_HPP__
 
@@ -5,6 +12,9 @@
 #include <stdint.h>
 #include <string>
 
+/**
+ * @brief IPv4 address container with conversion and validation operations
+ */
 class Ipv4
 {
     private:
