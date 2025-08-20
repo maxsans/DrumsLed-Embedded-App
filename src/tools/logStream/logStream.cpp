@@ -23,6 +23,30 @@ LogStream &LogStream::operator<<(unsigned int value)
     return *this;
 }
 
+LogStream &LogStream::operator<<(long value)
+{
+    log("%ld", value);
+    return *this;
+}
+
+LogStream &LogStream::operator<<(unsigned long value)
+{
+    log("%lu", value);
+    return *this;
+}
+
+LogStream &LogStream::operator<<(long long value)
+{
+    log("%lld", value);
+    return *this;
+}
+
+LogStream &LogStream::operator<<(unsigned long long value)
+{
+    log("%llu", value);
+    return *this;
+}
+
 LogStream &LogStream::operator<<(float value)
 {
     log("%f", value);
