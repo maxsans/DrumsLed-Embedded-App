@@ -17,11 +17,6 @@ InterMsgAdc::InterMsgAdc(Client client, char *rawData, uint32_t size)
 {
 }
 
-const char *InterMsgAdc::getPrivData() const
-{
-    return reinterpret_cast<const char *>(&m_data);
-}
-
 adc_measure_t InterMsgAdc::getAdcValue() const
 {
     return m_data.m_adcValue;

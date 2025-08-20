@@ -22,12 +22,6 @@ class InterMsgGeneric : public InterMsg
     public:
     InterMsgGeneric(Client client, InterMsgData data, SendType sendType);
     InterMsgGeneric(Client client, char *rawData, uint32_t size);
-
-    /**
-     * @brief Get the raw specific data of the message.
-     * @return Pointer to the private data.
-     */
-    const char *getPrivData() const override;
 };
 
 #endif // __INTER_MSG_GENERIC_HPP__

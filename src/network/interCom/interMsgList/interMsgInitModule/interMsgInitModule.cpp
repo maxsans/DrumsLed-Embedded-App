@@ -19,11 +19,6 @@ InterMsgInitModule::InterMsgInitModule(Client client,
 {
 }
 
-const char *InterMsgInitModule::getPrivData() const
-{
-    return reinterpret_cast<const char *>(&m_data);
-}
-
 KitConfig InterMsgInitModule::getKitConfig() const
 {
     return m_data.m_kitConfig;

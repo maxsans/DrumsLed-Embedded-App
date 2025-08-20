@@ -47,11 +47,6 @@ class InterMsg
 
     protected:
     /**
-     * @brief Get the raw specific data of the message.
-     */
-    virtual const char *getPrivData() const = 0;
-
-    /**
      * @brief Constructor for InterMsg.
      * @note This constructor is protected to ensure that only derived classes can instantiate it.
      */
