@@ -17,7 +17,7 @@ void launch()
 
     wifi_set_sta(WIFI_SSID, WIFI_PASSWORD);
     wifi_init();
-    Kit::init();
+    Kit l_kit;
     LogStream::cout << "Slaves started" << LogStream::endl;
 
     // Initialize the interComParser

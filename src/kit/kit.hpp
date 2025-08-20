@@ -11,7 +11,6 @@
 
 /**
  * @brief How the slave kits see themselves.
- * @note There is only one way to see oneself, so this class is static.
  */
 class Kit
 {
@@ -20,34 +19,36 @@ class Kit
      * @brief The client for communication with the slave kit.
      * @note This client is used to communicate with the master kit.
      */
-    static Client m_masterClient;
+    Client m_masterClient;
 
     /**
      * @brief The list of services for the slave kit.
      * @note This list contains all the services that the slave kit can provide.
      */
-    static std::vector<KitService *> m_services;
+    std::vector<KitService *> m_services;
 
     /**
      * @brief The timeout for the ping to the master kit.
      * @note This is used to check if the master kit is still connected.
      */
-    static chronoMs m_pingTimeout;
+    chronoMs m_pingTimeout;
     static const timeMs m_pingTimeoutDuration;
 
     /**
      * @brief A periodic call to check if the master kit is still connected.
      * @note This is used to ensure that the slave kit can communicate with the master kit.
      */
-    static periodicCallsMs *m_timeoutChecker;
-    static void checkTimeouts(void *);
+    periodicCallsMs *m_timeoutChecker;
+    static void checkTimeouts(void *obj);
+    void checkTimeouts();
+
     /**
      * @brief Check if the master kit is connected and valid.
      * @return True if the master kit is valid, false otherwise.
      * @note This function checks if the master kit is connected and valid.
      *       It is used to ensure that the slave kit can communicate with the master kit.
      */
-    static bool isMasterValid();
+    bool isMasterValid();
 
     /**
      * @brief Callback on master kit ping.
@@ -56,25 +57,25 @@ class Kit
      * @note This callback is called when a ping message is received from the master kit.
      *       It is used to respond to the ping and update the master client.
      */
-    static void onPing(const Client &client, InterMsg &msg);
+    void onPing(const Client &client, InterMsg &msg);
 
     public:
     /**
-     * @brief Initialize the kit slave.
+     * @brief Create a kit.
      */
-    static void init();
+    Kit();
 
     /**
      * @brief Get the kit configuration of the current slave target.
      * @return The kit configuration of the current slave target.
      */
-    static KitConfig getKitConfig();
+    KitConfig getKitConfig();
 
     /**
      * @brief Get the master client for communication with the master kit.
      * @return The master client for communication with the master kit.
      */
-    static Client getMasterClient();
+    Client getMasterClient();
 };
 
 #endif // __KIT_HPP__
