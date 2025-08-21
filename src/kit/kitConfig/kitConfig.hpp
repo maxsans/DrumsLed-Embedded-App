@@ -5,6 +5,7 @@
 #include "kitServiceType/kitServiceType.hpp"
 #include "kitType/kitType.hpp"
 
+#include <cstring>
 #include <string>
 
 /**
@@ -15,6 +16,11 @@
 class KitConfig
 {
     private:
+    /**
+     * @brief Maximum length for the program path string.
+     */
+    static constexpr size_t MAX_PROGRAM_PATH_LENGTH = 256;
+
     /**
      * @brief The type of the kit, represented by KitType.
      */
@@ -39,8 +45,9 @@ class KitConfig
     /**
      * @brief The path to the program file.
      * @note This is used to locate the program binary on the filesystem.
+     *       Using fixed-size array to avoid dynamic allocation.
      */
-    std::string m_programPath;
+    char m_programPath[MAX_PROGRAM_PATH_LENGTH];
 
     public:
     /**
@@ -78,7 +85,7 @@ class KitConfig
      * @brief Set the path to the program file.
      * @param path The path to the program file.
      */
-    void setProgramPath(const std::string &path);
+    void setProgramPath(const char *path);
 
     /**
      * @brief Get the type of the kit.
@@ -110,7 +117,7 @@ class KitConfig
      * @brief Get the path to the program file.
      * @return The path to the program file.
      */
-    const std::string &getProgramPath() const;
+    const char *getProgramPath() const;
 
     /**
      * @brief Get a string representation of the kit configuration.

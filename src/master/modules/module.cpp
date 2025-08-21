@@ -68,7 +68,7 @@ bool Module::tryUpdate()
     LogStream::cout << "Starting OTA update" << LogStream::endl;
 
     // get the binary program from the path available in the kit config
-    const char *pathPrefix = "slave-bin/";
+    std::string pathPrefix = "slave-bin/";
     std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
     File programFile(programPath);
     if (!programFile.open(programPath, FileMode::READ))

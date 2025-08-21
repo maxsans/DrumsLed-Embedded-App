@@ -1,4 +1,5 @@
 #include "kitConfig.hpp"
+#include <cstring>
 
 KitConfig::KitConfig(KitType::Type type) : m_type(type)
 {
@@ -16,6 +17,9 @@ KitConfig::KitConfig(KitType::Type type) : m_type(type)
 
     // Initialize program CRC32
     m_programCrc32 = 0;
+
+    // Initialize program path
+    m_programPath[0] = '\0';
 }
 
 void KitConfig::setType(KitType::Type type)
@@ -38,9 +42,17 @@ void KitConfig::setProgramCrc32(uint32_t crc32)
     m_programCrc32 = crc32;
 }
 
-void KitConfig::setProgramPath(const std::string &path)
+void KitConfig::setProgramPath(const char *path)
 {
-    m_programPath = path;
+    if (path != nullptr)
+    {
+        strncpy(m_programPath, path, MAX_PROGRAM_PATH_LENGTH - 1);
+        m_programPath[MAX_PROGRAM_PATH_LENGTH - 1] = '\0';
+    }
+    else
+    {
+        m_programPath[0] = '\0';
+    }
 }
 
 void KitConfig::setService(KitServiceType serviceType)
@@ -81,7 +93,7 @@ uint32_t KitConfig::getProgramCrc32() const
     return m_programCrc32;
 }
 
-const std::string &KitConfig::getProgramPath() const
+const char *KitConfig::getProgramPath() const
 {
     return m_programPath;
 }
