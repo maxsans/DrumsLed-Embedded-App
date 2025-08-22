@@ -26,21 +26,15 @@ class InterMsgOtaSendChunk : public InterMsg
     static constexpr const SendType m_sendType = SendType::UnicastWithControl;
 
     /**
-     * @brief Private Data of the msg
+     * @brief Chunk data
      */
-    struct Data
-    {
-        /**
-         * @brief Chunk data
-         */
-        char m_chunkData[m_chunkMaxSize];
+    char m_chunkData[m_chunkMaxSize];
 
-        /**
-         * @brief Size of the chunk
-         * @note Must be less than or equal to m_chunkMaxSize
-         */
-        uint32_t m_chunkSize;
-    } m_data;
+    /**
+     * @brief Size of the chunk
+     * @note Must be less than or equal to m_chunkMaxSize
+     */
+    uint32_t m_chunkSize;
 
     public:
     /**

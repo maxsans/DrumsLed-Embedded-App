@@ -57,6 +57,26 @@ class KitConfig
     KitConfig(KitType::Type type = KitType::Type::None);
 
     /**
+     * @brief Constructor to create a KitConfig from serialized data.
+     * @param rawData The serialized data to create the KitConfig from.
+     * @note The rawData must be at least getSerializedSize() bytes long.
+     */
+    KitConfig(const char *rawData);
+
+    /**
+     * @brief Get the serialized size of the kit configuration.
+     * @return The serialized size in bytes.
+     */
+    uint32_t getSerializedSize() const;
+
+    /**
+     * @brief Serialize the kit configuration to a byte array.
+     * @param buffer The buffer to serialize to.
+     * @note The buffer must be at least getSerializedSize() bytes long.
+     */
+    void serialize(char *buffer) const;
+
+    /**
      * @brief Set the kit type.
      * @param type The type of the kit to set.
      */

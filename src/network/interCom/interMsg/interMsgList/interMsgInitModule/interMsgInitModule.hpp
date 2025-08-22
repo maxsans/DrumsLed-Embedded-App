@@ -10,13 +10,10 @@ class InterMsgInitModule : public InterMsg
     static constexpr const SendType m_sendType
         = SendType::UnicastWithoutControl;
 
-    struct Data
-    {
-        /**
-         * @brief Kit configuration for the module.
-         */
-        KitConfig m_kitConfig;
-    } m_data;
+    /**
+     * @brief Kit configuration for the module.
+     */
+    KitConfig m_kitConfig;
 
     public:
     /**
