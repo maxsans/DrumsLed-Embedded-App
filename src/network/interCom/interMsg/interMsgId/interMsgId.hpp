@@ -67,6 +67,11 @@ class InterMsgId
      */
     RawType rawValue() const;
 
+    /**
+     * @return true if the value is valid
+     */
+    bool isValid() const;
+
     bool operator==(const InterMsgId &other) const;
     bool operator!=(const InterMsgId &other) const;
     bool operator<(const InterMsgId &other) const;

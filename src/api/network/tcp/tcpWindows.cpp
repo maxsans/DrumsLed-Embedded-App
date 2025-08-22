@@ -1,10 +1,10 @@
 #include "tcp.hpp"
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <iostream>
 #include <iphlpapi.h>
 #include <thread>
 #include <vector>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
@@ -69,7 +69,7 @@ void tcp_server_worker()
 
         // Handle client in separate thread
         std::thread([client_socket, client_addr]() {
-            char buffer[2048];
+            char buffer[1024];
             int bytes_received;
             char client_ip[INET_ADDRSTRLEN];
             char client_mac[18];

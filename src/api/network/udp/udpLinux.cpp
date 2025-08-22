@@ -116,7 +116,7 @@ static void get_local_ips(std::vector<std::string> &ips)
 
 static void *udp_recv_loop(void *arg)
 {
-    char buf[2048];
+    char buf[1024];
     struct sockaddr_in src_addr;
     socklen_t addrlen = sizeof(src_addr);
 

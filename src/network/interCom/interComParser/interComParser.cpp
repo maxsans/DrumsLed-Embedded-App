@@ -22,9 +22,18 @@ InterComParser::InterComParser()
                     const char *mac) {
         std::string ipCopy(ip);
         std::string macCopy(mac);
-        Async::registerAsync([this, data, len, ipCopy, port, macCopy]() {
+        char dataCopy[1024];
+        if (len > sizeof(dataCopy) - 1)
+        {
+            LogStream::cout
+                << "Warning: Data length exceeds buffer size, truncating."
+                << LogStream::endl;
+            len = sizeof(dataCopy) - 1;
+        }
+        std::memcpy(dataCopy, data, len);
+        Async::registerAsync([this, dataCopy, len, ipCopy, port, macCopy]() {
             this->processIncomingData(
-                data, len, ipCopy.c_str(), port, macCopy.c_str());
+                dataCopy, len, ipCopy.c_str(), port, macCopy.c_str());
         });
     });
     tcp_init([this](const char *data,
@@ -34,9 +43,18 @@ InterComParser::InterComParser()
                     const char *mac) {
         std::string ipCopy(ip);
         std::string macCopy(mac);
-        Async::registerAsync([this, data, len, ipCopy, port, macCopy]() {
+        char dataCopy[1024];
+        if (len > sizeof(dataCopy) - 1)
+        {
+            LogStream::cout
+                << "Warning: Data length exceeds buffer size, truncating."
+                << LogStream::endl;
+            len = sizeof(dataCopy) - 1;
+        }
+        std::memcpy(dataCopy, data, len);
+        Async::registerAsync([this, dataCopy, len, ipCopy, port, macCopy]() {
             this->processIncomingData(
-                data, len, ipCopy.c_str(), port, macCopy.c_str());
+                dataCopy, len, ipCopy.c_str(), port, macCopy.c_str());
         });
     });
 }
@@ -87,7 +105,9 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
                                              uint32_t incompletMsgIndex)
 {
     if (incompleteMsg == nullptr)
+    {
         return;
+    }
 
     const char *buffer = incompleteMsg->getData();
     uint32_t totalSize = incompleteMsg->getSize();
@@ -107,6 +127,18 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
         // Get the msg ID from the current position in the buffer
         InterMsgId l_msgId(network_ntohl(*reinterpret_cast<const uint32_t *>(
             buffer + processedBytes + InterMsg::m_idOffset)));
+
+        // Validate the msg ID
+        if (!l_msgId.isValid())
+        {
+            LogStream::cout << "Invalid message ID from "
+                            << incompleteMsg->getClient().getIP().getIpString()
+                            << " (" << "message ID: " << l_msgId.rawValue()
+                            << ")" << LogStream::endl;
+            // Remove the corrupted message buffer
+            m_incompletMsgs.erase(m_incompletMsgs.begin() + incompletMsgIndex);
+            return;
+        }
 
         // Get the size of private data
         uint32_t l_privDataSize
@@ -170,6 +202,10 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
 
         // Update the incomplete message with the remaining data
         incompleteMsg->replaceData(buffer + processedBytes, remainingSize);
+    }
+    else
+    {
+        LogStream::cout << "mmh" << LogStream::endl;
     }
 }
 

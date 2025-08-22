@@ -18,6 +18,11 @@ InterMsgId::MsgId InterMsgId::value() const
     return m_id;
 }
 
+bool InterMsgId::isValid() const
+{
+    return m_id > None && m_id < Last;
+}
+
 bool InterMsgId::operator==(const InterMsgId &other) const
 {
     return m_id == other.m_id;

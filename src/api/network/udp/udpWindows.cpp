@@ -1,10 +1,10 @@
 #include "udp.hpp"
-#include <winsock2.h>
-#include <ws2tcpip.h>
 #include <atomic>
 #include <cstdio>
 #include <iphlpapi.h>
 #include <thread>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
