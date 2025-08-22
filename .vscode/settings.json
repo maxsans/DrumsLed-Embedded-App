@@ -16,20 +16,5 @@
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.tabCompletion": "on",
     "files.defaultLanguage": "cpp",
-    "google-translate.firstLanguage": "fr",
-    "files.associations": {
-        "string": "cpp",
-        "*.json": "jsonc"
-    },
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "**/tools/msg_generator/**/*.json"
-            ],
-            "url": "./tools/msg_generator/schema/msg_config_schema.json"
-        }
-    ],
-    "python.defaultInterpreterPath": "/usr/bin/python3",
-    "cmake.buildDirectory": "${workspaceFolder}/build",
-    "cmake.generator": "Ninja"
+    "google-translate.firstLanguage": "fr"
 }
