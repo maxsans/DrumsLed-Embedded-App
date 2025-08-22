@@ -76,6 +76,14 @@ class InterComParser
      */
     void processMessage(const char *data, uint32_t len, const Client &client);
 
+    /**
+     * @brief Process all complete messages from a buffer, handling concatenated messages.
+     * @param incompleteMsg Pointer to the incomplete message buffer.
+     * @param incompletMsgIndex Index of the incomplete message in the vector.
+     */
+    void processCompleteMessages(IncompletMsg *incompleteMsg,
+                                 uint32_t incompletMsgIndex);
+
     public:
     InterComParser();
 

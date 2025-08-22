@@ -59,3 +59,12 @@ bool IncompletMsg::isComplete() const
     // Check if the buffer size is at least the expected size
     return expectedSize == m_buffer.size();
 }
+
+void IncompletMsg::replaceData(const char *data, size_t len)
+{
+    m_buffer.clear();
+    if (data != nullptr && len > 0)
+    {
+        m_buffer.insert(m_buffer.end(), data, data + len);
+    }
+}

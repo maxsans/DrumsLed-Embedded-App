@@ -2,6 +2,7 @@
 #include "api/tcp/tcp.hpp"
 #include "api/udp/udp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
+#include "network/interCom/interMsgData/interMsgHeader/interMsgHeader.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/os/async/async.hpp"
 
@@ -83,15 +84,100 @@ void InterComParser::processIncomingData(const char *data,
         incompletMsgIndex = m_incompletMsgs.size() - 1;
     }
 
-    // If the incomplete message is complete, process it
-    if (l_incompleteMsg->isComplete())
+    // Process all complete messages that might be concatenated
+    this->processCompleteMessages(l_incompleteMsg, incompletMsgIndex);
+}
+
+void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
+                                             uint32_t incompletMsgIndex)
+{
+    if (incompleteMsg == nullptr)
+        return;
+
+    const char *buffer = incompleteMsg->getData();
+    uint32_t totalSize = incompleteMsg->getSize();
+    uint32_t processedBytes = 0;
+    uint32_t messagesProcessed = 0;
+
+    // Process all concatenated messages in the buffer
+    while (processedBytes < totalSize)
     {
-        // Process the complete message
-        this->processMessage(l_incompleteMsg->getData(),
-                             l_incompleteMsg->getSize(),
-                             l_incompleteMsg->getClient());
-        // Remove the incomplete message from the vector
+        // Check if we have enough data for at least a header
+        if (totalSize - processedBytes < InterMsgHeader::getHeaderSize())
+        {
+            // Not enough data for a complete header, break and wait for more data
+            LogStream::cout << "Incomplete header from "
+                            << incompleteMsg->getClient().getIP().getIpString()
+                            << " (" << (totalSize - processedBytes)
+                            << " bytes remaining)" << LogStream::endl;
+            break;
+        }
+
+        // Create a header from the current position in the buffer
+        InterMsgHeader header(buffer + processedBytes);
+        uint32_t expectedMsgSize
+            = InterMsgHeader::getHeaderSize() + header.getPrivSize();
+
+        // Validate message size to prevent buffer overflows
+        if (expectedMsgSize > MAX_MESSAGE_SIZE)
+        {
+            LogStream::cout << "Message size too large from "
+                            << incompleteMsg->getClient().getIP().getIpString()
+                            << " (" << expectedMsgSize
+                            << " bytes, max allowed: " << MAX_MESSAGE_SIZE
+                            << ")" << LogStream::endl;
+            // Remove the corrupted message buffer
+            m_incompletMsgs.erase(m_incompletMsgs.begin() + incompletMsgIndex);
+            return;
+        }
+
+        // Check if we have enough data for the complete message
+        if (totalSize - processedBytes < expectedMsgSize)
+        {
+            // Not enough data for the complete message, break and wait for more data
+            LogStream::cout << "Incomplete message from "
+                            << incompleteMsg->getClient().getIP().getIpString()
+                            << " (" << (totalSize - processedBytes)
+                            << " bytes available, " << expectedMsgSize
+                            << " bytes needed)" << LogStream::endl;
+            break;
+        }
+
+        // We have a complete message, process it
+        this->processMessage(buffer + processedBytes,
+                             expectedMsgSize,
+                             incompleteMsg->getClient());
+        processedBytes += expectedMsgSize;
+        messagesProcessed++;
+    }
+
+    // Log if we processed multiple concatenated messages
+    if (messagesProcessed > 1)
+    {
+        LogStream::cout << "Processed " << messagesProcessed
+                        << " concatenated messages from "
+                        << incompleteMsg->getClient().getIP().getIpString()
+                        << LogStream::endl;
+    }
+
+    // If we processed all data, remove the incomplete message
+    if (processedBytes >= totalSize)
+    {
         m_incompletMsgs.erase(m_incompletMsgs.begin() + incompletMsgIndex);
+    }
+    else if (processedBytes > 0)
+    {
+        // If we processed some data but not all, we need to keep the remaining data
+        // This handles the case where the last message in a concatenated buffer is incomplete
+        uint32_t remainingSize = totalSize - processedBytes;
+
+        // Update the incomplete message with the remaining data
+        incompleteMsg->replaceData(buffer + processedBytes, remainingSize);
+
+        LogStream::cout << "Kept " << remainingSize
+                        << " bytes of incomplete data from "
+                        << incompleteMsg->getClient().getIP().getIpString()
+                        << LogStream::endl;
     }
 }
 
