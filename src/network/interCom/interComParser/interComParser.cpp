@@ -135,11 +135,6 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
         if (totalSize - processedBytes < expectedMsgSize)
         {
             // Not enough data for the complete message, break and wait for more data
-            LogStream::cout << "Incomplete message from "
-                            << incompleteMsg->getClient().getIP().getIpString()
-                            << " (" << (totalSize - processedBytes)
-                            << " bytes available, " << expectedMsgSize
-                            << " bytes needed)" << LogStream::endl;
             break;
         }
 
@@ -175,11 +170,6 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
 
         // Update the incomplete message with the remaining data
         incompleteMsg->replaceData(buffer + processedBytes, remainingSize);
-
-        LogStream::cout << "Kept " << remainingSize
-                        << " bytes of incomplete data from "
-                        << incompleteMsg->getClient().getIP().getIpString()
-                        << LogStream::endl;
     }
 }
 
