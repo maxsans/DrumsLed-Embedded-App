@@ -1,7 +1,7 @@
 #include "moduleManager.hpp"
-#include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
-#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgAdc/interMsgAdc.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
@@ -19,19 +19,14 @@ ModuleManager::ModuleManager(bool active)
     m_modules.clear();
 
     // Register the callback to push back the module when a new module is detected
-    InterComParser::registerCallback(
-        InterMsgId::InitModule,
-        [this](const Client &client, InterMsg &msg, void *object) {
+    InterComParser::registerDeserializer(
+        new InterMsgInitModule([this](const Client &client, InterMsg &msg) {
             this->onNewModule(client, msg);
-        });
+        }));
 
     // Register the callback to handle ADC messages
-    InterComParser::registerCallback(
-        InterMsgId::Adc,
-        [this](const Client &client, InterMsg &msg, void *object) {
-            this->onAdcMsg(msg);
-            return;
-        });
+    InterComParser::registerDeserializer(new InterMsgAdc(
+        [this](const Client &client, InterMsg &msg) { this->onAdcMsg(msg); }));
 }
 
 void ModuleManager::enable(bool e)

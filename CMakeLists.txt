@@ -45,17 +45,14 @@ add_sources(
     network/interCom/interComParser/interComParser.cpp
     network/interCom/interComParser/incompletMsg/incompletMsg.cpp
     network/interCom/interMsg/interMsg.cpp
-    network/interCom/interMsgData/interMsgHeader/interMsgHeader.cpp
-    network/interCom/interMsgData/interMsgData.cpp
-    network/interCom/interMsgId/interMsgId.cpp
-    network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.cpp
-    network/interCom/interMsgList/interMsgExample/interMsgExample.cpp
-    network/interCom/interMsgList/interMsgAdc/interMsgAdc.cpp
-    network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.cpp
-    network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.cpp
-    network/interCom/interMsgList/interMsgRgb/interMsgRgb.cpp
-    network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.cpp
-    network/interCom/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.cpp
+    network/interCom/interMsg/interMsgId/interMsgId.cpp
+    network/interCom/interMsg/interMsgList/interMsgExample/interMsgExample.cpp
+    network/interCom/interMsg/interMsgList/interMsgAdc/interMsgAdc.cpp
+    network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.cpp
+    network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.cpp
+    network/interCom/interMsg/interMsgList/interMsgRgb/interMsgRgb.cpp
+    network/interCom/interMsg/interMsgList/interMsgOtaStart/interMsgOtaStart.cpp
+    network/interCom/interMsg/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.cpp
 
     led/rgbColor.cpp
 )

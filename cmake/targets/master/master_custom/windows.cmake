@@ -4,9 +4,10 @@ set(TARGET ${TARGET}.exe)
 
 add_sources(
     api/logs/logsWindows.cpp
-    api/udp/udpWindows.cpp
+    api/network/udp/udpWindows.cpp
+    api/network/tcp/tcpWindows.cpp
+    api/network/networkConversion/networkConversionWindows.cpp
     api/time/timeWindows.cpp
-    api/tcp/tcpWindows.cpp
     api/terminal/terminalWindows.cpp
     api/mutex/mutexWindows.cpp
     api/file/fileWindows.cpp

@@ -1,18 +1,13 @@
 #include "interComParser.hpp"
-#include "api/tcp/tcp.hpp"
-#include "api/udp/udp.hpp"
+#include "api/network/networkConversion/networkConversion.hpp"
+#include "api/network/tcp/tcp.hpp"
+#include "api/network/udp/udp.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
-#include "network/interCom/interMsgData/interMsgHeader/interMsgHeader.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/os/async/async.hpp"
 
-#include "network/interCom/interMsgList/interMsgGeneric/interMsgGeneric.hpp"
-
-std::map<InterMsgId, InterComParser::CallbackInfo> InterComParser::m_callbacks
-    = {};
-std::map<std::pair<Client, InterMsgId>, InterComParser::CallbackInfo>
-    InterComParser::m_clientCallbacks = {};
-std::vector<IncompletMsg> InterComParser::m_incompletMsgs = {};
+std::map<InterMsgId, InterMsg *> InterComParser::m_callbacks;
+std::vector<IncompletMsg> InterComParser::m_incompletMsgs;
 
 InterComParser::InterComParser()
 {
@@ -103,33 +98,38 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
     while (processedBytes < totalSize)
     {
         // Check if we have enough data for at least a header
-        if (totalSize - processedBytes < InterMsgHeader::getHeaderSize())
+        if (totalSize - processedBytes < InterMsg::m_privDataOffset)
         {
             // Not enough data for a complete header, break and wait for more data
-            LogStream::cout << "Incomplete header from "
-                            << incompleteMsg->getClient().getIP().getIpString()
-                            << " (" << (totalSize - processedBytes)
-                            << " bytes remaining)" << LogStream::endl;
             break;
         }
 
-        // Create a header from the current position in the buffer
-        InterMsgHeader header(buffer + processedBytes);
-        uint32_t expectedMsgSize
-            = InterMsgHeader::getHeaderSize() + header.getPrivSize();
+        // Get the msg ID from the current position in the buffer
+        InterMsgId l_msgId(network_ntohl(*reinterpret_cast<const uint32_t *>(
+            buffer + processedBytes + InterMsg::m_idOffset)));
+
+        // Get the size of private data
+        uint32_t l_privDataSize
+            = network_ntohl(*reinterpret_cast<const uint32_t *>(
+                buffer + processedBytes + InterMsg::m_lenOffset));
 
         // Validate message size to prevent buffer overflows
-        if (expectedMsgSize > MAX_MESSAGE_SIZE)
+        if (l_privDataSize > InterMsg::m_maxPrivDataSize)
         {
-            LogStream::cout << "Message size too large from "
-                            << incompleteMsg->getClient().getIP().getIpString()
-                            << " (" << expectedMsgSize
-                            << " bytes, max allowed: " << MAX_MESSAGE_SIZE
-                            << ")" << LogStream::endl;
+            LogStream::cout
+                << "Invalid message size from "
+                << incompleteMsg->getClient().getIP().getIpString() << " ("
+                << "message ID: " << l_msgId.rawValue()
+                << ", size: " << l_privDataSize
+                << " bytes, max allowed: " << InterMsg::m_maxPrivDataSize << ")"
+                << LogStream::endl;
             // Remove the corrupted message buffer
             m_incompletMsgs.erase(m_incompletMsgs.begin() + incompletMsgIndex);
             return;
         }
+
+        // Calculate the expected message size
+        uint32_t expectedMsgSize = InterMsg::m_privDataOffset + l_privDataSize;
 
         // Check if we have enough data for the complete message
         if (totalSize - processedBytes < expectedMsgSize)
@@ -144,9 +144,11 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
         }
 
         // We have a complete message, process it
-        this->processMessage(buffer + processedBytes,
-                             expectedMsgSize,
-                             incompleteMsg->getClient());
+        this->processMessage(incompleteMsg->getClient(),
+                             l_msgId,
+                             buffer + processedBytes
+                                 + InterMsg::m_privDataOffset,
+                             l_privDataSize);
         processedBytes += expectedMsgSize;
         messagesProcessed++;
     }
@@ -181,84 +183,33 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
     }
 }
 
-void InterComParser::processMessage(const char *data,
-                                    uint32_t len,
-                                    const Client &client)
+void InterComParser::processMessage(const Client &client,
+                                    InterMsgId msgId,
+                                    const char *privData,
+                                    uint32_t privDataSize)
 {
-    // Create an generic InterMsg from the received data
-    InterMsgGeneric l_msgGeneric(client, const_cast<char *>(data), len);
-    // Get the message ID
-    InterMsgId l_msgId = l_msgGeneric.getId();
-
-    // Check for client-specific callbacks first
-    auto clientCallbackKey = std::make_pair(client, l_msgId);
-    auto clientIt = m_clientCallbacks.find(clientCallbackKey);
-    if (clientIt != m_clientCallbacks.end())
+    // Find the registered msg instances with the incoming ID
+    InterMsg *registeredMsg = m_callbacks[msgId];
+    if (registeredMsg == nullptr)
     {
-        // If client-specific callback is found, call it
-        InterMsg &l_msg = l_msgGeneric;
-        clientIt->second.callback(
-            l_msg.getClient(), l_msg, clientIt->second.object);
+        LogStream::cout << "Warning: No registered message found for ID "
+                        << msgId.rawValue() << LogStream::endl;
         return;
     }
 
-    // Find the general callbacks of the message ID
-    auto it = m_callbacks.find(l_msgId);
-    if (it != m_callbacks.end())
+    // Call the method to call on msg reception
+    registeredMsg->onReception(client, privData);
+}
+
+void InterComParser::registerDeserializer(InterMsg *msg)
+{
+    if (msg == nullptr)
     {
-        // If callbacks are found, call them with the message
-        InterMsg &l_msg = l_msgGeneric;
-        it->second.callback(l_msg.getClient(), l_msg, it->second.object);
+        LogStream::cout << "Warning: Null message cannot be registered"
+                        << LogStream::endl;
+        return;
     }
-    //else
-    //{
-    //    // If no callbacks are found, log a warning
-    //    LogStream::cout << "No callback registered for message ID: "
-    //                    << l_msgId.rawValue() << LogStream::endl;
-    //}
-}
-
-void InterComParser::registerCallback(InterMsgId msgId,
-                                      MessageReceivedCallback callback)
-{
-    // Register the callback for the specified message ID
-    m_callbacks[msgId] = CallbackInfo(callback);
-}
-
-void InterComParser::registerCallback(InterMsgId msgId,
-                                      MessageReceivedCallback callback,
-                                      void *object)
-{
-    // Register the callback for the specified message ID with object pointer
-    m_callbacks[msgId] = CallbackInfo(callback, object);
-}
-
-void InterComParser::registerCallback(const Client &client,
-                                      InterMsgId msgId,
-                                      MessageReceivedCallback callback)
-{
-    // Register the callback for the specified client and message ID
-    auto key = std::make_pair(client, msgId);
-    m_clientCallbacks[key] = CallbackInfo(callback);
-}
-
-void InterComParser::registerCallback(const Client &client,
-                                      InterMsgId msgId,
-                                      MessageReceivedCallback callback,
-                                      void *object)
-{
-    // Register the callback for the specified client and message ID with object pointer
-    auto key = std::make_pair(client, msgId);
-    m_clientCallbacks[key] = CallbackInfo(callback, object);
-}
-
-void InterComParser::registerCallback(InterMsgId msgId,
-                                      void (*callback)(const Client &,
-                                                       InterMsg &))
-{
-    // Wrap the static callback into a std::function with void* ignored
-    m_callbacks[msgId]
-        = CallbackInfo([callback](const Client &client, InterMsg &msg, void *) {
-              callback(client, msg);
-          });
+    // Get the Id of the message
+    InterMsgId msgId = msg->getId();
+    m_callbacks[msgId] = msg;
 }

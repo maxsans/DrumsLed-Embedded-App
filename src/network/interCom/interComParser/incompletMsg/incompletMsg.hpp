@@ -62,12 +62,6 @@ class IncompletMsg
     void appendData(const char *data, size_t len);
 
     /**
-     * @brief Check if the message is complete.
-     * @return True if the message is complete, false otherwise.
-     */
-    bool isComplete() const;
-
-    /**
      * @brief Replace the buffer data with new data.
      * @param data Pointer to the new data buffer.
      * @param len Length of the new data buffer.

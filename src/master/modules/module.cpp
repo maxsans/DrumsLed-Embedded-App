@@ -1,9 +1,9 @@
 #include "module.hpp"
 #include "api/file/file.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
-#include "network/interCom/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
-#include "network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
-#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/timeTools/timeMs.hpp"
 

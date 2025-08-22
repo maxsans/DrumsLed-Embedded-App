@@ -2,9 +2,10 @@
 
 #include "api/program/program.hpp"
 #include "kit/kitConfigGenerator/kitConfigGenerator.hpp"
-#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "network/interCom/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
-#include "network/interCom/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "tools/logStream/logStream.hpp"
 
 const TimeMs Kit::m_pingTimeoutDuration = 10000;
@@ -14,23 +15,20 @@ Kit::Kit()
                        [this]() { this->checkTimeouts(); })
 {
     // Register the ping callback
-    InterComParser::registerCallback(
-        InterMsgId::PingSlaves,
-        [this](const Client &client, InterMsg &msg, void *object) {
+    InterComParser::registerDeserializer(
+        new InterMsgPingSlaves([this](const Client &client, InterMsg &msg) {
             this->onPing(client, msg);
-        });
+        }));
     // Register the OTA start callback
-    InterComParser::registerCallback(
-        InterMsgId::OtaStart,
-        [this](const Client &client, InterMsg &msg, void *object) {
+    InterComParser::registerDeserializer(
+        new InterMsgOtaStart([this](const Client &client, InterMsg &msg) {
             this->onOtaStart(client, msg);
-        });
+        }));
     // Register the OTA chunk callback
-    InterComParser::registerCallback(
-        InterMsgId::OtaSendChunk,
-        [this](const Client &client, InterMsg &msg, void *object) {
+    InterComParser::registerDeserializer(
+        new InterMsgOtaSendChunk([this](const Client &client, InterMsg &msg) {
             this->onOtaChunk(client, msg);
-        });
+        }));
     // Log the initialization
     LogStream::cout << "Kit initialized. Waiting for master client..."
                     << LogStream::endl;

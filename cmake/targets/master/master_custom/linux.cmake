@@ -1,8 +1,9 @@
 
 add_sources(
     api/logs/logsLinux.cpp
-    api/udp/udpLinux.cpp
-    api/tcp/tcpLinux.cpp
+    api/network/udp/udpLinux.cpp
+    api/network/tcp/tcpLinux.cpp
+    api/network/networkConversion/networkConversionLinux.cpp
     api/time/timeLinux.cpp
     api/terminal/terminalLinux.cpp
     api/mutex/mutexLinux.cpp
