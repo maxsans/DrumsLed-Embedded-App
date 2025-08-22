@@ -50,7 +50,11 @@
             "options": {
                 "shell": {
                     "executable": "powershell.exe",
-                    "args": ["-ExecutionPolicy", "Bypass", "-File"]
+                    "args": [
+                        "-ExecutionPolicy",
+                        "Bypass",
+                        "-File"
+                    ]
                 }
             },
             "group": {
@@ -93,6 +97,111 @@
             },
             "problemMatcher": [],
             "detail": "Launch serial monitor with manual port selection"
+        },
+        {
+            "type": "shell",
+            "label": "msg-generate",
+            "command": "python3",
+            "args": [
+                "tools/msg_generator/msg_generator.py",
+                "${input:msgConfigFile}",
+                "--output-dir",
+                "src/network/interCom/interMsg/interMsgList"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate InterMsg class from JSON configuration"
+        },
+        {
+            "type": "shell",
+            "label": "msg-generate-custom",
+            "command": "make",
+            "args": [
+                "generate",
+                "CONFIG=${input:msgConfigPath}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/tools/msg_generator"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate InterMsg class from custom configuration file"
+        },
+        {
+            "type": "shell",
+            "label": "msg-clean",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/tools/msg_generator"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Clean generated message files"
+        },
+        {
+            "type": "shell",
+            "label": "msg-validate-config",
+            "command": "python3",
+            "args": [
+                "-c",
+                "import json; json.load(open('${input:msgConfigFile}'))"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Validate JSON configuration file syntax"
+        },
+        {
+            "type": "shell",
+            "label": "msg-generate-example",
+            "command": "make",
+            "args": [
+                "example"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/tools/msg_generator"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate InterMsgExample class using predefined configuration"
+        },
+        {
+            "type": "shell",
+            "label": "msg-generate-and-build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "msg-generate-example",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate InterMsgExample and build the project"
         }
     ],
     "inputs": [
@@ -100,6 +209,18 @@
             "id": "serialPort",
             "description": "Serial port for ESP device",
             "default": "/dev/ttyUSB0",
+            "type": "promptString"
+        },
+        {
+            "id": "msgConfigFile",
+            "description": "Message configuration JSON file",
+            "default": "tools/msg_generator/examples/interMsgExample.json",
+            "type": "promptString"
+        },
+        {
+            "id": "msgConfigPath",
+            "description": "Path to message configuration file",
+            "default": "examples/interMsgExample.json",
             "type": "promptString"
         }
     ]

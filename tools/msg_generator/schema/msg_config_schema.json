@@ -1,0 +1,98 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "InterMsg Configuration Schema",
+    "description": "Schema for InterMsg class generation configuration",
+    "type": "object",
+    "required": [
+        "class_name",
+        "filename",
+        "description",
+        "msg_id",
+        "send_type",
+        "fields"
+    ],
+    "properties": {
+        "class_name": {
+            "type": "string",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$",
+            "description": "Name of the generated class (PascalCase)"
+        },
+        "filename": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$",
+            "description": "Base filename for generated files (camelCase)"
+        },
+        "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Description of the message class"
+        },
+        "msg_id": {
+            "type": "string",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$",
+            "description": "Message ID enum value"
+        },
+        "send_type": {
+            "type": "string",
+            "enum": [
+                "UnicastWithControl",
+                "UnicastWithoutControl",
+                "Broadcast"
+            ],
+            "description": "Type of message sending"
+        },
+        "fields": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "type"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-zA-Z0-9]*$",
+                        "description": "Field name (camelCase)"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "uint8_t",
+                            "uint16_t",
+                            "uint32_t",
+                            "int8_t",
+                            "int16_t",
+                            "int32_t",
+                            "float",
+                            "char[]"
+                        ],
+                        "description": "C++ data type"
+                    },
+                    "size": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Size for array types (required for char[])"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Field description for documentation"
+                    }
+                },
+                "if": {
+                    "properties": {
+                        "type": {
+                            "const": "char[]"
+                        }
+                    }
+                },
+                "then": {
+                    "required": [
+                        "size"
+                    ]
+                }
+            }
+        }
+    }
+}
