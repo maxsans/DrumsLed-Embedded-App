@@ -195,7 +195,7 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = network_htonl(INADDR_BROADCAST);
+    addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     sendto(sock, data, len, 0, (struct sockaddr *)&addr, sizeof(addr));
     close(sock);
 }
