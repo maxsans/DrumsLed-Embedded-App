@@ -45,10 +45,13 @@ void Module::sendRgb()
 bool Module::isUpdateNeeded() const
 {
     // Get the binary program from the path available in the kit config
-    std::string programPath = m_kitConfig.getProgramPath();
+    std::string pathPrefix = "slave-bin/";
+    std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
     File programFile(programPath);
     if (!programFile.exists(programPath))
     {
+        LogStream::cout << "Program file does not exist: " << programPath
+                        << LogStream::endl;
         return false; // Program file does not exist
     }
     programFile.open(programPath, FileMode::READ);
@@ -61,11 +64,17 @@ bool Module::tryUpdate()
 {
     if (!isUpdateNeeded())
     {
-        LogStream::cout << "No update needed" << LogStream::endl;
+        LogStream::cout << "No update needed. Program CRC32: "
+                        << m_kitConfig.getProgramCrc32() << ", Current CRC32: "
+                        << File(m_kitConfig.getProgramPath()).crc32()
+                        << LogStream::endl;
         return false; // No update needed
     }
 
-    LogStream::cout << "Starting OTA update" << LogStream::endl;
+    LogStream::cout << "Starting OTA update. Program CRC32: "
+                    << m_kitConfig.getProgramCrc32() << ", Current CRC32: "
+                    << File(m_kitConfig.getProgramPath()).crc32()
+                    << LogStream::endl;
 
     // get the binary program from the path available in the kit config
     std::string pathPrefix = "slave-bin/";
