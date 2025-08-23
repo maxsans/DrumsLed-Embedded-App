@@ -87,7 +87,9 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
             LogStream::cout << "Module added: " << client.getIP().getIpString()
                             << LogStream::endl;
             // Try to update the module
-            m_modules.back()->tryUpdate();
+            // Don't work as expected --> disabled for now
+            // TODO : Fix that
+            // m_modules.back()->tryUpdate();
         }
     }
     else
