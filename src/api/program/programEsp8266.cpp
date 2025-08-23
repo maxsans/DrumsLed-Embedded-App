@@ -4,6 +4,7 @@
  * @date 2025-08-18
  */
 
+#include "../../tools/containers/binary/crc32.hpp"
 #include "esp_log.h"
 #include "esp_ota_ops.h"
 #include "esp_partition.h"
@@ -18,7 +19,6 @@
 #include <sys/time.h>
 
 static const char *TAG = "Program";
-static const char *PROGRAM_FILE_PATH = "/spiffs/program.bin";
 static const char *NVS_NAMESPACE = "ota_protection";
 static const char *BOOT_COUNT_KEY = "boot_count";
 static const char *LAST_BOOT_TIME_KEY = "last_boot";
@@ -30,54 +30,61 @@ static bool s_ota_in_progress = false;
 size_t Program::m_totalSize = 0;
 size_t Program::m_currentSize = 0;
 
-void Program::getProgramBinary(Binary *binary)
+uint32_t Program::getProgramCrc32()
 {
-    if (!binary)
+    const esp_partition_t *running_partition = esp_ota_get_running_partition();
+    if (!running_partition)
     {
-        ESP_LOGE(TAG, "Binary pointer is null");
-        return;
-    }
-
-    FILE *file = fopen(PROGRAM_FILE_PATH, "rb");
-    if (!file)
-    {
-        ESP_LOGE(TAG, "Failed to open program file for reading");
-        return;
-    }
-
-    // Get file size
-    fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    if (file_size <= 0)
-    {
-        ESP_LOGE(TAG, "Invalid file size: %ld", file_size);
-        fclose(file);
-        return;
-    }
-
-    // Allocate memory for binary data
-    binary->alloc(file_size);
-
-    // Read file content
-    size_t bytes_read = fread(binary->data(), 1, file_size, file);
-    fclose(file);
-
-    if (bytes_read != file_size)
-    {
-        ESP_LOGE(TAG,
-                 "Failed to read complete file. Expected: %ld, Read: %d",
-                 file_size,
-                 bytes_read);
-        // Clear the binary by creating a new empty one
-        *binary = Binary();
-        return;
+        ESP_LOGE(TAG, "Failed to get running partition");
+        return 0;
     }
 
     ESP_LOGI(TAG,
-             "Program binary loaded successfully, size: %d bytes",
-             binary->size());
+             "Calculating CRC32 for running partition (size: %d bytes)",
+             running_partition->size);
+
+    uint32_t crc = 0xFFFFFFFF;      // Initial CRC value
+    const size_t chunk_size = 1024; // Read in 1KB chunks to manage memory
+    uint8_t *buffer = (uint8_t *)malloc(chunk_size);
+
+    if (!buffer)
+    {
+        ESP_LOGE(TAG, "Failed to allocate memory for CRC calculation");
+        return 0;
+    }
+
+    size_t bytes_remaining = running_partition->size;
+    size_t offset = 0;
+
+    while (bytes_remaining > 0)
+    {
+        size_t bytes_to_read
+            = (bytes_remaining < chunk_size) ? bytes_remaining : chunk_size;
+
+        esp_err_t err = esp_partition_read(
+            running_partition, offset, buffer, bytes_to_read);
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG,
+                     "Failed to read partition at offset %d: %s",
+                     offset,
+                     esp_err_to_name(err));
+            free(buffer);
+            return 0;
+        }
+
+        crc = CRC32::update(crc, buffer, bytes_to_read);
+
+        offset += bytes_to_read;
+        bytes_remaining -= bytes_to_read;
+    }
+
+    free(buffer);
+
+    uint32_t final_crc = CRC32::finalize(crc);
+    ESP_LOGI(TAG, "Program CRC32: 0x%08X", final_crc);
+
+    return final_crc;
 }
 
 bool Program::beginProgramUpdate(size_t total_size)

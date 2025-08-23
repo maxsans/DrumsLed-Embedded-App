@@ -28,10 +28,9 @@ class Program
 
     public:
     /**
-     * @brief Get the binary of the program.
-     * @param [out] binary Binary object to fill with the program data.
+     * @brief Get the crc32 of the program currently in memory.
      */
-    static void getProgramBinary(Binary *binary);
+    static uint32_t getProgramCrc32();
 
     /**
      * @brief Begin program update process.
