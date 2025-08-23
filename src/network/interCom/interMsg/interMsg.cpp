@@ -31,6 +31,16 @@ void InterMsg::send()
     // Note : serializePriv() put the data in network byte order
     char *l_privData = l_data + m_privDataOffset;
     uint32_t l_privSize = serializePriv(l_privData);
+
+    // Prevent buffer overflow
+    if (l_privSize > m_maxPrivDataSize)
+    {
+        // Optionally log or handle the error
+        assert(false
+               && "serializePriv returned size larger than m_maxPrivDataSize");
+        return;
+    }
+
     // Add the msg len
     char *l_lenData = l_data + m_lenOffset;
     *reinterpret_cast<uint32_t *>(l_lenData) = network_htonl(l_privSize);
@@ -61,10 +71,10 @@ void InterMsg::send()
     }
 }
 
-uint32_t InterMsg::onReception(const Client &client, const char *privData)
+uint32_t InterMsg::onReception(const Client &client, const char *msg)
 {
     // Deserialize the message data
-    const char *l_privData = privData + m_privDataOffset;
+    const char *l_privData = msg + m_privDataOffset;
     int32_t l_deserializeResult = deserializePriv(l_privData);
 
     if (l_deserializeResult < 0)

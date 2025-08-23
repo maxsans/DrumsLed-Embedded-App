@@ -140,11 +140,8 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
         }
 
         // We have a complete message, process it
-        this->processMessage(incompleteMsg->getClient(),
-                             l_msgId,
-                             buffer + processedBytes
-                                 + InterMsg::m_privDataOffset,
-                             l_privDataSize);
+        this->processMessage(
+            incompleteMsg->getClient(), l_msgId, buffer + processedBytes);
         processedBytes += expectedMsgSize;
         messagesProcessed++;
     }
@@ -180,8 +177,7 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
 
 void InterComParser::processMessage(const Client &client,
                                     InterMsgId msgId,
-                                    const char *privData,
-                                    uint32_t privDataSize)
+                                    const char *data)
 {
     // Find the registered msg instances with the incoming ID
     InterMsg *registeredMsg = m_callbacks[msgId];
@@ -193,7 +189,7 @@ void InterComParser::processMessage(const Client &client,
     }
 
     // Call the method to call on msg reception
-    registeredMsg->onReception(client, privData);
+    registeredMsg->onReception(client, data);
 }
 
 void InterComParser::registerDeserializer(InterMsg *msg)

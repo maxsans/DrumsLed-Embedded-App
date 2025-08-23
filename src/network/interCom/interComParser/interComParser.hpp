@@ -41,11 +41,13 @@ class InterComParser
 
     /**
      * @brief Process a single incoming message.
+     * @param client The client that sent the message.
+     * @param msgId The ID of the message.
+     * @param data The received message including all headers and private data.
      */
     void processMessage(const Client &client,
                         InterMsgId msgId,
-                        const char *privData,
-                        uint32_t privDataSize);
+                        const char *data);
 
     /**
      * @brief Process all complete messages from a buffer, handling concatenated messages.
