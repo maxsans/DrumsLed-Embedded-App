@@ -1,30 +1,19 @@
 #ifndef __TCP_HPP__
 #define __TCP_HPP__
 
-#include <functional>
+#include "network/interCom/interComParser/incompletMsg/incompletMsg.hpp"
 #include <stdint.h>
+#include <vector>
 
 #define TCP_DEFAULT_PORT 8888
 
 /**
- * @brief Callback to call when a tcp packet is received
- * @warning The packet can be fragmented or contain multiple messages.
- */
-using tcp_recv_callback_t = std::function<void(const char *data,
-                                               int16_t len,
-                                               const char *ip,
-                                               int16_t port,
-                                               const char *mac)>;
-
-/**
  * @brief Function to initialize the TCP connection
- * @param tcp_recv_callback Callback to call when a tcp packet is received
  */
-void tcp_init(tcp_recv_callback_t tcp_recv_callback);
+void tcp_init();
 
 /**
  * @brief Function to send data over TCP
- *
  * @param data Data to be sent
  * @param len Length of the data
  * @param ip IP address of the receiver
@@ -33,15 +22,19 @@ void tcp_init(tcp_recv_callback_t tcp_recv_callback);
 void tcp_send(const char *data, int16_t len, const char *ip, int16_t port);
 
 /**
+ * @brief Function to receive data over TCP
+ * @return Vector of incomplete messages
+ */
+std::vector<IncompletMsg> tcp_recv();
+
+/**
  * @brief Function to get the IP address of the host
- *
  * @param ip Buffer to store the IP address
  */
 void tcp_get_host_ip(char *ip);
 
 /**
  * @brief Function to get the MAC address of the host
- *
  * @param mac Buffer to store the MAC address
  */
 void tcp_get_host_mac(char *mac);

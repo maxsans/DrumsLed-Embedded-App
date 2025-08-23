@@ -21,7 +21,16 @@
 #include <vector>
 
 static pthread_t udp_recv_thread;
-static udp_recv_callback_t udp_recv_callback = nullptr;
+
+/**
+ * @brief Vector to store incomplete UDP messages
+ */
+static std::vector<IncompletMsg> udp_incomplet_msgs;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages vector
+ */
+static pthread_mutex_t udp_incomplet_msgs_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int udp_sock = -1;
 
@@ -131,7 +140,7 @@ static void *udp_recv_loop(void *arg)
                          0,
                          (struct sockaddr *)&src_addr,
                          &addrlen);
-        if (n > 0 && udp_recv_callback)
+        if (n > 0)
         {
             char ip[64] = {0};
             char mac[32] = {0};
@@ -151,16 +160,20 @@ static void *udp_recv_loop(void *arg)
                 continue;
             }
             get_mac_from_ip(ip, mac);
-            udp_recv_callback(buf, n, ip, ntohs(src_addr.sin_port), mac);
+            // Create a new incomplete message and add it to the vector
+            Ipv4 l_ip(ip);
+            MacAddr l_mac(mac);
+            Client l_client(l_ip, l_mac);
+            pthread_mutex_lock(&udp_incomplet_msgs_mutex);
+            udp_incomplet_msgs.push_back(IncompletMsg(l_client, buf, n));
+            pthread_mutex_unlock(&udp_incomplet_msgs_mutex);
         }
     }
     return nullptr;
 }
 
-void udp_init(udp_recv_callback_t callback)
+void udp_init()
 {
-    udp_recv_callback = callback;
-
     udp_sock = socket(AF_INET, SOCK_DGRAM, 0);
     int opt = 1;
     setsockopt(udp_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
@@ -198,6 +211,18 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
     addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
     sendto(sock, data, len, 0, (struct sockaddr *)&addr, sizeof(addr));
     close(sock);
+}
+
+std::vector<IncompletMsg> udp_recv()
+{
+    pthread_mutex_lock(&udp_incomplet_msgs_mutex);
+    std::vector<IncompletMsg> incompletMsgs;
+    incompletMsgs.insert(incompletMsgs.end(),
+                         udp_incomplet_msgs.begin(),
+                         udp_incomplet_msgs.end());
+    udp_incomplet_msgs.clear();
+    pthread_mutex_unlock(&udp_incomplet_msgs_mutex);
+    return incompletMsgs;
 }
 
 void udp_get_host_ip(char *ip)

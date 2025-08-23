@@ -3,6 +3,7 @@
 
 #include "incompletMsg/incompletMsg.hpp"
 #include "network/interCom/interMsg/interMsg.hpp"
+#include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 #include <functional>
 #include <map>
 #include <vector>
@@ -21,19 +22,22 @@ class InterComParser
     static std::vector<IncompletMsg> m_incompletMsgs;
 
     /**
-     * @brief Process incoming data from UDP or TCP.
-     * @param data Pointer to the received data.
-     * @param len Length of the received data.
-     * @param ip IP address of the sender.
-     * @param port Port number of the sender.
-     * @param mac MAC address of the sender.
-     * @note This method is called when new data is received from UDP or TCP.
+     * @brief Periodic task to check incomplete messages.
      */
-    void processIncomingData(const char *data,
-                             int16_t len,
-                             const char *ip,
-                             int16_t port,
-                             const char *mac);
+    PeriodicCallsMs m_periodicTask;
+    void periodicTask();
+
+    /**
+     * @brief Process incoming data from UDP or TCP.
+     * @param incompletMsgs Pointer to a vector of incomplete messages.
+     */
+    void processIncomingData(std::vector<IncompletMsg> *incompletMsgs);
+
+    /**
+     * @brief Process a single incomplete message.
+     * @param incompleteMsg Pointer to the incomplete message.
+     */
+    void processIncompleteMessage(IncompletMsg *incompleteMsg);
 
     /**
      * @brief Process a single incoming message.

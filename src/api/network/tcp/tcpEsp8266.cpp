@@ -3,21 +3,48 @@
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
+#include "freertos/semphr.h"
 #include "freertos/task.h"
 #include "lwip/netdb.h"
 #include "lwip/sockets.h"
 #include "tcp.hpp"
 #include "tcpip_adapter.h"
+#include <vector>
 
 #define TAG "TCP_ESP8266"
 #define MAX_CLIENTS 5
 #define BUFFER_SIZE 1024
 #define WIFI_CONNECTED_BIT BIT0
+#define MAX_TCP_MESSAGES 10
 
-static tcp_recv_callback_t tcp_recv_callback = nullptr;
+/**
+ * @brief Simple message buffer structure to avoid alignment issues
+ */
+typedef struct
+{
+    char client_ip[16];
+    char mac_addr[18];
+    char data[1024];
+    int data_len;
+    bool valid;
+} __attribute__((packed)) tcp_message_buffer_t;
+
+/**
+ * @brief Circular buffer for TCP messages
+ */
+static tcp_message_buffer_t tcp_msg_buffer[MAX_TCP_MESSAGES];
+static int tcp_buffer_write_idx = 0;
+static int tcp_buffer_read_idx = 0;
+static int tcp_buffer_count = 0;
+
 static EventGroupHandle_t wifi_event_group;
 static int server_socket = -1;
 static TaskHandle_t tcp_server_task_handle = nullptr;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages buffer
+ */
+static SemaphoreHandle_t tcp_incomplet_msgs_mutex = nullptr;
 
 static void tcp_server_task(void *pvParameters)
 {
@@ -101,14 +128,30 @@ static void tcp_server_task(void *pvParameters)
 
             buffer[bytes_received] = '\0';
 
-            // Call the callback if set
-            if (tcp_recv_callback)
+            // Dummy MAC address for ESP8266
+            static const char dummy_mac[] = "00:00:00:00:00:00";
+
+            // Store in circular buffer instead of vector
+            if (xSemaphoreTake(tcp_incomplet_msgs_mutex, portMAX_DELAY)
+                == pdTRUE)
             {
-                int16_t port = ntohs(client_addr.sin_port);
-                // The mac address is used in esp8266 modules
-                static const char *dummy_mac = "00:00:00:00:00:00";
-                tcp_recv_callback(
-                    buffer, bytes_received, client_ip, port, dummy_mac);
+                if (tcp_buffer_count < MAX_TCP_MESSAGES)
+                {
+                    tcp_message_buffer_t *msg
+                        = &tcp_msg_buffer[tcp_buffer_write_idx];
+                    strncpy(
+                        msg->client_ip, client_ip, sizeof(msg->client_ip) - 1);
+                    msg->client_ip[sizeof(msg->client_ip) - 1] = '\0';
+                    strcpy(msg->mac_addr, dummy_mac);
+                    memcpy(msg->data, buffer, bytes_received);
+                    msg->data_len = bytes_received;
+                    msg->valid = true;
+
+                    tcp_buffer_write_idx
+                        = (tcp_buffer_write_idx + 1) % MAX_TCP_MESSAGES;
+                    tcp_buffer_count++;
+                }
+                xSemaphoreGive(tcp_incomplet_msgs_mutex);
             }
         }
 
@@ -139,9 +182,10 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
     return ESP_OK;
 }
 
-void tcp_init(tcp_recv_callback_t recv_callback)
+void tcp_init()
 {
-    tcp_recv_callback = recv_callback;
+    // Create mutex for protecting incomplete messages vector
+    tcp_incomplet_msgs_mutex = xSemaphoreCreateMutex();
 
     // Initialize WiFi event group
     wifi_event_group = xEventGroupCreate();
@@ -154,6 +198,40 @@ void tcp_init(tcp_recv_callback_t recv_callback)
         tcp_server_task, "tcp_server", 4096, NULL, 5, &tcp_server_task_handle);
 
     ESP_LOGI(TAG, "TCP module initialized");
+}
+
+std::vector<IncompletMsg> tcp_recv()
+{
+    std::vector<IncompletMsg> incompletMsgs;
+
+    if (xSemaphoreTake(tcp_incomplet_msgs_mutex, portMAX_DELAY) == pdTRUE)
+    {
+        // Convert buffer messages to IncompletMsg objects
+        while (tcp_buffer_count > 0)
+        {
+            tcp_message_buffer_t *msg = &tcp_msg_buffer[tcp_buffer_read_idx];
+            if (msg->valid)
+            {
+                // Create objects carefully to avoid alignment issues
+                Ipv4 l_ip(msg->client_ip);
+                MacAddr l_mac(msg->mac_addr);
+                Client l_client(l_ip, l_mac);
+
+                // Copy data_len to avoid packed field reference issue
+                int data_len_copy = msg->data_len;
+                incompletMsgs.emplace_back(l_client, msg->data, data_len_copy);
+
+                msg->valid = false;
+            }
+
+            tcp_buffer_read_idx = (tcp_buffer_read_idx + 1) % MAX_TCP_MESSAGES;
+            tcp_buffer_count--;
+        }
+
+        xSemaphoreGive(tcp_incomplet_msgs_mutex);
+    }
+
+    return incompletMsgs;
 }
 
 void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
