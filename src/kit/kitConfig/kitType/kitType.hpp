@@ -31,6 +31,12 @@ class KitType
     KitType(Type type = Type::None);
 
     /**
+     * @brief Get the type of the kit.
+     * @return The type of the kit.
+     */
+    Type getType() const;
+
+    /**
      * @brief Convert KitType::Type to string representation.
      * @return The string representation of the type.
      */
