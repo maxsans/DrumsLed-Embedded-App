@@ -1,16 +1,44 @@
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "freertos/task.h"
 #include "lwip/netdb.h"
 #include "lwip/sockets.h"
 #include "string.h"
 #include "udp.hpp"
+#include <vector>
 
-static udp_recv_callback_t udp_recv_callback;
+#define MAX_UDP_MESSAGES 10
+
+/**
+ * @brief Simple message buffer structure to avoid alignment issues
+ */
+typedef struct
+{
+    char client_ip[16];
+    char mac_addr[18];
+    char data[1024];
+    int data_len;
+    bool valid;
+} __attribute__((packed)) udp_message_buffer_t;
+
+/**
+ * @brief Circular buffer for UDP messages
+ */
+static udp_message_buffer_t udp_msg_buffer[MAX_UDP_MESSAGES];
+static int udp_buffer_write_idx = 0;
+static int udp_buffer_read_idx = 0;
+static int udp_buffer_count = 0;
+
 static int udp_socket = -1;
 static bool udp_task_running = false;
 static bool udp_socket_initialized = false;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages vector
+ */
+static SemaphoreHandle_t udp_incomplet_msgs_mutex = nullptr;
 
 static void udp_recv_task(void *pvParameters)
 {
@@ -94,15 +122,30 @@ static void udp_recv_task(void *pvParameters)
             char client_ip[16];
             inet_ntoa_r(client_addr.sin_addr, client_ip, sizeof(client_ip));
 
-            if (udp_recv_callback)
+            // Dummy MAC address for ESP8266
+            static const char dummy_mac[] = "00:00:00:00:00:00";
+
+            // Store in circular buffer instead of vector
+            if (xSemaphoreTake(udp_incomplet_msgs_mutex, portMAX_DELAY)
+                == pdTRUE)
             {
-                // Dummy MAC address, not used on ESP8266
-                static const char dummy_mac[18] = "00:00:00:00:00:00";
-                udp_recv_callback(buffer,
-                                  len,
-                                  client_ip,
-                                  ntohs(client_addr.sin_port),
-                                  dummy_mac);
+                if (udp_buffer_count < MAX_UDP_MESSAGES)
+                {
+                    udp_message_buffer_t *msg
+                        = &udp_msg_buffer[udp_buffer_write_idx];
+                    strncpy(
+                        msg->client_ip, client_ip, sizeof(msg->client_ip) - 1);
+                    msg->client_ip[sizeof(msg->client_ip) - 1] = '\0';
+                    strcpy(msg->mac_addr, dummy_mac);
+                    memcpy(msg->data, buffer, len);
+                    msg->data_len = len;
+                    msg->valid = true;
+
+                    udp_buffer_write_idx
+                        = (udp_buffer_write_idx + 1) % MAX_UDP_MESSAGES;
+                    udp_buffer_count++;
+                }
+                xSemaphoreGive(udp_incomplet_msgs_mutex);
             }
         }
         vTaskDelay(10 / portTICK_PERIOD_MS);
@@ -110,9 +153,10 @@ static void udp_recv_task(void *pvParameters)
     vTaskDelete(NULL);
 }
 
-void udp_init(udp_recv_callback_t callback)
+void udp_init()
 {
-    udp_recv_callback = callback;
+    // Create mutex for protecting incomplete messages vector
+    udp_incomplet_msgs_mutex = xSemaphoreCreateMutex();
 
     // Start receive task that will wait for WiFi and then initialize
     udp_task_running = true;
@@ -162,6 +206,40 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
            0,
            (struct sockaddr *)&broadcast_addr,
            sizeof(broadcast_addr));
+}
+
+std::vector<IncompletMsg> udp_recv()
+{
+    std::vector<IncompletMsg> incompletMsgs;
+
+    if (xSemaphoreTake(udp_incomplet_msgs_mutex, portMAX_DELAY) == pdTRUE)
+    {
+        // Convert buffer messages to IncompletMsg objects
+        while (udp_buffer_count > 0)
+        {
+            udp_message_buffer_t *msg = &udp_msg_buffer[udp_buffer_read_idx];
+            if (msg->valid)
+            {
+                // Create objects carefully to avoid alignment issues
+                Ipv4 l_ip(msg->client_ip);
+                MacAddr l_mac(msg->mac_addr);
+                Client l_client(l_ip, l_mac);
+
+                // Copy data_len to avoid packed field reference issue
+                int data_len_copy = msg->data_len;
+                incompletMsgs.emplace_back(l_client, msg->data, data_len_copy);
+
+                msg->valid = false;
+            }
+
+            udp_buffer_read_idx = (udp_buffer_read_idx + 1) % MAX_UDP_MESSAGES;
+            udp_buffer_count--;
+        }
+
+        xSemaphoreGive(udp_incomplet_msgs_mutex);
+    }
+
+    return incompletMsgs;
 }
 
 void udp_get_host_ip(char *ip)

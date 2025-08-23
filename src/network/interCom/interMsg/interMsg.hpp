@@ -139,11 +139,11 @@ class InterMsg
     /**
      * @brief Handle the reception of a message.
      * @param client The client that sent the message.
-     * @param data Pointer to the received private data.
+     * @param msg The received message including all headers and private data.
      * @return The size used by the message in the buffer.
      * @return 0 if the message is incomplete.
      */
-    uint32_t onReception(const Client &client, const char *privData);
+    uint32_t onReception(const Client &client, const char *msg);
 
     /**
      * @brief Get the client associated with the message.

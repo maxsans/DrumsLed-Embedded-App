@@ -10,79 +10,48 @@ std::map<InterMsgId, InterMsg *> InterComParser::m_callbacks;
 std::vector<IncompletMsg> InterComParser::m_incompletMsgs;
 
 InterComParser::InterComParser()
+    : m_periodicTask(10, std::bind(&InterComParser::periodicTask, this))
 {
     // Initialize the TCP and UDP connections
-    // Call the processIncomingData method with the received data
-    // Asynchronously process the message to avoid blocking the UDP task
-    // And memory access issues
-    udp_init([this](const char *data,
-                    int16_t len,
-                    const char *ip,
-                    int16_t port,
-                    const char *mac) {
-        std::string ipCopy(ip);
-        std::string macCopy(mac);
-        char dataCopy[1024];
-        if (len > sizeof(dataCopy) - 1)
-        {
-            LogStream::cout
-                << "Warning: Data length exceeds buffer size, truncating."
-                << LogStream::endl;
-            len = sizeof(dataCopy) - 1;
-        }
-        std::memcpy(dataCopy, data, len);
-        Async::registerAsync([this, dataCopy, len, ipCopy, port, macCopy]() {
-            this->processIncomingData(
-                dataCopy, len, ipCopy.c_str(), port, macCopy.c_str());
-        });
-    });
-    tcp_init([this](const char *data,
-                    int16_t len,
-                    const char *ip,
-                    int16_t port,
-                    const char *mac) {
-        std::string ipCopy(ip);
-        std::string macCopy(mac);
-        char dataCopy[1024];
-        if (len > sizeof(dataCopy) - 1)
-        {
-            LogStream::cout
-                << "Warning: Data length exceeds buffer size, truncating."
-                << LogStream::endl;
-            len = sizeof(dataCopy) - 1;
-        }
-        std::memcpy(dataCopy, data, len);
-        Async::registerAsync([this, dataCopy, len, ipCopy, port, macCopy]() {
-            this->processIncomingData(
-                dataCopy, len, ipCopy.c_str(), port, macCopy.c_str());
-        });
-    });
+    udp_init();
+    tcp_init();
 }
 
-void InterComParser::processIncomingData(const char *data,
-                                         int16_t len,
-                                         const char *ip,
-                                         int16_t port,
-                                         const char *mac)
+void InterComParser::periodicTask()
 {
-    if (len <= 0 || data == nullptr)
+    // Pull incomplete messages from udp and tcp api
+    std::vector<IncompletMsg> udpMsgs = udp_recv();
+    std::vector<IncompletMsg> tcpMsgs = tcp_recv();
+    // And process them
+    processIncomingData(&udpMsgs);
+    processIncomingData(&tcpMsgs);
+}
+
+void InterComParser::processIncomingData(
+    std::vector<IncompletMsg> *incompletMsgs)
+{
+    if (incompletMsgs == nullptr)
     {
         return;
     }
 
-    Ipv4 l_ip(ip);
-    MacAddr l_mac(mac);
-    Client l_client(l_ip, l_mac);
+    for (auto &msg : *incompletMsgs)
+    {
+        processIncompleteMessage(&msg);
+    }
+}
 
+void InterComParser::processIncompleteMessage(IncompletMsg *incompleteMsg)
+{
     // First, check if an incomplete msg is already buffered from this client
     IncompletMsg *l_incompleteMsg = nullptr;
     uint32_t incompletMsgIndex = 0;
     for (auto &it : m_incompletMsgs)
     {
-        if (it.getClient() == l_client)
+        if (it.getClient() == incompleteMsg->getClient())
         {
             // If an incomplete message is found, append the new data to it
-            it.appendData(data, len);
+            it.appendData(incompleteMsg->getData(), incompleteMsg->getSize());
             l_incompleteMsg = &it;
             incompletMsgIndex = &it - &m_incompletMsgs[0];
             break;
@@ -92,7 +61,7 @@ void InterComParser::processIncomingData(const char *data,
     // Then, create a new IncompletMsg if none was found
     if (l_incompleteMsg == nullptr)
     {
-        m_incompletMsgs.emplace_back(l_client, data, len);
+        m_incompletMsgs.push_back(*incompleteMsg);
         l_incompleteMsg = &m_incompletMsgs.back();
         incompletMsgIndex = m_incompletMsgs.size() - 1;
     }
@@ -171,11 +140,8 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
         }
 
         // We have a complete message, process it
-        this->processMessage(incompleteMsg->getClient(),
-                             l_msgId,
-                             buffer + processedBytes
-                                 + InterMsg::m_privDataOffset,
-                             l_privDataSize);
+        this->processMessage(
+            incompleteMsg->getClient(), l_msgId, buffer + processedBytes);
         processedBytes += expectedMsgSize;
         messagesProcessed++;
     }
@@ -211,8 +177,7 @@ void InterComParser::processCompleteMessages(IncompletMsg *incompleteMsg,
 
 void InterComParser::processMessage(const Client &client,
                                     InterMsgId msgId,
-                                    const char *privData,
-                                    uint32_t privDataSize)
+                                    const char *data)
 {
     // Find the registered msg instances with the incoming ID
     InterMsg *registeredMsg = m_callbacks[msgId];
@@ -224,7 +189,7 @@ void InterComParser::processMessage(const Client &client,
     }
 
     // Call the method to call on msg reception
-    registeredMsg->onReception(client, privData);
+    registeredMsg->onReception(client, data);
 }
 
 void InterComParser::registerDeserializer(InterMsg *msg)

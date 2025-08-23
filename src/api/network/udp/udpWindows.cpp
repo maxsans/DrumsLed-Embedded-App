@@ -3,17 +3,29 @@
 #include <atomic>
 #include <cstdio>
 #include <iphlpapi.h>
+#include <mutex>
+#include <string>
 #include <thread>
+#include <vector>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
 
-static udp_recv_callback_t udp_recv_callback = nullptr;
 static SOCKET udp_socket = INVALID_SOCKET;
 static std::atomic<bool> udp_running(false);
 static std::thread udp_thread;
+
+/**
+ * @brief Vector to store incomplete UDP messages
+ */
+static std::vector<IncompletMsg> udp_incomplet_msgs;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages vector
+ */
+static std::mutex udp_incomplet_msgs_mutex;
 
 static void get_mac_from_arp(const char *ip, char *mac)
 {
@@ -54,7 +66,7 @@ static void udp_listen_thread()
                                       (sockaddr *)&client_addr,
                                       &client_addr_len);
 
-        if (bytes_received > 0 && udp_recv_callback)
+        if (bytes_received > 0)
         {
             buffer[bytes_received] = '\0';
             char client_ip[INET_ADDRSTRLEN];
@@ -62,11 +74,15 @@ static void udp_listen_thread()
             inet_ntop(
                 AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
             get_mac_from_arp(client_ip, client_mac);
-            udp_recv_callback(buffer,
-                              bytes_received,
-                              client_ip,
-                              ntohs(client_addr.sin_port),
-                              client_mac);
+
+            // Create a new incomplete message and add it to the vector
+            Ipv4 l_ip(client_ip);
+            MacAddr l_mac(client_mac);
+            Client l_client(l_ip, l_mac);
+
+            std::lock_guard<std::mutex> lock(udp_incomplet_msgs_mutex);
+            udp_incomplet_msgs.push_back(
+                IncompletMsg(l_client, buffer, bytes_received));
         }
         else if (bytes_received == SOCKET_ERROR)
         {
@@ -80,10 +96,8 @@ static void udp_listen_thread()
     }
 }
 
-void udp_init(udp_recv_callback_t callback)
+void udp_init()
 {
-    udp_recv_callback = callback;
-
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
         return;
@@ -153,6 +167,17 @@ void udp_send_broadcast(const char *data, int16_t len, int16_t port)
            0,
            (sockaddr *)&broadcast_addr,
            sizeof(broadcast_addr));
+}
+
+std::vector<IncompletMsg> udp_recv()
+{
+    std::lock_guard<std::mutex> lock(udp_incomplet_msgs_mutex);
+    std::vector<IncompletMsg> incompletMsgs;
+    incompletMsgs.insert(incompletMsgs.end(),
+                         udp_incomplet_msgs.begin(),
+                         udp_incomplet_msgs.end());
+    udp_incomplet_msgs.clear();
+    return incompletMsgs;
 }
 
 void udp_get_host_ip(char *ip)

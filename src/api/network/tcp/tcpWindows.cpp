@@ -2,6 +2,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <iostream>
 #include <iphlpapi.h>
+#include <mutex>
 #include <thread>
 #include <vector>
 #include <winsock2.h>
@@ -10,10 +11,19 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
 
-static tcp_recv_callback_t tcp_recv_callback = nullptr;
 static SOCKET listen_socket = INVALID_SOCKET;
 static std::thread server_thread;
 static bool server_running = false;
+
+/**
+ * @brief Vector to store incomplete TCP messages
+ */
+static std::vector<IncompletMsg> tcp_incomplet_msgs;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages vector
+ */
+static std::mutex tcp_incomplet_msgs_mutex;
 
 void get_mac_from_arp(const char *ip, char *mac)
 {
@@ -60,7 +70,7 @@ void tcp_server_worker()
             = accept(listen_socket, (sockaddr *)&client_addr, &client_addr_len);
         if (client_socket == INVALID_SOCKET)
         {
-            if (server_running) // Only log error if we're still supposed to be running
+            if (server_running)
             {
                 std::cerr << "Accept failed: " << WSAGetLastError()
                           << std::endl;
@@ -77,7 +87,6 @@ void tcp_server_worker()
 
             inet_ntop(
                 AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
-            int16_t client_port = ntohs(client_addr.sin_port);
             get_mac_from_arp(client_ip, client_mac);
 
             while ((bytes_received
@@ -85,14 +94,15 @@ void tcp_server_worker()
                    > 0)
             {
                 buffer[bytes_received] = '\0';
-                if (tcp_recv_callback)
-                {
-                    tcp_recv_callback(buffer,
-                                      bytes_received,
-                                      client_ip,
-                                      client_port,
-                                      client_mac);
-                }
+
+                // Create a new incomplete message and add it to the vector
+                Ipv4 l_ip(client_ip);
+                MacAddr l_mac(client_mac);
+                Client l_client(l_ip, l_mac);
+
+                std::lock_guard<std::mutex> lock(tcp_incomplet_msgs_mutex);
+                tcp_incomplet_msgs.push_back(
+                    IncompletMsg(l_client, buffer, bytes_received));
             }
 
             closesocket(client_socket);
@@ -100,10 +110,8 @@ void tcp_server_worker()
     }
 }
 
-void tcp_init(tcp_recv_callback_t recv_callback)
+void tcp_init()
 {
-    tcp_recv_callback = recv_callback;
-
     // Initialize Winsock
     WSADATA wsaData;
     int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -177,6 +185,17 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
 
     send(client_socket, data, len, 0);
     closesocket(client_socket);
+}
+
+std::vector<IncompletMsg> tcp_recv()
+{
+    std::lock_guard<std::mutex> lock(tcp_incomplet_msgs_mutex);
+    std::vector<IncompletMsg> incompletMsgs;
+    incompletMsgs.insert(incompletMsgs.end(),
+                         tcp_incomplet_msgs.begin(),
+                         tcp_incomplet_msgs.end());
+    tcp_incomplet_msgs.clear();
+    return incompletMsgs;
 }
 
 void tcp_get_host_ip(char *ip)

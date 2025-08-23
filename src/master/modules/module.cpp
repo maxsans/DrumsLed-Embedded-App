@@ -89,7 +89,7 @@ bool Module::tryUpdate()
     }
 
     // Send the program chunk by chunk
-    const size_t chunkSize = 1024; // 1KB chunks
+    const size_t chunkSize = InterMsgOtaSendChunk::m_chunkMaxSize;
     std::vector<char> buffer(chunkSize);
     int64_t totalSize = programFile.size();
     int64_t totalSent = 0;

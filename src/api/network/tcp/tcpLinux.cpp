@@ -9,10 +9,19 @@
 #include <thread>
 #include <unistd.h>
 
-static tcp_recv_callback_t tcp_recv_callback = nullptr;
 static int server_socket = -1;
 static std::thread server_thread;
 static bool server_running = false;
+
+/**
+ * @brief Vector to store incomplete TCP messages
+ */
+static std::vector<IncompletMsg> tcp_incomplet_msgs;
+
+/**
+ * @brief Mutex to protect access to the incomplete messages vector
+ */
+static pthread_mutex_t tcp_incomplet_msgs_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void server_loop()
 {
@@ -55,7 +64,7 @@ static void server_loop()
         char buffer[1024];
         int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
 
-        if (bytes_received > 0 && tcp_recv_callback)
+        if (bytes_received > 0)
         {
             buffer[bytes_received] = '\0';
             char client_ip[INET_ADDRSTRLEN];
@@ -65,17 +74,22 @@ static void server_loop()
             char mac[18]
                 = "00:00:00:00:00:00"; // MAC not available from TCP connection
 
-            tcp_recv_callback(
-                buffer, bytes_received, client_ip, client_port, mac);
+            // Create a new incomplete message and add it to the vector
+            Ipv4 l_ip(client_ip);
+            MacAddr l_mac(mac);
+            Client l_client(l_ip, l_mac);
+            pthread_mutex_lock(&tcp_incomplet_msgs_mutex);
+            tcp_incomplet_msgs.push_back(
+                IncompletMsg(l_client, buffer, bytes_received));
+            pthread_mutex_unlock(&tcp_incomplet_msgs_mutex);
         }
 
         close(client_socket);
     }
 }
 
-void tcp_init(tcp_recv_callback_t recv_callback)
+void tcp_init()
 {
-    tcp_recv_callback = recv_callback;
     server_running = true;
     server_thread = std::thread(server_loop);
 }
@@ -100,6 +114,15 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port)
     }
 
     close(client_socket);
+}
+
+std::vector<IncompletMsg> tcp_recv()
+{
+    pthread_mutex_lock(&tcp_incomplet_msgs_mutex);
+    std::vector<IncompletMsg> msgs = tcp_incomplet_msgs;
+    tcp_incomplet_msgs.clear();
+    pthread_mutex_unlock(&tcp_incomplet_msgs_mutex);
+    return msgs;
 }
 
 void tcp_get_host_ip(char *ip)
