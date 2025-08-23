@@ -11,7 +11,7 @@ class KitSrvcRgbListen : public KitService
      * @brief Callback to call when a new RGB message is received.
      * @param msg The RGB message.
      */
-    void onRgbMsg(const Client &client, InterMsg &msg);
+    void onRgbMsg(Client client, InterMsg &msg);
 
     /**
      * @see KitService::onStart()

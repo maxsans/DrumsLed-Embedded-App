@@ -15,18 +15,16 @@ Kit::Kit()
                        [this]() { this->checkTimeouts(); })
 {
     // Register the ping callback
-    InterComParser::registerDeserializer(
-        new InterMsgPingSlaves([this](const Client &client, InterMsg &msg) {
-            this->onPing(client, msg);
-        }));
+    InterComParser::registerDeserializer(new InterMsgPingSlaves(
+        [this](Client client, InterMsg &msg) { this->onPing(client, msg); }));
     // Register the OTA start callback
     InterComParser::registerDeserializer(
-        new InterMsgOtaStart([this](const Client &client, InterMsg &msg) {
+        new InterMsgOtaStart([this](Client client, InterMsg &msg) {
             this->onOtaStart(client, msg);
         }));
     // Register the OTA chunk callback
     InterComParser::registerDeserializer(
-        new InterMsgOtaSendChunk([this](const Client &client, InterMsg &msg) {
+        new InterMsgOtaSendChunk([this](Client client, InterMsg &msg) {
             this->onOtaChunk(client, msg);
         }));
     // Log the initialization
@@ -48,7 +46,7 @@ bool Kit::isMasterValid()
     return m_masterClient != Client();
 }
 
-void Kit::onPing(const Client &client, InterMsg &msg)
+void Kit::onPing(Client client, InterMsg &msg)
 {
     // Check if the master is already valid
     if (!isMasterValid())
@@ -71,7 +69,7 @@ void Kit::onPing(const Client &client, InterMsg &msg)
     m_pingTimeout.restart();
 }
 
-void Kit::onOtaStart(const Client &client, InterMsg &msg)
+void Kit::onOtaStart(Client client, InterMsg &msg)
 {
     // Get the OTA start message
     InterMsgOtaStart &otaStartMsg = static_cast<InterMsgOtaStart &>(msg);
@@ -94,7 +92,7 @@ void Kit::onOtaStart(const Client &client, InterMsg &msg)
     }
 }
 
-void Kit::onOtaChunk(const Client &client, InterMsg &msg)
+void Kit::onOtaChunk(Client client, InterMsg &msg)
 {
     // Get the OTA chunk message
     InterMsgOtaSendChunk &otaChunkMsg

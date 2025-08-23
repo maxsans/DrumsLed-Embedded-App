@@ -38,7 +38,7 @@ void launch()
     // Initialize the interComParser
     InterComParser l_interComParser;
     InterComParser::registerDeserializer(
-        new InterMsgExample([](const Client &client, InterMsg &msg) {
+        new InterMsgExample([](Client client, InterMsg &msg) {
             LogStream::cout << "Received Example message from "
                             << client.getIP().getIpString()
                             << " with MAC: " << client.getMAC().getMacString()
