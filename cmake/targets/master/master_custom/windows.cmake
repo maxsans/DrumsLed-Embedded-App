@@ -16,4 +16,5 @@ add_sources(
 add_libraries(
     ws2_32
     iphlpapi
+    shlwapi
 )

@@ -47,13 +47,14 @@ bool Module::isUpdateNeeded() const
     // Get the binary program from the path available in the kit config
     std::string pathPrefix = "slave-bin/";
     std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
-    File programFile(programPath);
-    if (!programFile.exists(programPath))
+    programPath = File::resolvePath(programPath);
+    if (!File::exists(programPath))
     {
         LogStream::cout << "Program file does not exist: " << programPath
                         << LogStream::endl;
         return false; // Program file does not exist
     }
+    File programFile(programPath);
     programFile.open(programPath, FileMode::READ);
     uint32_t programCrc32 = programFile.crc32();
     // Check if the program CRC32 matches the one in the kit config
@@ -79,6 +80,7 @@ bool Module::tryUpdate()
     // get the binary program from the path available in the kit config
     std::string pathPrefix = "slave-bin/";
     std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
+    programPath = File::resolvePath(programPath);
     File programFile(programPath);
     if (!programFile.open(programPath, FileMode::READ))
     {

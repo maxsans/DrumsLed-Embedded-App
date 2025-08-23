@@ -8,6 +8,8 @@
 #include "tools/containers/binary/crc32.hpp"
 #include <errno.h>
 #include <fcntl.h>
+#include <libgen.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
@@ -213,4 +215,51 @@ uint32_t File::crc32(size_t bufferSize)
     seek(originalPos, SeekOrigin::BEGIN);
 
     return (bytesRead == -1) ? 0 : CRC32::finalize(crc);
+}
+
+std::string File::getExecutableDirectory()
+{
+    char path[PATH_MAX];
+    ssize_t len = readlink("/proc/self/exe", path, sizeof(path) - 1);
+
+    if (len == -1)
+    {
+        return "";
+    }
+
+    path[len] = '\0';
+    char *dirPath = dirname(path);
+
+    return std::string(dirPath);
+}
+
+std::string File::resolvePath(const std::string &relativePath)
+{
+    // If the path is already absolute, return it as-is
+    if (!relativePath.empty() && relativePath[0] == '/')
+    {
+        return relativePath;
+    }
+
+    // Get executable directory
+    std::string exeDir = getExecutableDirectory();
+    if (exeDir.empty())
+    {
+        return relativePath; // Fallback to original path if we can't get exe dir
+    }
+
+    // Handle current directory reference
+    std::string cleanPath = relativePath;
+    if (cleanPath.substr(0, 2) == "./")
+    {
+        cleanPath = cleanPath.substr(2);
+    }
+
+    // Combine paths
+    if (exeDir.back() != '/')
+    {
+        exeDir += '/';
+    }
+
+    return exeDir + cleanPath;
 }

@@ -1,4 +1,5 @@
 #include "udp.hpp"
+#define WIN32_LEAN_AND_MEAN
 #include <atomic>
 #include <cstdio>
 #include <iphlpapi.h>

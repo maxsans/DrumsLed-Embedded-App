@@ -1,4 +1,5 @@
 #include "tcp.hpp"
+#define WIN32_LEAN_AND_MEAN
 #include <iostream>
 #include <iphlpapi.h>
 #include <thread>

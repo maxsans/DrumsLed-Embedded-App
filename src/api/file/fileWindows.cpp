@@ -6,8 +6,13 @@
 
 #include "file.hpp"
 #include "tools/containers/binary/crc32.hpp"
+#include <shlwapi.h>
 #include <vector>
+
+#pragma comment(lib, "shlwapi.lib")
 #include <windows.h>
+
+#pragma comment(lib, "shlwapi.lib")
 
 File::File() : m_handle(INVALID_HANDLE_VALUE), m_isOpen(false)
 {
@@ -239,4 +244,55 @@ uint32_t File::crc32(size_t bufferSize)
     seek(originalPos, SeekOrigin::BEGIN);
 
     return (bytesRead == -1) ? 0 : CRC32::finalize(crc);
+}
+
+std::string File::getExecutableDirectory()
+{
+    char path[MAX_PATH];
+    DWORD len = GetModuleFileNameA(nullptr, path, MAX_PATH);
+
+    if (len == 0 || len == MAX_PATH)
+    {
+        return "";
+    }
+
+    PathRemoveFileSpecA(path);
+    return std::string(path);
+}
+
+std::string File::resolvePath(const std::string &relativePath)
+{
+    // Check if the path is already absolute (Windows: starts with drive letter or UNC)
+    if (relativePath.length() >= 2
+        && ((relativePath[1] == ':')
+            || (relativePath[0] == '\\' && relativePath[1] == '\\')))
+    {
+        return relativePath;
+    }
+
+    // Get executable directory
+    std::string exeDir = getExecutableDirectory();
+    if (exeDir.empty())
+    {
+        return relativePath; // Fallback to original path if we can't get exe dir
+    }
+
+    // Handle current directory reference
+    std::string cleanPath = relativePath;
+    if (cleanPath.substr(0, 2) == ".\\")
+    {
+        cleanPath = cleanPath.substr(2);
+    }
+    else if (cleanPath.substr(0, 2) == "./")
+    {
+        cleanPath = cleanPath.substr(2);
+    }
+
+    // Combine paths
+    if (exeDir.back() != '\\' && exeDir.back() != '/')
+    {
+        exeDir += '\\';
+    }
+
+    return exeDir + cleanPath;
 }

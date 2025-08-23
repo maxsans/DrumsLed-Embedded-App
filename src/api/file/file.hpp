@@ -143,6 +143,19 @@ class File
      * @return true if successful, false otherwise
      */
     static bool createDirectory(const std::string &dirpath);
+
+    /**
+     * @brief Get the directory path of the current executable
+     * @return Path to the directory containing the executable, empty string on error
+     */
+    static std::string getExecutableDirectory();
+
+    /**
+     * @brief Resolve a relative path to be relative to the executable directory
+     * @param relativePath Path to resolve (can be relative or absolute)
+     * @return Absolute path resolved relative to executable directory
+     */
+    static std::string resolvePath(const std::string &relativePath);
 };
 
 #endif // __FILE_HPP__
