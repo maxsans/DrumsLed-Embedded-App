@@ -43,18 +43,84 @@ uint32_t Program::getProgramCrc32()
              "Calculating CRC32 for running partition (size: %d bytes)",
              running_partition->size);
 
-    uint32_t crc = 0xFFFFFFFF;      // Initial CRC value
-    const size_t chunk_size = 1024; // Read in 1KB chunks to manage memory
-    uint8_t *buffer = (uint8_t *)malloc(chunk_size);
+    // Strategy: Read partition in chunks and find the actual end of binary data
+    // by detecting long sequences of 0xFF bytes (padding)
 
+    const size_t chunk_size = 4096; // 4KB chunks to manage memory
+    const size_t padding_detection_size
+        = 1024; // Look for 1KB of consecutive 0xFF
+
+    uint8_t *buffer = (uint8_t *)malloc(chunk_size);
     if (!buffer)
     {
         ESP_LOGE(TAG, "Failed to allocate memory for CRC calculation");
         return 0;
     }
 
-    size_t bytes_remaining = running_partition->size;
+    uint32_t crc = 0xFFFFFFFF; // Initial CRC value
+    size_t actual_binary_size = 0;
     size_t offset = 0;
+    bool found_padding = false;
+
+    // First pass: find the actual end of the binary
+    while (offset < running_partition->size && !found_padding)
+    {
+        size_t bytes_to_read = (offset + chunk_size > running_partition->size)
+                                   ? (running_partition->size - offset)
+                                   : chunk_size;
+
+        esp_err_t err = esp_partition_read(
+            running_partition, offset, buffer, bytes_to_read);
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG,
+                     "Failed to read partition at offset %d: %s",
+                     offset,
+                     esp_err_to_name(err));
+            free(buffer);
+            return 0;
+        }
+
+        // Look for padding (consecutive 0xFF bytes) in this chunk
+        for (size_t i = 0; i < bytes_to_read; i++)
+        {
+            if (buffer[i] == 0xFF)
+            {
+                // Check if we have enough consecutive 0xFF bytes
+                size_t consecutive_ff = 0;
+
+                // Check within current buffer first
+                for (size_t j = i; j < bytes_to_read && buffer[j] == 0xFF; j++)
+                {
+                    consecutive_ff++;
+                }
+
+                // If we need to check more and haven't reached chunk end
+                if (consecutive_ff >= padding_detection_size)
+                {
+                    actual_binary_size = offset + i;
+                    found_padding = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found_padding)
+        {
+            actual_binary_size = offset + bytes_to_read;
+        }
+
+        offset += bytes_to_read;
+    }
+
+    ESP_LOGI(TAG,
+             "Detected binary size: %d bytes (partition size: %d bytes)",
+             actual_binary_size,
+             running_partition->size);
+
+    // Second pass: calculate CRC32 only for the actual binary content
+    offset = 0;
+    size_t bytes_remaining = actual_binary_size;
 
     while (bytes_remaining > 0)
     {
