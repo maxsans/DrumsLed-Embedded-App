@@ -42,12 +42,13 @@ void Module::sendRgb()
     }
 }
 
-bool Module::isUpdateNeeded() const
+bool Module::tryUpdate()
 {
-    // Get the binary program from the path available in the kit config
+    // get the binary program from the path available in the kit config
     std::string pathPrefix = "slave-bin/";
     std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
     programPath = File::resolvePath(programPath);
+    // Check if the program file exists
     if (!File::exists(programPath))
     {
         LogStream::cout << "Program file does not exist: " << programPath
@@ -56,32 +57,25 @@ bool Module::isUpdateNeeded() const
     }
     File programFile(programPath);
     programFile.open(programPath, FileMode::READ);
-    uint32_t programCrc32 = programFile.crc32();
-    // Check if the program CRC32 matches the one in the kit config
-    return (programCrc32 != m_kitConfig.getProgramCrc32());
-}
 
-bool Module::tryUpdate()
-{
-    if (!isUpdateNeeded())
+    // Check if the program needs an update
+    uint32_t currentCrc32 = programFile.crc32();
+    if (currentCrc32 != m_kitConfig.getProgramCrc32())
     {
-        LogStream::cout << "No update needed. Program CRC32: "
-                        << m_kitConfig.getProgramCrc32() << ", Current CRC32: "
-                        << File(m_kitConfig.getProgramPath()).crc32()
+        LogStream::cout << "Program update needed. Program CRC32: "
+                        << m_kitConfig.getProgramCrc32()
+                        << ", Current CRC32: " << currentCrc32
+                        << " Starting OTA update." << LogStream::endl;
+    }
+    else
+    {
+        LogStream::cout << "No program update needed. Program CRC32: "
+                        << m_kitConfig.getProgramCrc32()
+                        << ", Current CRC32: " << currentCrc32
                         << LogStream::endl;
         return false; // No update needed
     }
 
-    LogStream::cout << "Starting OTA update. Program CRC32: "
-                    << m_kitConfig.getProgramCrc32() << ", Current CRC32: "
-                    << File(m_kitConfig.getProgramPath()).crc32()
-                    << LogStream::endl;
-
-    // get the binary program from the path available in the kit config
-    std::string pathPrefix = "slave-bin/";
-    std::string programPath = pathPrefix + m_kitConfig.getProgramPath();
-    programPath = File::resolvePath(programPath);
-    File programFile(programPath);
     if (!programFile.open(programPath, FileMode::READ))
     {
         LogStream::cout << "Failed to open the program file" << LogStream::endl;

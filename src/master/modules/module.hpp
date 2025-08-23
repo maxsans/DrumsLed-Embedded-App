@@ -55,13 +55,6 @@ class Module
     PeriodicCallsMs m_aliveRgbPeriodicCall;
     void sendRgb();
 
-    /**
-     * @brief Check if the module needs an update.
-     * @return true if an update is needed
-     * @return false if no update is needed
-     */
-    bool isUpdateNeeded() const;
-
     public:
     Module(KitConfig kitConfig, Client client);
 
