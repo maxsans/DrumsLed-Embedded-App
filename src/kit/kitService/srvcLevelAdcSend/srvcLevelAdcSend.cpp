@@ -12,7 +12,7 @@ const TimeMs KitSrvcLevelAdcSend::m_sendInterval = TimeMs(20);
 const TimeMs KitSrvcLevelAdcSend::m_measureInterval = TimeMs(0);
 const TimeMs KitSrvcLevelAdcSend::m_bufferTime = TimeMs(100);
 const uint32_t KitSrvcLevelAdcSend::m_maxBufferSize
-    = 1000; // Large buffer for high-frequency measurements
+    = 10; // Large buffer for high-frequency measurements
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
