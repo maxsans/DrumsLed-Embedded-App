@@ -4,12 +4,12 @@
  * @date 2025-08-20
  */
 
-#include "api/udp/udp.hpp"
+#include "api/network/udp/udp.hpp"
 #include "launch.hpp"
 #include "micro/learning/learning.hpp"
 #include "modules/moduleManager.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
-#include "network/interCom/interMsgList/interMsgExample/interMsgExample.hpp"
+#include "network/interCom/interMsg/interMsgList/interMsgExample/interMsgExample.hpp"
 #include "session/session.hpp"
 #include "tools/logStream/logStream.hpp"
 #include "tools/os/os.hpp"
@@ -37,16 +37,15 @@ void launch()
 
     // Initialize the interComParser
     InterComParser l_interComParser;
-    InterComParser::registerCallback(
-        InterMsgId::Example,
-        [](const Client &client, InterMsg &msg, void *object) {
+    InterComParser::registerDeserializer(
+        new InterMsgExample([](Client client, InterMsg &msg) {
             LogStream::cout << "Received Example message from "
                             << client.getIP().getIpString()
                             << " with MAC: " << client.getMAC().getMacString()
                             << " and message data: "
                             << ((InterMsgExample &)msg).getExampleData()
                             << LogStream::endl;
-        });
+        }));
 
     while (1)
     {

@@ -56,7 +56,32 @@ class Kit
      * @note This callback is called when a ping message is received from the master kit.
      *       It is used to respond to the ping and update the master client.
      */
-    void onPing(const Client &client, InterMsg &msg);
+    void onPing(Client client, InterMsg &msg);
+
+    /**
+     * @brief Callback on OTA start.
+     * @param client The client that sent the OTA start message.
+     * @param msg The message received.
+     * @note This callback is called when an OTA start message is received from the master kit.
+     *       It is used to initiate the OTA process.
+     */
+    void onOtaStart(Client client, InterMsg &msg);
+
+    /**
+     * @brief Callback on OTA chunk.
+     * @param client The client that sent the OTA chunk message.
+     * @param msg The message received.
+     * @note This callback is called when an OTA chunk message is received from the master kit.
+     *       It is used to process the OTA chunk.
+     * @note If it is the last chunk, the chip will try to reboot and apply the new firmware.
+     */
+    void onOtaChunk(Client client, InterMsg &msg);
+
+    /**
+     * @brief Finish the OTA process.
+     * @note This function is called when the OTA process is complete.
+     */
+    void otaEnd();
 
     public:
     /**
