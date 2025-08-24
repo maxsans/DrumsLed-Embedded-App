@@ -5,9 +5,6 @@
 #include "modules/module.hpp"
 #include "network/client/client.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgAdc/interMsgAdc.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "tools/os/periodicCallsMs/periodicCallsMs.hpp"
 
 #include <stdbool.h>
@@ -60,15 +57,16 @@ class ModuleManager
 
     /**
      * @brief Callback to handle a new module detected.
+     * @param client The client of the new module.
      * @param msg The message received.
      */
-    void onNewModule(InterMsgInitModule msg);
+    void onNewModule(const Client &client, InterMsg &msg);
 
     /**
      * @brief Callback to call when a new ADC message is received.
      * @param msg The ADC message.
      */
-    void onAdcMsg(InterMsgAdc msg);
+    void onAdcMsg(InterMsg &msg);
 
     public:
     /**

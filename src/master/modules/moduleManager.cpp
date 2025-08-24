@@ -20,23 +20,13 @@ ModuleManager::ModuleManager(bool active)
 
     // Register the callback to push back the module when a new module is detected
     InterComParser::registerDeserializer(
-        new InterMsgInitModule([this](Client client, InterMsg &msg) {
-            InterMsgInitModule *initMsg
-                = static_cast<InterMsgInitModule *>(&msg);
-            if (initMsg != nullptr)
-            {
-                this->onNewModule(*initMsg);
-            }
+        new InterMsgInitModule([this](const Client &client, InterMsg &msg) {
+            this->onNewModule(client, msg);
         }));
+
     // Register the callback to handle ADC messages
-    InterComParser::registerDeserializer(
-        new InterMsgAdc([this](Client client, InterMsg &msg) {
-            InterMsgAdc *adcMsg = static_cast<InterMsgAdc *>(&msg);
-            if (adcMsg != nullptr)
-            {
-                this->onAdcMsg(*adcMsg);
-            }
-        }));
+    InterComParser::registerDeserializer(new InterMsgAdc(
+        [this](const Client &client, InterMsg &msg) { this->onAdcMsg(msg); }));
 }
 
 void ModuleManager::enable(bool e)
@@ -44,10 +34,9 @@ void ModuleManager::enable(bool e)
     m_active = e;
 }
 
-void ModuleManager::onNewModule(InterMsgInitModule msg)
+void ModuleManager::onNewModule(const Client &client, InterMsg &msg)
 {
     // Add the new module to the module manager
-    Client client = msg.getClient();
     InterMsgInitModule *initMsg = static_cast<InterMsgInitModule *>(&msg);
     if (initMsg != nullptr)
     {
@@ -60,7 +49,7 @@ void ModuleManager::onNewModule(InterMsgInitModule msg)
     }
 }
 
-void ModuleManager::onAdcMsg(InterMsgAdc msg)
+void ModuleManager::onAdcMsg(InterMsg &msg)
 {
     // Get the client from the message
     Client client = msg.getClient();
@@ -70,7 +59,8 @@ void ModuleManager::onAdcMsg(InterMsgAdc msg)
     if (l_module != nullptr && l_module->getMicro() != nullptr)
     {
         // Get the ADC value from the message
-        adc_measure_t adcValue = msg.getAdcValue();
+        InterMsgAdc *adcMsg = static_cast<InterMsgAdc *>(&msg);
+        adc_measure_t adcValue = adcMsg->getAdcValue();
         // Set the raw ADC value to the micro
         l_module->getMicro()->setMicroValue(adcValue);
         // Calculate the corrected ADC value

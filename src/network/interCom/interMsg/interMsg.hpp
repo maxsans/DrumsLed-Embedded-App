@@ -44,7 +44,8 @@ class InterMsg
      * @brief Type of callback to call if a message is received.
      * @note This callback is used to process the incoming messages.
      */
-    using MessageReceivedCallback = std::function<void(Client, InterMsg &)>;
+    using MessageReceivedCallback
+        = std::function<void(const Client &, InterMsg &)>;
 
     protected:
     /**
