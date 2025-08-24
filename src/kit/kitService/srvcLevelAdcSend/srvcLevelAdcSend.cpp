@@ -11,8 +11,6 @@
 const TimeMs KitSrvcLevelAdcSend::m_sendInterval = TimeMs(20);
 const TimeMs KitSrvcLevelAdcSend::m_measureInterval = TimeMs(0);
 const TimeMs KitSrvcLevelAdcSend::m_bufferTime = TimeMs(100);
-const uint32_t KitSrvcLevelAdcSend::m_maxBufferSize
-    = 10; // Large buffer for high-frequency measurements
 
 KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
     : KitService(KitServiceType::LevelAdcSend),
@@ -20,8 +18,7 @@ KitSrvcLevelAdcSend::KitSrvcLevelAdcSend()
                          [this]() { this->periodicSendCallback(); }),
       m_measurePeriodicCall(m_measureInterval,
                             [this]() { this->periodicMeasureCallback(); }),
-      m_currentIndex(0), m_currentSize(0),
-      m_circularBuffer(new AdcMeasurement[m_maxBufferSize]), m_bufferSum(0)
+      m_currentIndex(0), m_currentSize(0), m_bufferSum(0)
 {
     // Initialize the circular buffer properly
     for (uint32_t i = 0; i < m_maxBufferSize; i++)

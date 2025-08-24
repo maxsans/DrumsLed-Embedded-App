@@ -86,7 +86,7 @@ void IRAM_ATTR bitbang_send_pixels_800(uint8_t *pixels,
 }
 
 WS2812Esp8266::WS2812Esp8266(uint32_t num_leds, uint8_t pin)
-    : m_num_leds(num_leds), m_pin(pin), m_pixels(num_leds)
+    : m_num_leds(num_leds), m_pin(pin)
 {
     m_mutex = xSemaphoreCreateMutex();
     assert(m_mutex != nullptr);
