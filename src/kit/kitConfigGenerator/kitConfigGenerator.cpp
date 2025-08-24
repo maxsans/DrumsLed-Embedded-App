@@ -8,7 +8,8 @@ void KitConfigGenerator::init()
     // Call specific initialization based on the kit type
     specificInit();
     // Set the program CRC32 checksum
-    m_kitConfig.setProgramCrc32(Program::getProgramCrc32());
+    // Disabled for now
+    ///m_kitConfig.setProgramCrc32(Program::getProgramCrc32());
 }
 
 KitConfig KitConfigGenerator::getKitConfig()
