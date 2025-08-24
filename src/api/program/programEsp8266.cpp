@@ -46,16 +46,10 @@ uint32_t Program::getProgramCrc32()
     // Strategy: Read partition in chunks and find the actual end of binary data
     // by detecting long sequences of 0xFF bytes (padding)
 
-    const size_t chunk_size = 4096; // 4KB chunks to manage memory
-    const size_t padding_detection_size
-        = 1024; // Look for 1KB of consecutive 0xFF
+    const size_t chunk_size = 256;
+    const size_t padding_detection_size = 256;
 
-    uint8_t *buffer = (uint8_t *)malloc(chunk_size);
-    if (!buffer)
-    {
-        ESP_LOGE(TAG, "Failed to allocate memory for CRC calculation");
-        return 0;
-    }
+    uint8_t buffer[chunk_size];
 
     uint32_t crc = 0xFFFFFFFF; // Initial CRC value
     size_t actual_binary_size = 0;
@@ -77,7 +71,6 @@ uint32_t Program::getProgramCrc32()
                      "Failed to read partition at offset %d: %s",
                      offset,
                      esp_err_to_name(err));
-            free(buffer);
             return 0;
         }
 
@@ -135,7 +128,6 @@ uint32_t Program::getProgramCrc32()
                      "Failed to read partition at offset %d: %s",
                      offset,
                      esp_err_to_name(err));
-            free(buffer);
             return 0;
         }
 
@@ -144,8 +136,6 @@ uint32_t Program::getProgramCrc32()
         offset += bytes_to_read;
         bytes_remaining -= bytes_to_read;
     }
-
-    free(buffer);
 
     uint32_t final_crc = CRC32::finalize(crc);
     ESP_LOGI(TAG, "Program CRC32: 0x%08X", final_crc);

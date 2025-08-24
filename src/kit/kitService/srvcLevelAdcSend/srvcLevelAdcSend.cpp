@@ -118,8 +118,7 @@ adc_measure_t KitSrvcLevelAdcSend::measureAdcLevel()
 
 void KitSrvcLevelAdcSend::onStart()
 {
-    // Init the ADC
-    adc_init();
+    // ADC initialization is handled in measureAdcLevel() to avoid multiple initializations
     // Start the periodic calls for sending ADC level data
     // since the communication with the master client is established
     m_sendPeriodicCall.enable(true);

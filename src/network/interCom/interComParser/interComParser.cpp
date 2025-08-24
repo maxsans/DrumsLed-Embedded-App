@@ -13,18 +13,18 @@ InterComParser::InterComParser()
     : m_periodicTask(10, std::bind(&InterComParser::periodicTask, this))
 {
     // Initialize the TCP and UDP connections
-    udp_init();
-    tcp_init();
+    //udp_init();
+    //tcp_init();
 }
 
 void InterComParser::periodicTask()
 {
     // Pull incomplete messages from udp and tcp api
-    std::vector<IncompletMsg> udpMsgs = udp_recv();
-    std::vector<IncompletMsg> tcpMsgs = tcp_recv();
-    // And process them
-    processIncomingData(&udpMsgs);
-    processIncomingData(&tcpMsgs);
+    //std::vector<IncompletMsg> udpMsgs = udp_recv();
+    //std::vector<IncompletMsg> tcpMsgs = tcp_recv();
+    //// And process them
+    //processIncomingData(&udpMsgs);
+    //processIncomingData(&tcpMsgs);
 }
 
 void InterComParser::processIncomingData(
