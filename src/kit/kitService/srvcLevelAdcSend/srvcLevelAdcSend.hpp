@@ -46,7 +46,7 @@ class KitSrvcLevelAdcSend : public KitService
     /**
      * @brief Maximum buffer size to accommodate high-frequency measurements.
      */
-    static const uint32_t m_maxBufferSize;
+    static constexpr uint32_t m_maxBufferSize = 10;
 
     /**
      * @brief The periodic call for sending ADC level data.
@@ -74,7 +74,7 @@ class KitSrvcLevelAdcSend : public KitService
      * @brief Circular buffer to store ADC measurements with timestamps.
      * @note This buffer will hold the last measurements within m_bufferTime.
      */
-    AdcMeasurement *m_circularBuffer;
+    AdcMeasurement m_circularBuffer[m_maxBufferSize];
 
     /**
      * @brief Sum of all measurements in the circular buffer.

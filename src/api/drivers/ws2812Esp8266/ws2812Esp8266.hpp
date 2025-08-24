@@ -20,9 +20,10 @@ union ws2812Esp8266Color_t {
 class WS2812Esp8266
 {
     private:
+    static constexpr uint32_t m_nbMaxLeds = 200;
     const uint32_t m_num_leds;
     const uint8_t m_pin;
-    std::vector<ws2812Esp8266Color_t> m_pixels;
+    ws2812Esp8266Color_t m_pixels[m_nbMaxLeds];
     SemaphoreHandle_t m_mutex;
 
     static void showTask(void *pvParameters);
