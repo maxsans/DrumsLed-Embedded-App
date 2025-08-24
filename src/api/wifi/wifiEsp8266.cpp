@@ -40,13 +40,10 @@ static EventGroupHandle_t s_wifi_event_group;
 #define PASSWORD_MAX_LENGTH 64
 
 #define RECONNECT_DELAY_MS 5000
-#define MAX_RETRY_NUM 5
-#define RETRY_DELAY_MS 2000
 
 static char g_ssid[SSID_MAX_LENGTH];
 static char g_password[PASSWORD_MAX_LENGTH];
 static bool g_connected = false;
-static int s_retry_num = 0;
 
 static void event_handler(void *arg,
                           esp_event_base_t event_base,
@@ -60,27 +57,13 @@ static void event_handler(void *arg,
     else if (event_base == WIFI_EVENT
              && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
-        if (s_retry_num < MAX_RETRY_NUM)
-        {
-            // Add delay before reconnection to prevent buffer overflow
-            vTaskDelay(RETRY_DELAY_MS / portTICK_PERIOD_MS);
-            esp_wifi_connect();
-            s_retry_num++;
-            log("retry to connect to the AP (attempt %d/%d)\n",
-                s_retry_num,
-                MAX_RETRY_NUM);
-        }
-        else
-        {
-            xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-            log("Failed to connect to WiFi after %d attempts\n", MAX_RETRY_NUM);
-        }
+        esp_wifi_connect();
+        log("retry to connect to the AP\n");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         log("got ip: %s \n", ip4addr_ntoa(&event->ip_info.ip));
-        s_retry_num = 0; // Reset retry count on successful connection
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
 }
@@ -90,7 +73,6 @@ static void wifi_connect_task(void *pvParameters)
     while (1)
     {
         s_wifi_event_group = xEventGroupCreate();
-        s_retry_num = 0; // Reset retry counter for each connection attempt
 
         tcpip_adapter_init();
 
@@ -113,15 +95,6 @@ static void wifi_connect_task(void *pvParameters)
         {
             wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
         }
-
-        // Set additional WiFi configuration to improve stability
-        wifi_config.sta.scan_method = WIFI_FAST_SCAN;
-        wifi_config.sta.bssid_set = false;
-        wifi_config.sta.channel = 0;
-        wifi_config.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;
-        wifi_config.sta.threshold.rssi = -127;
-        wifi_config.sta.pmf_cfg.capable = true;
-        wifi_config.sta.pmf_cfg.required = false;
 
         ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
         ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
@@ -167,18 +140,11 @@ static void wifi_connect_task(void *pvParameters)
             log("UNEXPECTED EVENT\n");
         }
 
-        // Clean shutdown before retry
-        esp_wifi_stop();
-        esp_wifi_deinit();
-
         ESP_ERROR_CHECK(esp_event_handler_unregister(
             IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler));
         ESP_ERROR_CHECK(esp_event_handler_unregister(
             WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler));
         vEventGroupDelete(s_wifi_event_group);
-
-        // Add delay before complete restart
-        vTaskDelay(RECONNECT_DELAY_MS / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
 }

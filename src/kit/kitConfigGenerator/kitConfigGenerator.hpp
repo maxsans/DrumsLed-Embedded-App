@@ -16,11 +16,6 @@ class KitConfigGenerator
      */
     static KitConfig m_kitConfig;
 
-    /**
-     * @brief Specific initialization for the kit configuration generator for the current slave target.
-     */
-    static void specificInit();
-
     public:
     /**
      * @brief Constructor is private to prevent instantiation.

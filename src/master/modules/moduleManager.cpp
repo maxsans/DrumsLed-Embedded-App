@@ -1,7 +1,7 @@
 #include "moduleManager.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgAdc/interMsgAdc.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
+#include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
+#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
+#include "network/interCom/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
 #include "tools/logStream/logStream.hpp"
 
 #include <stdint.h>
@@ -19,14 +19,19 @@ ModuleManager::ModuleManager(bool active)
     m_modules.clear();
 
     // Register the callback to push back the module when a new module is detected
-    InterComParser::registerDeserializer(
-        new InterMsgInitModule([this](const Client &client, InterMsg &msg) {
+    InterComParser::registerCallback(
+        InterMsgId::InitModule,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onNewModule(client, msg);
-        }));
+        });
 
     // Register the callback to handle ADC messages
-    InterComParser::registerDeserializer(new InterMsgAdc(
-        [this](const Client &client, InterMsg &msg) { this->onAdcMsg(msg); }));
+    InterComParser::registerCallback(
+        InterMsgId::Adc,
+        [this](const Client &client, InterMsg &msg, void *object) {
+            this->onAdcMsg(msg);
+            return;
+        });
 }
 
 void ModuleManager::enable(bool e)
@@ -86,10 +91,6 @@ Module *ModuleManager::addModule(KitConfig kitConfig, Client client)
             // Log the addition of the module
             LogStream::cout << "Module added: " << client.getIP().getIpString()
                             << LogStream::endl;
-            // Try to update the module
-            // Don't work as expected --> disabled for now
-            // TODO : Fix that
-            // m_modules.back()->tryUpdate();
         }
     }
     else

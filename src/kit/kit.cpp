@@ -1,11 +1,7 @@
 #include "kit.hpp"
 
-#include "api/program/program.hpp"
 #include "kit/kitConfigGenerator/kitConfigGenerator.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgOtaSendChunk/interMsgOtaSendChunk.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgOtaStart/interMsgOtaStart.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgPingSlaves/interMsgPingSlaves.hpp"
+#include "network/interCom/interMsgList/interMsgInitModule/interMsgInitModule.hpp"
 #include "tools/logStream/logStream.hpp"
 
 const TimeMs Kit::m_pingTimeoutDuration = 10000;
@@ -15,20 +11,11 @@ Kit::Kit()
                        [this]() { this->checkTimeouts(); })
 {
     // Register the ping callback
-    InterComParser::registerDeserializer(
-        new InterMsgPingSlaves([this](const Client &client, InterMsg &msg) {
+    InterComParser::registerCallback(
+        InterMsgId::PingSlaves,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onPing(client, msg);
-        }));
-    // Register the OTA start callback
-    InterComParser::registerDeserializer(
-        new InterMsgOtaStart([this](const Client &client, InterMsg &msg) {
-            this->onOtaStart(client, msg);
-        }));
-    // Register the OTA chunk callback
-    InterComParser::registerDeserializer(
-        new InterMsgOtaSendChunk([this](const Client &client, InterMsg &msg) {
-            this->onOtaChunk(client, msg);
-        }));
+        });
     // Log the initialization
     LogStream::cout << "Kit initialized. Waiting for master client..."
                     << LogStream::endl;
@@ -69,67 +56,6 @@ void Kit::onPing(const Client &client, InterMsg &msg)
     InterMsgInitModule(m_masterClient, getKitConfig()).send();
     // Restart chrono of ping timeout
     m_pingTimeout.restart();
-}
-
-void Kit::onOtaStart(const Client &client, InterMsg &msg)
-{
-    // Get the OTA start message
-    InterMsgOtaStart &otaStartMsg = static_cast<InterMsgOtaStart &>(msg);
-    // Get the program length
-    int64_t programLength = otaStartMsg.getLength();
-    // If the length is valid, start the OTA process
-    if (programLength > 0)
-    {
-        LogStream::cout << "Starting OTA process. Program length: "
-                        << programLength << LogStream::endl;
-        Program::beginProgramUpdate(programLength);
-    }
-    else
-    {
-        LogStream::cout
-            << "OTA update not needed. Program is already up to date."
-            << LogStream::endl;
-        // Validate the last updated program
-        Program::validateCurrentFirmware();
-    }
-}
-
-void Kit::onOtaChunk(const Client &client, InterMsg &msg)
-{
-    // Get the OTA chunk message
-    InterMsgOtaSendChunk &otaChunkMsg
-        = static_cast<InterMsgOtaSendChunk &>(msg);
-    // Get the binary data from the message
-    Binary binaryData((const uint8_t *)otaChunkMsg.getChunkData(),
-                      otaChunkMsg.getChunkSize());
-    // Update the program with the received chunk
-    if (Program::updateProgramBinary(binaryData))
-    {
-        LogStream::cout << "Received OTA chunk of size: " << binaryData.size()
-                        << LogStream::endl;
-        // Check if the chunk is the last one
-        if (Program::isTotalSizeReached())
-        {
-            LogStream::cout << "All OTA chunks received. Finalizing update..."
-                            << LogStream::endl;
-            // Finalize the OTA update
-            if (Program::finalizeProgramUpdate())
-            {
-                LogStream::cout << "OTA update finalized successfully."
-                                << LogStream::endl;
-            }
-            else
-            {
-                LogStream::cout << "Failed to finalize OTA update."
-                                << LogStream::endl;
-            }
-        }
-    }
-    else
-    {
-        LogStream::cout << "Failed to update program with OTA chunk."
-                        << LogStream::endl;
-    }
 }
 
 void Kit::checkTimeouts()

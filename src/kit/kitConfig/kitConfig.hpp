@@ -5,7 +5,6 @@
 #include "kitServiceType/kitServiceType.hpp"
 #include "kitType/kitType.hpp"
 
-#include <cstring>
 #include <string>
 
 /**
@@ -16,11 +15,6 @@
 class KitConfig
 {
     private:
-    /**
-     * @brief Maximum length for the program path string.
-     */
-    static constexpr size_t MAX_PROGRAM_PATH_LENGTH = 256;
-
     /**
      * @brief The type of the kit, represented by KitType.
      */
@@ -36,45 +30,12 @@ class KitConfig
      */
     KitServiceType m_serviceTypes[KitServiceType::Count];
 
-    /**
-     * @brief CRC32 checksum of the program.
-     * @note This is used to check if an update is needed.
-     */
-    uint32_t m_programCrc32;
-
-    /**
-     * @brief The path to the program file.
-     * @note This is used to locate the program binary on the filesystem.
-     *       Using fixed-size array to avoid dynamic allocation.
-     */
-    char m_programPath[MAX_PROGRAM_PATH_LENGTH];
-
     public:
     /**
      * @brief Constructor to create a KitConfig with a specific type.
      * @param type The type of the kit.
      */
     KitConfig(KitType::Type type = KitType::Type::None);
-
-    /**
-     * @brief Constructor to create a KitConfig from serialized data.
-     * @param rawData The serialized data to create the KitConfig from.
-     * @note The rawData must be at least getSerializedSize() bytes long.
-     */
-    KitConfig(const char *rawData);
-
-    /**
-     * @brief Get the serialized size of the kit configuration.
-     * @return The serialized size in bytes.
-     */
-    uint32_t getSerializedSize() const;
-
-    /**
-     * @brief Serialize the kit configuration to a byte array.
-     * @param buffer The buffer to serialize to.
-     * @note The buffer must be at least getSerializedSize() bytes long.
-     */
-    void serialize(char *buffer) const;
 
     /**
      * @brief Set the kit type.
@@ -96,18 +57,6 @@ class KitConfig
     void setService(KitServiceType serviceType);
 
     /**
-     * @brief Set the program CRC32 checksum.
-     * @param crc32 The CRC32 checksum of the program.
-     */
-    void setProgramCrc32(uint32_t crc32);
-
-    /**
-     * @brief Set the path to the program file.
-     * @param path The path to the program file.
-     */
-    void setProgramPath(const char *path);
-
-    /**
      * @brief Get the type of the kit.
      * @return The type of the kit.
      */
@@ -126,18 +75,6 @@ class KitConfig
      * @return true if the kit has the service type, false otherwise.
      */
     bool hasServiceType(KitServiceType::Type serviceType) const;
-
-    /**
-     * @brief Get the program CRC32 checksum.
-     * @return The CRC32 checksum of the program.
-     */
-    uint32_t getProgramCrc32() const;
-
-    /**
-     * @brief Get the path to the program file.
-     * @return The path to the program file.
-     */
-    const char *getProgramPath() const;
 
     /**
      * @brief Get a string representation of the kit configuration.

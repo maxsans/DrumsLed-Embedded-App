@@ -1,5 +1,8 @@
 #include "kitAttributeType.hpp"
 
+// Definition of static constexpr array
+constexpr const char *KitAttributeType::m_typeStrings[KitAttributeType::Count];
+
 KitAttributeType::KitAttributeType(Type type, uint32_t nbAttributes)
     : m_type(type), m_nbAttributes(nbAttributes)
 {
@@ -21,7 +24,7 @@ std::string KitAttributeType::toString() const
     if (m_type < Type::Count)
     {
         return "KitAttributeType: type = "
-               + std::to_string(static_cast<int>(m_type))
+               + std::string(m_typeStrings[static_cast<int>(m_type)])
                + ", nbAttributes = " + std::to_string(m_nbAttributes);
     }
     return "KitAttributeType: type = Unknown, nbAttributes = "

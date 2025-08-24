@@ -5,7 +5,7 @@
  */
 
 #include "srvcLevelAdcSend.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgAdc/interMsgAdc.hpp"
+#include "network/interCom/interMsgList/interMsgAdc/interMsgAdc.hpp"
 #include <cstring>
 
 const TimeMs KitSrvcLevelAdcSend::m_sendInterval = TimeMs(20);

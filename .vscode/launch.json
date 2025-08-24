@@ -5,7 +5,7 @@
             "name": "Debug Master",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/tunes-app/master-linux",
+            "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -19,7 +19,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build-all",
+            "preLaunchTask": "build",
             "internalConsoleOptions": "openOnSessionStart"
         }
     ]

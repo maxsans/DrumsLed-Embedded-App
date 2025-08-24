@@ -1,16 +1,17 @@
 #include "srvcRgbListen.hpp"
 #include "api/circleLeds/circleLeds.hpp"
 #include "network/interCom/interComParser/interComParser.hpp"
-#include "network/interCom/interMsg/interMsgList/interMsgRgb/interMsgRgb.hpp"
+#include "network/interCom/interMsgList/interMsgRgb/interMsgRgb.hpp"
 #include "tools/logStream/logStream.hpp"
 
 KitSrvcRgbListen::KitSrvcRgbListen() : KitService(KitServiceType::RgbListen)
 {
     // Register the callback for RGB messages
-    InterComParser::registerDeserializer(
-        new InterMsgRgb([this](const Client &client, InterMsg &msg) {
+    InterComParser::registerCallback(
+        InterMsgId::Rgb,
+        [this](const Client &client, InterMsg &msg, void *object) {
             this->onRgbMsg(client, msg);
-        }));
+        });
 
     // By default, light up the led while the master isn't registered
     circleLedsInit();

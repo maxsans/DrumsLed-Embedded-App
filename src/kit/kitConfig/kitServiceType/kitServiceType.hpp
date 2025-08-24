@@ -22,6 +22,7 @@ class KitServiceType
         RgbListen, /** < Service to periodically listen for RGB data. */
 
         // Add more service types here as needed
+        // Don't forget to update KitServiceType::m_typeStrings
 
         // Count of service types
         Count
@@ -32,6 +33,9 @@ class KitServiceType
      * @brief The type of the service.
      */
     Type m_type;
+
+    constexpr static const char *m_typeStrings[Type::Count]
+        = {"None", "LevelAdcSend", "RgbListen"};
 
     public:
     /**

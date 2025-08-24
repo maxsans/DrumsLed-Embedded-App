@@ -1,5 +1,8 @@
 #include "kitServiceType.hpp"
 
+// Definition of static constexpr array
+constexpr const char *KitServiceType::m_typeStrings[KitServiceType::Count];
+
 KitServiceType::KitServiceType(Type type) : m_type(type)
 {
 }
@@ -13,7 +16,7 @@ std::string KitServiceType::toString() const
 {
     if (m_type < Type::Count)
     {
-        return std::to_string(static_cast<int>(m_type));
+        return m_typeStrings[static_cast<size_t>(m_type)];
     }
-    return "Unknown";
+    return m_typeStrings[static_cast<size_t>(Type::None)];
 }

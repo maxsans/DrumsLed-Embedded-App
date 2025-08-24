@@ -1,52 +1,14 @@
 #ifndef __INTER_MSG_HPP__
 #define __INTER_MSG_HPP__
 
-#include "interMsgId/interMsgId.hpp"
-#include "network/client/client.hpp"
 #include <cstdint>
-#include <functional>
 #include <string>
+
+#include "network/client/client.hpp"
+#include "network/interCom/interMsgData/interMsgData.hpp"
 
 class InterMsg
 {
-    public:
-    /**
-     * @brief Maximum size of private data in the message.
-     */
-    static constexpr uint32_t m_maxPrivDataSize = 1024;
-
-    /**
-     * @brief Emplacement of message IDs from start of message
-     */
-    static constexpr uint32_t m_idOffset = 0;
-
-    /**
-     * @brief Size of message IDs in the message.
-     */
-    static constexpr uint32_t m_idSize = sizeof(uint32_t);
-
-    /**
-     * @brief Emplacement of message lengths from start of message
-     */
-    static constexpr uint32_t m_lenOffset = m_idOffset + m_idSize;
-
-    /**
-     * @brief Size of message lengths in the message.
-     */
-    static constexpr uint32_t m_lenSize = sizeof(uint32_t);
-
-    /**
-     * @brief Emplacement of private data from start of message
-     */
-    static constexpr uint32_t m_privDataOffset = m_lenOffset + m_lenSize;
-
-    /**
-     * @brief Type of callback to call if a message is received.
-     * @note This callback is used to process the incoming messages.
-     */
-    using MessageReceivedCallback
-        = std::function<void(const Client &, InterMsg &)>;
-
     protected:
     /**
      * @brief Message send types.
@@ -66,20 +28,14 @@ class InterMsg
     Client m_client;
 
     /**
-     * @brief The ID of the message.
+     * @brief The data of the message, including the message header and private data.
      */
-    InterMsgId m_id;
+    InterMsgData m_data;
 
     /**
      * @brief The type of send for the message.
      */
     SendType m_sendType;
-
-    /**
-     * @brief Callback to call if a message is received.
-     * @note This callback is used to process the incoming messages.
-     */
-    MessageReceivedCallback m_callback;
 
     /**
      * @brief Get the raw data of the message.
@@ -95,7 +51,7 @@ class InterMsg
      * @note This constructor is protected to ensure that only derived classes can instantiate it.
      */
     InterMsg(Client client,
-             InterMsgId id,
+             InterMsgData data,
              SendType sendType = SendType::UnicastWithControl);
 
     /**
@@ -104,46 +60,13 @@ class InterMsg
      * @note Due to the nature of this constructor, SendType is implicitly set to Broadcast.
      * @note This constructor is protected to ensure that only derived classes can instantiate it.
      */
-    InterMsg(InterMsgId id);
-
-    /**
-     * @brief Constructor for InterMsg with a callback.
-     * @note The others attributes are initialized to default values.
-     * @note This constructor is protected to ensure that only derived classes can instantiate it.
-     * @note This constructor is used in registered message handlers.
-     */
-    InterMsg(MessageReceivedCallback callback, InterMsgId id);
-
-    /**
-     * @brief Virtual method to serialize the private data of the message.
-     * @param data Pointer to a buffer where the serialized data will be stored.
-     * @note The buffer should be large enough to hold the serialized data.
-     * @return The size of the serialized data.
-     */
-    virtual uint32_t serializePriv(char *data) const = 0;
-
-    /**
-     * @brief Virtual method to deserialize the private data of the message.
-     * @param data Pointer to a buffer containing the serialized private data.
-     * @note The buffer should be large enough to hold the serialized data.
-     * @return The size of the deserialized data.
-     */
-    virtual uint32_t deserializePriv(const char *data) = 0;
+    InterMsg(InterMsgData data);
 
     public:
     /**
      * @brief Send the message.
      */
     void send();
-
-    /**
-     * @brief Handle the reception of a message.
-     * @param client The client that sent the message.
-     * @param msg The received message including all headers and private data.
-     * @return The size used by the message in the buffer.
-     * @return 0 if the message is incomplete.
-     */
-    uint32_t onReception(const Client &client, const char *msg);
 
     /**
      * @brief Get the client associated with the message.
@@ -158,6 +81,13 @@ class InterMsg
      * @see InterMsgId
      */
     InterMsgId getId() const;
+
+    /**
+     * @brief Equal operator for InterMsg.
+     * @param other The other InterMsg to compare with.
+     * @return true if the two messages are equal, false otherwise.
+     */
+    virtual bool operator==(const InterMsg *other) const;
 
     /**
      * @brief Get a description of the message.

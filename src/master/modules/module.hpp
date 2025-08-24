@@ -59,15 +59,6 @@ class Module
     Module(KitConfig kitConfig, Client client);
 
     /**
-     * @brief Try to update the module.
-     * @note This will check if the module needs an update and if so, it will
-     * update the module.
-     * @return true if the update was successful
-     * @return false if the update failed or no update was needed
-     */
-    bool tryUpdate();
-
-    /**
      * @brief Get the micro of the module.
      * @return Micro* The micro of the module.
      * @return nullptr if no micro is associated with the module.
