@@ -7,10 +7,8 @@
 KitSrvcRgbListen::KitSrvcRgbListen() : KitService(KitServiceType::RgbListen)
 {
     // Register the callback for RGB messages
-    InterComParser::registerDeserializer(
-        new InterMsgRgb([this](const Client &client, InterMsg &msg) {
-            this->onRgbMsg(client, msg);
-        }));
+    InterComParser::registerDeserializer(new InterMsgRgb(
+        [this](Client client, InterMsg &msg) { this->onRgbMsg(client, msg); }));
 
     // By default, light up the led while the master isn't registered
     circleLedsInit();
@@ -32,7 +30,7 @@ void KitSrvcRgbListen::onStop()
     circleLedsFill(255, 255, 255);
 }
 
-void KitSrvcRgbListen::onRgbMsg(const Client &client, InterMsg &msg)
+void KitSrvcRgbListen::onRgbMsg(Client client, InterMsg &msg)
 {
     // Cast the message to RGB message type
     InterMsgRgb &rgbMsg = static_cast<InterMsgRgb &>(msg);

@@ -83,6 +83,9 @@ uint32_t InterMsg::onReception(const Client &client, const char *msg)
         return 0;
     }
 
+    // Set the client
+    m_client = client;
+
     // Call the message received callback
     if (m_callback)
     {
