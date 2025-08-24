@@ -13,45 +13,50 @@ InterComParser::InterComParser()
     : m_periodicTask(10, std::bind(&InterComParser::periodicTask, this))
 {
     // Initialize the TCP and UDP connections
-    //udp_init();
-    //tcp_init();
+    // udp_init();
+    // tcp_init();
 }
 
 void InterComParser::periodicTask()
 {
     // Pull incomplete messages from udp and tcp api
-    //std::vector<IncompletMsg> udpMsgs = udp_recv();
-    //std::vector<IncompletMsg> tcpMsgs = tcp_recv();
-    //// And process them
-    //processIncomingData(&udpMsgs);
-    //processIncomingData(&tcpMsgs);
+    char data[256];
+    char ip[16];
+    char mac[18];
+    int16_t port;
+
+    if (udp_recv(data, sizeof(data), ip, &port, mac))
+    {
+        processIncomingData(data, sizeof(data), ip, &port, mac);
+    }
+    if (tcp_recv(data, sizeof(data), ip, &port, mac))
+    {
+        processIncomingData(data, sizeof(data), ip, &port, mac);
+    }
 }
 
 void InterComParser::processIncomingData(
-    std::vector<IncompletMsg> *incompletMsgs)
+    char *data, int16_t len, char *ip, int16_t *port, char *mac)
 {
-    if (incompletMsgs == nullptr)
+    if (data == nullptr || ip == nullptr || port == nullptr || mac == nullptr)
     {
         return;
     }
 
-    for (auto &msg : *incompletMsgs)
-    {
-        processIncompleteMessage(&msg);
-    }
-}
+    // Get the client of the message
+    Ipv4 l_ip(ip);
+    MacAddr l_mac(mac);
+    Client client(l_ip, l_mac);
 
-void InterComParser::processIncompleteMessage(IncompletMsg *incompleteMsg)
-{
     // First, check if an incomplete msg is already buffered from this client
     IncompletMsg *l_incompleteMsg = nullptr;
     uint32_t incompletMsgIndex = 0;
     for (auto &it : m_incompletMsgs)
     {
-        if (it.getClient() == incompleteMsg->getClient())
+        if (it.getClient() == client)
         {
             // If an incomplete message is found, append the new data to it
-            it.appendData(incompleteMsg->getData(), incompleteMsg->getSize());
+            it.appendData(data, len);
             l_incompleteMsg = &it;
             incompletMsgIndex = &it - &m_incompletMsgs[0];
             break;
@@ -61,7 +66,7 @@ void InterComParser::processIncompleteMessage(IncompletMsg *incompleteMsg)
     // Then, create a new IncompletMsg if none was found
     if (l_incompleteMsg == nullptr)
     {
-        m_incompletMsgs.push_back(*incompleteMsg);
+        m_incompletMsgs.push_back(IncompletMsg(client, data, len));
         l_incompleteMsg = &m_incompletMsgs.back();
         incompletMsgIndex = m_incompletMsgs.size() - 1;
     }

@@ -29,15 +29,9 @@ class InterComParser
 
     /**
      * @brief Process incoming data from UDP or TCP.
-     * @param incompletMsgs Pointer to a vector of incomplete messages.
      */
-    void processIncomingData(std::vector<IncompletMsg> *incompletMsgs);
-
-    /**
-     * @brief Process a single incomplete message.
-     * @param incompleteMsg Pointer to the incomplete message.
-     */
-    void processIncompleteMessage(IncompletMsg *incompleteMsg);
+    void processIncomingData(
+        char *data, int16_t len, char *ip, int16_t *port, char *mac);
 
     /**
      * @brief Process a single incoming message.

@@ -1,9 +1,7 @@
 #ifndef __TCP_HPP__
 #define __TCP_HPP__
 
-#include "network/interCom/interComParser/incompletMsg/incompletMsg.hpp"
 #include <stdint.h>
-#include <vector>
 
 #define TCP_DEFAULT_PORT 8888
 
@@ -23,9 +21,14 @@ void tcp_send(const char *data, int16_t len, const char *ip, int16_t port);
 
 /**
  * @brief Function to receive data over TCP
- * @return Vector of incomplete messages
+ * @param data Buffer to store the received data
+ * @param len Length of the buffer
+ * @param ip IP address of the sender
+ * @param port Port number of the sender
+ * @param mac MAC address of the sender
+ * @return Number of bytes received
  */
-std::vector<IncompletMsg> tcp_recv();
+uint32_t tcp_recv(char *data, int16_t len, char *ip, int16_t *port, char *mac);
 
 /**
  * @brief Function to get the IP address of the host
