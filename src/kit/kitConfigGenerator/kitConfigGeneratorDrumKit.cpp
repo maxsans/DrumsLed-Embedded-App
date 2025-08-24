@@ -3,7 +3,7 @@
 #include "kit/kitService/srvcRgbListen/srvcRgbListen.hpp"
 #include "kitConfigGenerator.hpp"
 
-void KitConfigGenerator::init()
+void KitConfigGenerator::specificInit()
 {
     m_kitConfig.setType(KitType::Type::Drum);
     m_kitConfig.setAttribute(KitAttributeType::Type::RoundRgb, 200);
@@ -13,6 +13,8 @@ void KitConfigGenerator::init()
 
 std::vector<KitService *> KitConfigGenerator::generateKitServices()
 {
+    // Set the path of the program file
+    m_kitConfig.setProgramPath("DrumKit/slave-drumkit.bin");
     std::vector<KitService *> services;
     // Generate the kit services based on the kit configuration
     services.push_back(new KitSrvcLevelAdcSend());

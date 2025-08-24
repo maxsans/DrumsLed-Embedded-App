@@ -50,9 +50,6 @@ add_include_dirs(
 # Print the sources and include directories
 print_app_info()
 
-# Add .exe to the target name
-set(TARGET ${TARGET}.exe)
-
 # Create the executable target
 add_executable(${TARGET} ${SRCS})
 target_include_directories(${TARGET} PRIVATE ${INCLUDE_DIRS})
