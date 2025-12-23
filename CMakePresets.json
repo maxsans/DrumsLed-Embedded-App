@@ -1,0 +1,66 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "DefaultPreset",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "master",
+            "inherits": "DefaultPreset",
+            "hidden": true,
+            "cacheVariables": {
+                "TARGET_CMAKE_NAME": "master"
+            }
+        },
+        {
+            "name": "master-linux",
+            "inherits": "master",
+            "cacheVariables": {
+                "CUSTOM_CMAKE_NAME": "linux"
+            }
+        },
+        {
+            "name": "master-windows",
+            "inherits": "master",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "/usr/bin/x86_64-w64-mingw32-g++",
+                "CUSTOM_CMAKE_NAME": "windows"
+            }
+        },
+        {
+            "name": "SlavePreset",
+            "inherits": "DefaultPreset",
+            "hidden": true,
+            "environment": {
+                "IDF_PATH": "/home/esp/ESP8266_RTOS_SDK",
+                "PATH": "/usr/local/bin:/usr/bin:/bin:/home/esp/xtensa-lx106-elf/bin"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "/home/esp/ESP8266_RTOS_SDK/tools/cmake/toolchain-esp8266.cmake",
+                "TARGET_CMAKE_NAME": "slave",
+                "SDKCONFIG": "${sourceDir}/sdkconfig",
+                "SDKCONFIG_DEFAULTS": "${sourceDir}/sdkconfig.default"
+            }
+        },
+        {
+            "name": "DrumKit",
+            "inherits": "SlavePreset",
+            "cacheVariables": {
+                "CUSTOM_CMAKE_NAME": "drumkit"
+            }
+        },
+        {
+            "name": "CymbalKit",
+            "inherits": "SlavePreset",
+            "cacheVariables": {
+                "CUSTOM_CMAKE_NAME": "cymbalkit"
+            }
+        }
+    ]
+}

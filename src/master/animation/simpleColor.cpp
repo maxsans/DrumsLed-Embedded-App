@@ -1,0 +1,21 @@
+#include "simpleColor.hpp"
+
+SimpleColor::SimpleColor(RgbLed *rgbLed, RgbColor color)
+    : Animation(ANIMATION_TYPE_SIMPLE_COLOR, nullptr, rgbLed)
+{
+    m_color = color;
+}
+
+SimpleColor::~SimpleColor()
+{
+}
+
+void SimpleColor::start()
+{
+    m_rgbLed->setColor(COLOR_PRIORITY_SIMPLE_COLOR, m_color);
+}
+
+void SimpleColor::stop()
+{
+    m_rgbLed->releaseColor(COLOR_PRIORITY_SIMPLE_COLOR);
+}

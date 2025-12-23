@@ -1,0 +1,114 @@
+/**
+ * @file micro.hpp
+ * @brief Microphone sensor data processing and hit detection
+ * @author Cyprien Ménard
+ * @date 2025-08-20
+ */
+
+#ifndef __MICRO_HPP__
+#define __MICRO_HPP__
+
+#include "tools/timeTools/timeMs.hpp"
+
+#include <stdint.h>
+
+/**
+ * @brief Microphone sensor with hit detection, correction factors, and threshold management
+ */
+class Micro
+{
+    private:
+    protected:
+    bool m_connected;
+    uint8_t m_microValue;
+    uint8_t m_microValueCorrected;
+    float m_correction;
+    uint8_t m_threshold;
+    TimeMs m_lastSyncTime;
+    void checkTime();
+
+    public:
+    Micro();
+    /**
+     * @brief Process the microphone.
+     * @note This function must be called in the main loop.
+     */
+    void process();
+
+    /**
+     * @brief After news over udp, sync the module to push back the timeout.
+     */
+    void sync();
+
+    /**
+     * @brief Check if the microphone is connected.
+     *
+     * @return bool True if connected.
+     */
+    bool isConnected();
+
+    /**
+     * @brief Set the correction of the microphone.
+     *
+     * @param correction The correction.
+     */
+    void setCorrection(float correction);
+
+    /**
+     * @brief Get the correction of the microphone.
+     *
+     * @return float The correction.
+     */
+    float getCorrection();
+
+    /**
+     * @brief Set the micro value.
+     *
+     * @param microValue The micro value.
+     */
+    void setMicroValue(uint8_t microValue);
+
+    /**
+     * @brief Set the micro value after correction.
+     *
+     * @param microValueCorrected The micro value corrected.
+     */
+    void setMicroValueCorrected(uint8_t microValueCorrected);
+
+    /**
+     * @brief Set the threshold of the microphone (after correction).
+     *
+     * @param threshold The threshold.
+     */
+    void setThreshold(uint8_t threshold);
+
+    /**
+     * @brief Get the micro value.
+     *
+     * @return uint8_t The micro value.
+     */
+    uint8_t getMicroValue();
+
+    /**
+     * @brief Get the micro value after correction.
+     *
+     * @return uint8_t The micro value corrected.
+     */
+    uint8_t getMicroValueCorrected();
+
+    /**
+     * @brief Get the threshold of the microphone (after correction).
+     *
+     * @return uint8_t The threshold.
+     */
+    uint8_t getThreshold();
+
+    /**
+     * @brief Check if the microphone is hit.
+     *
+     * @return bool True if hit.
+     */
+    bool isHit();
+};
+
+#endif // __MICRO_HPP__

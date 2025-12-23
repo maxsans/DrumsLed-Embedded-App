@@ -1,0 +1,52 @@
+{
+    "C++ Header File Template": {
+        "scope": "cpp",
+        "prefix": "hpp-template",
+        "body": [
+            "/**",
+            " * @file ${TM_FILENAME}",
+            " * @brief ${1}",
+            " * @author Cyprien Ménard",
+            " * @date ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+            " */",
+            "",
+            "#ifndef __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_HPP__",
+            "#define __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_HPP__",
+            "",
+            "/**",
+            " * @brief ${2}",
+            " */",
+            "class ${TM_FILENAME_BASE/(.*)/${1:/pascalcase}/}",
+            "{",
+            "    private:",
+            "       $3",
+            "",
+            "    protected:",
+            "       $4",
+            "",
+            "    public:",
+            "       $5",
+            "};",
+            "",
+            "#endif // __${TM_FILENAME_BASE/(.*)/${1:/upcase}/}_HPP__",
+            ""
+        ],
+        "description": "Template for C++ header file"
+    },
+    "C++ Source File Template": {
+        "scope": "cpp",
+        "prefix": "cpp-template",
+        "body": [
+            "/**",
+            " * @file ${TM_FILENAME}",
+            " * @author Cyprien Ménard",
+            " * @date ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}",
+            " */",
+            "",
+            "#include \"${TM_FILENAME_BASE}.hpp\"",
+            "",
+            "$3"
+        ],
+        "description": "Template for C++ source file"
+    }
+}
